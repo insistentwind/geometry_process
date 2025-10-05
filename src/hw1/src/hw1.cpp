@@ -11,7 +11,7 @@
  * 主要功能部分：
  * 1. 创建Qt应用程序
  * 2. 创建主窗口和异步处理器
- * 3. 连接信号-槽链接，响应OBJ文件加载事件
+ * 3. 连接信号-槽链接，响应OBJ文件加载和处理按钮事件
  * 4. 使用异步处理避免界面无响应
  */
 int main(int argc, char *argv[])
@@ -35,19 +35,19 @@ int main(int argc, char *argv[])
         });
 
     // 步骤3：连接事件响应链路
-    // 当窗口加载OBJ文件时，启动异步处理
+    
+    // 3.1 当窗口加载OBJ文件时，启动异步处理
     QObject::connect(&window, &MainWindow::objLoaded,
         [asyncProcessor](const std::vector<QVector3D>& vertices,
-                        const std::vector<unsigned int>& indices) {
-            std::cout << "OBJ file loaded, starting async mesh processing..." << std::endl;
+                         const std::vector<unsigned int>& indices) {
+            std::cout << "OBJ file loaded, starting async processing..." << std::endl;
             asyncProcessor->startProcessing(vertices, indices);
         });
 
     // 处理开始时的反馈
     QObject::connect(asyncProcessor, &AsyncMeshProcessor::processingStarted,
-        [&window]() {
+        []() {
             std::cout << "Processing started - UI remains responsive" << std::endl;
-            // 可以在这里显示进度对话框或状态栏信息
         });
 
     // 处理完成时更新显示
@@ -64,12 +64,6 @@ int main(int argc, char *argv[])
             std::cerr << "Processing error: " << errorMessage.toStdString() << std::endl;
             QMessageBox::warning(&window, "Processing Error", 
                                "Mesh processing failed: " + errorMessage);
-        });
-
-    // 进度更新（可选）
-    QObject::connect(asyncProcessor, &AsyncMeshProcessor::progressUpdated,
-        [](int progress) {
-            std::cout << "Processing progress: " << progress << "%" << std::endl;
         });
 
     // 步骤4：显示窗口并启动应用程序事件循环

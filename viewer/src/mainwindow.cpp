@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include <QVBoxLayout>
+#include <QWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,7 +28,7 @@ void MainWindow::openFile()
         tr("Open OBJ File"), "", tr("OBJ Files (*.obj)"));
 
     if (!fileName.isEmpty() && glWidget->loadObject(fileName)) {
-        // 发出信号，通知模型已加载
+        // 发送信号，通知模型已加载
         emit objLoaded(glWidget->getVertices(), glWidget->getIndices());
     }
 }

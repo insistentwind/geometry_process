@@ -27,6 +27,7 @@ private slots:
 
 private:
     GLWidget *glWidget;
+    
     void createMenus();
 };
 
