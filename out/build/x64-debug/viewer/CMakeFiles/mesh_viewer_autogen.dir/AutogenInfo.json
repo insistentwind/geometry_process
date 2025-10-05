@@ -319,6 +319,12 @@
 	"HEADERS" : 
 	[
 		[
+			"E:/qt_work/geometry_process-master/viewer/include/async_mesh_processor.h",
+			"MU",
+			"6YEA5652QU/moc_async_mesh_processor.cpp",
+			null
+		],
+		[
 			"E:/qt_work/geometry_process-master/viewer/include/glwidget.h",
 			"MU",
 			"6YEA5652QU/moc_glwidget.cpp",
@@ -398,6 +404,11 @@
 	"SETTINGS_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[
+			"E:/qt_work/geometry_process-master/viewer/src/async_mesh_processor.cpp",
+			"MU",
+			null
+		],
 		[
 			"E:/qt_work/geometry_process-master/viewer/src/glwidget.cpp",
 			"MU",

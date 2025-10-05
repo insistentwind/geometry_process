@@ -186,6 +186,15 @@ build viewer\CMakeFiles\mesh_viewer.dir\src\objloader.cpp.obj: CXX_COMPILER__mes
   TARGET_COMPILE_PDB = viewer\CMakeFiles\mesh_viewer.dir\mesh_viewer.pdb
   TARGET_PDB = lib\mesh_viewer.pdb
 
+build viewer\CMakeFiles\mesh_viewer.dir\src\async_mesh_processor.cpp.obj: CXX_COMPILER__mesh_viewer_unscanned_Debug E$:\qt_work\geometry_process-master\viewer\src\async_mesh_processor.cpp || cmake_object_order_depends_target_mesh_viewer
+  DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd -Zc:__cplusplus -permissive- -utf-8
+  INCLUDES = -IE:\qt_work\geometry_process-master\out\build\x64-debug\viewer\mesh_viewer_autogen\include -IE:\qt_work\geometry_process-master\viewer\include -IE:\qt_work\geometry_process-master\viewer\src -external:IE:\Qt\6.9.3\msvc2022_64\include\QtCore -external:IE:\Qt\6.9.3\msvc2022_64\include -external:IE:\Qt\6.9.3\msvc2022_64\mkspecs\win32-msvc -external:IE:\Qt\6.9.3\msvc2022_64\include\QtGui -external:IE:\Qt\6.9.3\msvc2022_64\include\QtWidgets -external:IE:\Qt\6.9.3\msvc2022_64\include\QtOpenGL -external:IE:\Qt\6.9.3\msvc2022_64\include\QtOpenGLWidgets -external:W0
+  OBJECT_DIR = viewer\CMakeFiles\mesh_viewer.dir
+  OBJECT_FILE_DIR = viewer\CMakeFiles\mesh_viewer.dir\src
+  TARGET_COMPILE_PDB = viewer\CMakeFiles\mesh_viewer.dir\mesh_viewer.pdb
+  TARGET_PDB = lib\mesh_viewer.pdb
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target mesh_viewer
@@ -194,7 +203,7 @@ build viewer\CMakeFiles\mesh_viewer.dir\src\objloader.cpp.obj: CXX_COMPILER__mes
 #############################################
 # Link the static library lib\mesh_viewer.lib
 
-build lib\mesh_viewer.lib: CXX_STATIC_LIBRARY_LINKER__mesh_viewer_Debug viewer\CMakeFiles\mesh_viewer.dir\mesh_viewer_autogen\mocs_compilation.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\glwidget.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\mainwindow.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\objloader.cpp.obj || viewer\mesh_viewer_autogen viewer\mesh_viewer_autogen_timestamp_deps
+build lib\mesh_viewer.lib: CXX_STATIC_LIBRARY_LINKER__mesh_viewer_Debug viewer\CMakeFiles\mesh_viewer.dir\mesh_viewer_autogen\mocs_compilation.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\glwidget.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\mainwindow.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\objloader.cpp.obj viewer\CMakeFiles\mesh_viewer.dir\src\async_mesh_processor.cpp.obj || viewer\mesh_viewer_autogen viewer\mesh_viewer_autogen_timestamp_deps
   LANGUAGE_COMPILE_FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64
   OBJECT_DIR = viewer\CMakeFiles\mesh_viewer.dir
