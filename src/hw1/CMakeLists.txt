@@ -20,7 +20,7 @@ target_include_directories(hw1 PRIVATE include)
 target_link_libraries(hw1
     PRIVATE
         mesh_viewer
-        geometry::halfedge  # 这将自动提供正确的头文件路径
+        geometry::halfedge  # geometry模块现在包含了MeshConverter
         Qt6::Core
         Qt6::Gui
         Qt6::Widgets
