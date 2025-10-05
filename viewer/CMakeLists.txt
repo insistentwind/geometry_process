@@ -15,12 +15,14 @@ set(VIEWER_HEADERS
     include/glwidget.h
     include/mainwindow.h
     include/objloader.h
+    include/async_mesh_processor.h
 )
 
 set(VIEWER_SOURCES
     src/glwidget.cpp
     src/mainwindow.cpp
     src/objloader.cpp
+    src/async_mesh_processor.cpp
 )
 
 # Create viewer library
