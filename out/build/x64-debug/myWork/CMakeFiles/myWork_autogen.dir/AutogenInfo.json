@@ -1,0 +1,117 @@
+{
+	"AUTOGEN_COMMAND_LINE_LENGTH_MAX" : 32000,
+	"BUILD_DIR" : "E:/qt_work/myWork/out/build/x64-debug/myWork/myWork_autogen",
+	"CMAKE_BINARY_DIR" : "E:/qt_work/myWork/out/build/x64-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "E:/qt_work/myWork/out/build/x64-debug/myWork",
+	"CMAKE_CURRENT_SOURCE_DIR" : "E:/qt_work/myWork/myWork",
+	"CMAKE_EXECUTABLE" : "E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
+	"CMAKE_LIST_FILES" : 
+	[
+		"E:/qt_work/myWork/myWork/CMakeLists.txt",
+		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindOpenGL.cmake",
+		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake",
+		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake"
+	],
+	"CMAKE_SOURCE_DIR" : "E:/qt_work/myWork",
+	"CROSS_CONFIG" : false,
+	"DEP_FILE" : "E:/qt_work/myWork/out/build/x64-debug/myWork/myWork_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "myWork_autogen/timestamp",
+	"HEADERS" : 
+	[
+		[
+			"E:/qt_work/myWork/myWork/glwidget.h",
+			"MU",
+			"EWIEGA46WW/moc_glwidget.cpp",
+			null
+		],
+		[
+			"E:/qt_work/myWork/myWork/mainwindow.h",
+			"MU",
+			"EWIEGA46WW/moc_mainwindow.cpp",
+			null
+		],
+		[
+			"E:/qt_work/myWork/myWork/myWork.h",
+			"MU",
+			"EWIEGA46WW/moc_myWork.cpp",
+			null
+		],
+		[
+			"E:/qt_work/myWork/myWork/objloader.h",
+			"MU",
+			"EWIEGA46WW/moc_objloader.cpp",
+			null
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "E:/qt_work/myWork/out/build/x64-debug/myWork/myWork_autogen/include",
+	"MOC_COMPILATION_FILE" : "E:/qt_work/myWork/out/build/x64-debug/myWork/myWork_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"QT_CORE_LIB",
+		"QT_GUI_LIB",
+		"QT_OPENGLWIDGETS_LIB",
+		"QT_OPENGL_LIB",
+		"QT_WIDGETS_LIB",
+		"UNICODE",
+		"WIN32",
+		"WIN64",
+		"_ENABLE_EXTENDED_ALIGNED_STORAGE",
+		"_UNICODE",
+		"_WIN64"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"E:/qt_work/myWork/myWork",
+		"E:/Qt/6.9.3/msvc2022_64/include/QtCore",
+		"E:/Qt/6.9.3/msvc2022_64/include",
+		"E:/Qt/6.9.3/msvc2022_64/mkspecs/win32-msvc",
+		"E:/Qt/6.9.3/msvc2022_64/include/QtGui",
+		"E:/Qt/6.9.3/msvc2022_64/include/QtWidgets",
+		"E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL",
+		"E:/Qt/6.9.3/msvc2022_64/include/QtOpenGLWidgets"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT",
+		"Q_GADGET_EXPORT",
+		"Q_ENUM_NS"
+	],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : [],
+	"MOC_PREDEFS_FILE" : "",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : [],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 8,
+	"PARSE_CACHE_FILE" : "E:/qt_work/myWork/out/build/x64-debug/myWork/CMakeFiles/myWork_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/moc.exe",
+	"QT_UIC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/uic.exe",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 9,
+	"SETTINGS_FILE" : "E:/qt_work/myWork/out/build/x64-debug/myWork/CMakeFiles/myWork_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[ "E:/qt_work/myWork/myWork/glwidget.cpp", "MU", null ],
+		[ "E:/qt_work/myWork/myWork/mainwindow.cpp", "MU", null ],
+		[ "E:/qt_work/myWork/myWork/myWork.cpp", "MU", null ],
+		[ "E:/qt_work/myWork/myWork/objloader.cpp", "MU", null ]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : [],
+	"UIC_UI_FILES" : [],
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

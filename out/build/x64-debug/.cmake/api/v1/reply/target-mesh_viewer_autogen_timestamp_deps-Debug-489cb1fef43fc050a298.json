@@ -1,0 +1,27 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"viewer/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"id" : "mesh_viewer_autogen_timestamp_deps::@4ad571843d929affe7de",
+	"isGeneratorProvided" : true,
+	"name" : "mesh_viewer_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "viewer",
+		"source" : "viewer"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

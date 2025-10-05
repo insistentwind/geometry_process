@@ -1,0 +1,71 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"src/hw1/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "hw1_autogen_timestamp_deps::@88ce4058fe9bf03ba715"
+		}
+	],
+	"id" : "hw1_autogen::@88ce4058fe9bf03ba715",
+	"isGeneratorProvided" : true,
+	"name" : "hw1_autogen",
+	"paths" : 
+	{
+		"build" : "src/hw1",
+		"source" : "src/hw1"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "out/build/x64-debug/src/hw1/CMakeFiles/hw1_autogen",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "out/build/x64-debug/src/hw1/CMakeFiles/hw1_autogen.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/timestamp.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}

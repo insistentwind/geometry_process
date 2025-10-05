@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "E:/qt_work/myWork/out/build/x64-debug/src/hw1/CMakeFiles/hw1.dir/embed.manifest"
