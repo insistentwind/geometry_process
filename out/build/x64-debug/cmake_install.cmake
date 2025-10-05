@@ -1,8 +1,8 @@
-# Install script for directory: E:/qt_work/myWork
+# Install script for directory: E:/qt_work/geometry_process-master
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "E:/qt_work/myWork/out/install/x64-debug")
+  set(CMAKE_INSTALL_PREFIX "E:/qt_work/geometry_process-master/out/install/x64-debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -32,35 +32,30 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
-# Set path to fallback-tool for dependency-resolution.
-if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "E:/VsCode/mingw64/bin/objdump.exe")
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("E:/qt_work/geometry_process-master/out/build/x64-debug/geometry/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("E:/qt_work/myWork/out/build/x64-debug/geometry/cmake_install.cmake")
+  include("E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("E:/qt_work/myWork/out/build/x64-debug/viewer/cmake_install.cmake")
+  include("E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw1/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("E:/qt_work/myWork/out/build/x64-debug/src/hw1/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("E:/qt_work/myWork/out/build/x64-debug/src/hw2/cmake_install.cmake")
+  include("E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/cmake_install.cmake")
 endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "E:/qt_work/myWork/out/build/x64-debug/install_local_manifest.txt"
+  file(WRITE "E:/qt_work/geometry_process-master/out/build/x64-debug/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -76,6 +71,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "E:/qt_work/myWork/out/build/x64-debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "E:/qt_work/geometry_process-master/out/build/x64-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

@@ -224,10 +224,8 @@ hw1_autogen/timestamp: \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindThreads.cmake \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindVulkan.cmake \
-	E:/qt_work/myWork/src/hw1/CMakeLists.txt \
-	E:/qt_work/myWork/src/hw1/include/mesh_processor.h \
-	E:/qt_work/myWork/src/hw1/include/my_mesh_processor.h \
-	E:/qt_work/myWork/src/hw1/src/hw1.cpp \
-	E:/qt_work/myWork/src/hw1/src/mesh_processor.cpp \
-	E:/qt_work/myWork/src/hw1/src/my_mesh_processor.cpp \
+	E:/qt_work/geometry_process-master/src/hw1/CMakeLists.txt \
+	E:/qt_work/geometry_process-master/src/hw1/include/mesh_processor.h \
+	E:/qt_work/geometry_process-master/src/hw1/src/hw1.cpp \
+	E:/qt_work/geometry_process-master/src/hw1/src/mesh_processor.cpp \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe

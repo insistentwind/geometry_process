@@ -441,11 +441,11 @@ mesh_viewer_autogen/timestamp: \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckFlagCommonConfig.cmake \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake \
-	E:/qt_work/myWork/viewer/CMakeLists.txt \
-	E:/qt_work/myWork/viewer/include/glwidget.h \
-	E:/qt_work/myWork/viewer/include/mainwindow.h \
-	E:/qt_work/myWork/viewer/include/objloader.h \
-	E:/qt_work/myWork/viewer/src/glwidget.cpp \
-	E:/qt_work/myWork/viewer/src/mainwindow.cpp \
-	E:/qt_work/myWork/viewer/src/objloader.cpp \
+	E:/qt_work/geometry_process-master/viewer/CMakeLists.txt \
+	E:/qt_work/geometry_process-master/viewer/include/glwidget.h \
+	E:/qt_work/geometry_process-master/viewer/include/mainwindow.h \
+	E:/qt_work/geometry_process-master/viewer/include/objloader.h \
+	E:/qt_work/geometry_process-master/viewer/src/glwidget.cpp \
+	E:/qt_work/geometry_process-master/viewer/src/mainwindow.cpp \
+	E:/qt_work/geometry_process-master/viewer/src/objloader.cpp \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe

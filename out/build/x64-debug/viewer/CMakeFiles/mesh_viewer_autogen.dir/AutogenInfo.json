@@ -1,13 +1,13 @@
 {
 	"AUTOGEN_COMMAND_LINE_LENGTH_MAX" : 32000,
-	"BUILD_DIR" : "E:/qt_work/myWork/out/build/x64-debug/viewer/mesh_viewer_autogen",
-	"CMAKE_BINARY_DIR" : "E:/qt_work/myWork/out/build/x64-debug",
-	"CMAKE_CURRENT_BINARY_DIR" : "E:/qt_work/myWork/out/build/x64-debug/viewer",
-	"CMAKE_CURRENT_SOURCE_DIR" : "E:/qt_work/myWork/viewer",
+	"BUILD_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/mesh_viewer_autogen",
+	"CMAKE_BINARY_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer",
+	"CMAKE_CURRENT_SOURCE_DIR" : "E:/qt_work/geometry_process-master/viewer",
 	"CMAKE_EXECUTABLE" : "E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
 	"CMAKE_LIST_FILES" : 
 	[
-		"E:/qt_work/myWork/viewer/CMakeLists.txt",
+		"E:/qt_work/geometry_process-master/viewer/CMakeLists.txt",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6ConfigVersion.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6Config.cmake",
@@ -20,12 +20,6 @@
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6VersionlessAliasTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/QtFeature.cmake",
 		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CheckCXXCompilerFlag.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckCompilerFlag.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckFlagCommonConfig.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/QtFeatureCommon.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/QtPublicAndroidHelpers.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/QtPublicAppleHelpers.cmake",
@@ -78,8 +72,6 @@
 		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsDependencies.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets.cmake",
-		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets-debug.cmake",
-		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsTargets-relwithdebinfo.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6ZlibPrivate/Qt6ZlibPrivateConfigVersion.cmake",
@@ -112,7 +104,6 @@
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CorePrivate/Qt6CorePrivateVersionlessAliasTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreMacros.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreConfigExtras.cmake",
-		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/GNUInstallDirs.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreVersionlessAliasTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiConfigVersion.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiConfigVersionImpl.cmake",
@@ -139,8 +130,6 @@
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsAdditionalTargetInfo.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6CoreTools/Qt6CoreToolsVersionlessTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets.cmake",
-		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-debug.cmake",
-		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsTargets-relwithdebinfo.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsAdditionalTargetInfo.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6GuiTools/Qt6GuiToolsVersionlessTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiTargets.cmake",
@@ -323,34 +312,34 @@
 		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake",
 		"E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake"
 	],
-	"CMAKE_SOURCE_DIR" : "E:/qt_work/myWork",
+	"CMAKE_SOURCE_DIR" : "E:/qt_work/geometry_process-master",
 	"CROSS_CONFIG" : false,
-	"DEP_FILE" : "E:/qt_work/myWork/out/build/x64-debug/viewer/mesh_viewer_autogen/deps",
+	"DEP_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/mesh_viewer_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "mesh_viewer_autogen/timestamp",
 	"HEADERS" : 
 	[
 		[
-			"E:/qt_work/myWork/viewer/include/glwidget.h",
+			"E:/qt_work/geometry_process-master/viewer/include/glwidget.h",
 			"MU",
 			"6YEA5652QU/moc_glwidget.cpp",
 			null
 		],
 		[
-			"E:/qt_work/myWork/viewer/include/mainwindow.h",
+			"E:/qt_work/geometry_process-master/viewer/include/mainwindow.h",
 			"MU",
 			"6YEA5652QU/moc_mainwindow.cpp",
 			null
 		],
 		[
-			"E:/qt_work/myWork/viewer/include/objloader.h",
+			"E:/qt_work/geometry_process-master/viewer/include/objloader.h",
 			"MU",
 			"6YEA5652QU/moc_objloader.cpp",
 			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "E:/qt_work/myWork/out/build/x64-debug/viewer/mesh_viewer_autogen/include",
-	"MOC_COMPILATION_FILE" : "E:/qt_work/myWork/out/build/x64-debug/viewer/mesh_viewer_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/mesh_viewer_autogen/include",
+	"MOC_COMPILATION_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/mesh_viewer_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"QT_CORE_LIB",
@@ -374,8 +363,8 @@
 	],
 	"MOC_INCLUDES" : 
 	[
-		"E:/qt_work/myWork/viewer/include",
-		"E:/qt_work/myWork/viewer/src",
+		"E:/qt_work/geometry_process-master/viewer/include",
+		"E:/qt_work/geometry_process-master/viewer/src",
 		"E:/Qt/6.9.3/msvc2022_64/include/QtCore",
 		"E:/Qt/6.9.3/msvc2022_64/include",
 		"E:/Qt/6.9.3/msvc2022_64/mkspecs/win32-msvc",
@@ -401,17 +390,29 @@
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 8,
-	"PARSE_CACHE_FILE" : "E:/qt_work/myWork/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/moc.exe",
 	"QT_UIC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/uic.exe",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 9,
-	"SETTINGS_FILE" : "E:/qt_work/myWork/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
-		[ "E:/qt_work/myWork/viewer/src/glwidget.cpp", "MU", null ],
-		[ "E:/qt_work/myWork/viewer/src/mainwindow.cpp", "MU", null ],
-		[ "E:/qt_work/myWork/viewer/src/objloader.cpp", "MU", null ]
+		[
+			"E:/qt_work/geometry_process-master/viewer/src/glwidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"E:/qt_work/geometry_process-master/viewer/src/mainwindow.cpp",
+			"MU",
+			null
+		],
+		[
+			"E:/qt_work/geometry_process-master/viewer/src/objloader.cpp",
+			"MU",
+			null
+		]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

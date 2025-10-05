@@ -1,13 +1,13 @@
 {
 	"AUTOGEN_COMMAND_LINE_LENGTH_MAX" : 32000,
-	"BUILD_DIR" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2/hw2_autogen",
-	"CMAKE_BINARY_DIR" : "E:/qt_work/myWork/out/build/x64-debug",
-	"CMAKE_CURRENT_BINARY_DIR" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2",
-	"CMAKE_CURRENT_SOURCE_DIR" : "E:/qt_work/myWork/src/hw2",
+	"BUILD_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen",
+	"CMAKE_BINARY_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2",
+	"CMAKE_CURRENT_SOURCE_DIR" : "E:/qt_work/geometry_process-master/src/hw2",
 	"CMAKE_EXECUTABLE" : "E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe",
 	"CMAKE_LIST_FILES" : 
 	[
-		"E:/qt_work/myWork/src/hw2/CMakeLists.txt",
+		"E:/qt_work/geometry_process-master/src/hw2/CMakeLists.txt",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6ConfigVersion.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6Config.cmake",
@@ -307,14 +307,14 @@
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6OpenGLWidgetsPrivate/Qt6OpenGLWidgetsPrivateVersionlessAliasTargets.cmake",
 		"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6OpenGLWidgets/Qt6OpenGLWidgetsVersionlessAliasTargets.cmake"
 	],
-	"CMAKE_SOURCE_DIR" : "E:/qt_work/myWork",
+	"CMAKE_SOURCE_DIR" : "E:/qt_work/geometry_process-master",
 	"CROSS_CONFIG" : false,
-	"DEP_FILE" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2/hw2_autogen/deps",
+	"DEP_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "hw2_autogen/timestamp",
 	"HEADERS" : [],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
-	"INCLUDE_DIR" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2/hw2_autogen/include",
-	"MOC_COMPILATION_FILE" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2/hw2_autogen/mocs_compilation.cpp",
+	"INCLUDE_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/include",
+	"MOC_COMPILATION_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/mocs_compilation.cpp",
 	"MOC_DEFINITIONS" : 
 	[
 		"QT_CORE_LIB",
@@ -338,10 +338,9 @@
 	],
 	"MOC_INCLUDES" : 
 	[
-		"E:/qt_work/myWork/src/hw2/include",
-		"E:/qt_work/myWork/viewer/include",
-		"E:/qt_work/myWork/geometry/include",
-		"E:/qt_work/myWork/thirdparty/Eigen",
+		"E:/qt_work/geometry_process-master/src/hw2/include",
+		"E:/qt_work/geometry_process-master/viewer/include",
+		"E:/qt_work/geometry_process-master/geometry/include",
 		"E:/Qt/6.9.3/msvc2022_64/include/QtCore",
 		"E:/Qt/6.9.3/msvc2022_64/include",
 		"E:/Qt/6.9.3/msvc2022_64/mkspecs/win32-msvc",
@@ -368,15 +367,15 @@
 	"MOC_SKIP" : [],
 	"MULTI_CONFIG" : false,
 	"PARALLEL" : 8,
-	"PARSE_CACHE_FILE" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2/CMakeFiles/hw2_autogen.dir/ParseCache.txt",
+	"PARSE_CACHE_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/CMakeFiles/hw2_autogen.dir/ParseCache.txt",
 	"QT_MOC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/moc.exe",
 	"QT_UIC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/uic.exe",
 	"QT_VERSION_MAJOR" : 6,
 	"QT_VERSION_MINOR" : 9,
-	"SETTINGS_FILE" : "E:/qt_work/myWork/out/build/x64-debug/src/hw2/CMakeFiles/hw2_autogen.dir/AutogenUsed.txt",
+	"SETTINGS_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/CMakeFiles/hw2_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
-		[ "E:/qt_work/myWork/src/hw2/src/hw2.cpp", "MU", null ]
+		[ "E:/qt_work/geometry_process-master/src/hw2/src/hw2.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],
