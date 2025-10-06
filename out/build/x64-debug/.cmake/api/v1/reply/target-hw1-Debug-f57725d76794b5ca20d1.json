@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "bin/hw2.exe"
+			"path" : "bin/hw1.exe"
 		},
 		{
-			"path" : "bin/hw2.pdb"
+			"path" : "bin/hw1.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -22,7 +22,7 @@
 		],
 		"files" : 
 		[
-			"src/hw2/CMakeLists.txt",
+			"src/hw1/CMakeLists.txt",
 			"viewer/CMakeLists.txt",
 			"geometry/CMakeLists.txt",
 			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
@@ -45,7 +45,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 19,
+				"line" : 20,
 				"parent" : 0
 			},
 			{
@@ -131,7 +131,7 @@
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 15,
+				"line" : 18,
 				"parent" : 0
 			}
 		]
@@ -208,11 +208,11 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/include"
+					"path" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw1/hw1_autogen/include"
 				},
 				{
 					"backtrace" : 19,
-					"path" : "E:/qt_work/geometry_process-master/src/hw2/include"
+					"path" : "E:/qt_work/geometry_process-master/src/hw1/include"
 				},
 				{
 					"backtrace" : 2,
@@ -277,7 +277,8 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
 			]
 		}
 	],
@@ -285,21 +286,21 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "mesh_viewer::@4ad571843d929affe7de"
-		},
-		{
-			"backtrace" : 2,
 			"id" : "geometry::@60d41218eef6b4657a56"
 		},
 		{
-			"backtrace" : 0,
-			"id" : "hw2_autogen::@672f01f9ab1c2840c951"
+			"backtrace" : 2,
+			"id" : "mesh_viewer::@4ad571843d929affe7de"
 		},
 		{
-			"id" : "hw2_autogen_timestamp_deps::@672f01f9ab1c2840c951"
+			"id" : "hw1_autogen_timestamp_deps::@88ce4058fe9bf03ba715"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "hw1_autogen::@88ce4058fe9bf03ba715"
 		}
 	],
-	"id" : "hw2::@672f01f9ab1c2840c951",
+	"id" : "hw1::@88ce4058fe9bf03ba715",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -424,12 +425,12 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "hw2",
-	"nameOnDisk" : "hw2.exe",
+	"name" : "hw1",
+	"nameOnDisk" : "hw1.exe",
 	"paths" : 
 	{
-		"build" : "src/hw2",
-		"source" : "src/hw2"
+		"build" : "src/hw1",
+		"source" : "src/hw1"
 	},
 	"sourceGroups" : 
 	[
@@ -438,21 +439,29 @@
 			"sourceIndexes" : 
 			[
 				0,
-				1
+				1,
+				2
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				3
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				2
+				4
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				3
+				5
 			]
 		}
 	],
@@ -462,26 +471,37 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "out/build/x64-debug/src/hw2/hw2_autogen/mocs_compilation.cpp",
+			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/mocs_compilation.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/hw2/src/hw2.cpp",
+			"path" : "src/hw1/src/hw1.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
-			"backtrace" : 0,
-			"isGenerated" : true,
-			"path" : "out/build/x64-debug/src/hw2/hw2_autogen/timestamp",
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/hw1/src/mesh_processor.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "src/hw1/include/mesh_processor.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "out/build/x64-debug/src/hw2/hw2_autogen/timestamp.rule",
+			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/timestamp",
 			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/timestamp.rule",
+			"sourceGroupIndex" : 3
 		}
 	],
 	"type" : "EXECUTABLE"
