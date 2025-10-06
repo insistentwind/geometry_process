@@ -4,7 +4,7 @@
 #include <async_mesh_processor.h>
 #include <mesh_processor.h>
 #include <iostream>
-
+#include <Eigen/Sparse>
 /**
  * @brief 主程序 - 改进的入口点
  * 专注于Qt应用程序的初始化和事件循环

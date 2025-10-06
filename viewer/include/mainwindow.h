@@ -5,6 +5,8 @@
 #include <QMenuBar>
 #include <QFileDialog>
 #include <QVector3D>
+#include <QPushButton>
+#include <vector>
 #include "glwidget.h"
 
 class MainWindow : public QMainWindow
@@ -24,10 +26,15 @@ signals:
 
 private slots:
     void openFile();
+    void restoreModel();      // 恢复原始模型
+    void requestProcess();    // 触发再次处理
 
 private:
     GLWidget *glWidget;
-    
+    QPushButton *restoreButton{};
+    QPushButton *processButton{};
+    std::vector<QVector3D> originalVertices;          // 原始顶点数据
+    std::vector<unsigned int> originalIndices;        // 原始索引数据
     void createMenus();
 };
 

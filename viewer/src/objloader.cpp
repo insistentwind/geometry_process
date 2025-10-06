@@ -50,5 +50,3 @@ bool ObjLoader::loadOBJ(const std::string& path)
 
     return !vertices.empty() && !indices.empty();
 }
-
-QString filePath = "E:/qt_work/myWork/bunny.obj";
