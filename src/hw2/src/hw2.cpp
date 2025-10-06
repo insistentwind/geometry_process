@@ -1,136 +1,72 @@
 #include <QApplication>
+#include <QMessageBox>
 #include <mainwindow.h>
-#include <halfedge.h>  // 使用共享的几何库
+#include <async_mesh_processor.h>
+#include <mesh_processor.h>
 #include <iostream>
-
+#include <Eigen/Sparse>
 /**
- * @brief 示例：网格细分处理器
- * 这个类展示了如何在新的作业中复用半边结构
+ * @brief 主程序 - 改进的入口点
+ * 专注于Qt应用程序的初始化和事件循环
+ * 主要功能部分：
+ * 1. 创建Qt应用程序
+ * 2. 创建主窗口和异步处理器
+ * 3. 连接信号-槽链接，响应OBJ文件加载和处理按钮事件
+ * 4. 使用异步处理避免界面无响应
  */
-class MeshSubdivisionProcessor {
-public:
-    std::pair<std::vector<QVector3D>, std::vector<unsigned int>> 
-    processOBJData(const std::vector<QVector3D>& vertices,
-                  const std::vector<unsigned int>& indices) {
-        
-        // 转换输入数据到半边结构
-        std::vector<Eigen::Vector3d> eigenVerts;
-        eigenVerts.reserve(vertices.size());
-        for (const auto& v : vertices) {
-            eigenVerts.emplace_back(v.x(), v.y(), v.z());
-        }
-
-        std::vector<std::vector<int>> faces;
-        for (size_t i = 0; i < indices.size(); i += 3) {
-            std::vector<int> face = {
-                static_cast<int>(indices[i]),
-                static_cast<int>(indices[i + 1]),
-                static_cast<int>(indices[i + 2])
-            };
-            faces.push_back(face);
-        }
-
-        // 构建半边结构
-        mesh.buildFromOBJ(eigenVerts, faces);
-        
-        std::cout << "Original mesh: " << mesh.getVertexCount() << " vertices, " 
-                  << mesh.getFaceCount() << " faces" << std::endl;
-
-        // 验证半边结构
-        if (!mesh.isValid()) {
-            std::cerr << "Error: Invalid half-edge mesh!" << std::endl;
-            return {vertices, indices}; // 返回原始数据
-        }
-
-        // 执行网格细分（这里可以实现Catmull-Clark细分等算法）
-        performSubdivision();
-
-        // 转换回QVector3D格式
-        std::vector<QVector3D> processedVertices;
-        std::vector<unsigned int> processedIndices;
-
-        processedVertices.reserve(mesh.vertices.size());
-        for (const auto& vertex : mesh.vertices) {
-            processedVertices.emplace_back(
-                static_cast<float>(vertex->position.x()),
-                static_cast<float>(vertex->position.y()),
-                static_cast<float>(vertex->position.z())
-            );
-        }
-
-        for (const auto& face : mesh.faces) {
-            geometry::HalfEdge* he = face->halfEdge;
-            do {
-                processedIndices.push_back(static_cast<unsigned int>(he->vertex->index));
-                he = he->next;
-            } while (he != face->halfEdge);
-        }
-
-        std::cout << "Processed mesh: " << processedVertices.size() << " vertices, " 
-                  << processedIndices.size() / 3 << " faces" << std::endl;
-
-        return {processedVertices, processedIndices};
-    }
-
-private:
-    geometry::HalfEdgeMesh mesh;
-
-    void performSubdivision() {
-        // 这里可以实现各种细分算法
-        // 例如：Loop细分、Catmull-Clark细分等
-        
-        // 示例：简单的顶点平滑
-        std::vector<Eigen::Vector3d> newPositions(mesh.vertices.size());
-        
-        for (size_t i = 0; i < mesh.vertices.size(); ++i) {
-            // 计算邻居顶点的平均位置
-            Eigen::Vector3d avgPos = mesh.vertices[i]->position;
-            int neighborCount = 1;
-            
-            // 遍历邻居顶点
-            geometry::HalfEdge* he = mesh.vertices[i]->halfEdge;
-            if (he) {
-                geometry::HalfEdge* current = he;
-                do {
-                    if (current->pair && current->pair->vertex) {
-                        avgPos += current->pair->vertex->position;
-                        neighborCount++;
-                    }
-                    current = current->pair ? current->pair->next : nullptr;
-                } while (current && current != he);
-            }
-            
-            newPositions[i] = avgPos / neighborCount;
-        }
-        
-        // 应用新位置
-        for (size_t i = 0; i < mesh.vertices.size(); ++i) {
-            mesh.vertices[i]->position = newPositions[i];
-        }
-    }
-};
-
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
+    // 步骤1：初始化Qt应用程序
     QApplication app(argc, argv);
     MainWindow window;
     window.resize(800, 600);
 
-    // 创建网格细分处理器
-    MeshSubdivisionProcessor processor;
+    // 步骤2：创建网格处理实例和异步处理器
+    MeshProcessor processor;
+    AsyncMeshProcessor* asyncProcessor = new AsyncMeshProcessor(&window);
 
-    // 连接信号和槽
-    QObject::connect(&window, &MainWindow::objLoaded,
-        [&processor, &window](const std::vector<QVector3D>& vertices,
-                            const std::vector<unsigned int>& indices) {
-            // 处理数据
-            auto [processedVertices, processedIndices] = 
-                processor.processOBJData(vertices, indices);
-
-            // 更新显示
-            window.updateMesh(processedVertices, processedIndices);
+    // 设置异步处理函数
+    asyncProcessor->setProcessFunction(
+        [&processor](const std::vector<QVector3D>& vertices,
+            const std::vector<unsigned int>& indices) {
+                // 这个函数会在独立线程中执行，不会阻塞UI
+                std::cout << "Processing mesh in worker thread..." << std::endl;
+                return processor.processOBJData(vertices, indices);
         });
 
+    // 步骤3：连接事件响应链路
+
+    // 3.1 当窗口加载OBJ文件时，启动异步处理
+    QObject::connect(&window, &MainWindow::objLoaded,
+        [asyncProcessor](const std::vector<QVector3D>& vertices,
+            const std::vector<unsigned int>& indices) {
+                std::cout << "OBJ file loaded, starting async processing..." << std::endl;
+                asyncProcessor->startProcessing(vertices, indices);
+        });
+
+    // 处理开始时的反馈
+    QObject::connect(asyncProcessor, &AsyncMeshProcessor::processingStarted,
+        []() {
+            std::cout << "Processing started - UI remains responsive" << std::endl;
+        });
+
+    // 处理完成时更新显示
+    QObject::connect(asyncProcessor, &AsyncMeshProcessor::processingFinished,
+        [&window](const std::vector<QVector3D>& vertices,
+            const std::vector<unsigned int>& indices) {
+                std::cout << "Async mesh processing completed. Updating display..." << std::endl;
+                window.updateMesh(vertices, indices);
+        });
+
+    // 处理错误
+    QObject::connect(asyncProcessor, &AsyncMeshProcessor::processingError,
+        [&window](const QString& errorMessage) {
+            std::cerr << "Processing error: " << errorMessage.toStdString() << std::endl;
+            QMessageBox::warning(&window, "Processing Error",
+                "Mesh processing failed: " + errorMessage);
+        });
+
+    // 步骤4：显示窗口并启动应用程序事件循环
     window.show();
     return app.exec();
 }

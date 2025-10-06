@@ -410,6 +410,15 @@ build src\hw2\CMakeFiles\hw2.dir\src\hw2.cpp.obj: CXX_COMPILER__hw2_unscanned_De
   TARGET_COMPILE_PDB = src\hw2\CMakeFiles\hw2.dir\
   TARGET_PDB = bin\hw2.pdb
 
+build src\hw2\CMakeFiles\hw2.dir\src\mesh_processor.cpp.obj: CXX_COMPILER__hw2_unscanned_Debug E$:\qt_work\geometry_process-master\src\hw2\src\mesh_processor.cpp || cmake_object_order_depends_target_hw2
+  DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++20 -MDd -Zc:__cplusplus -permissive- -utf-8
+  INCLUDES = -IE:\qt_work\geometry_process-master\out\build\x64-debug\src\hw2\hw2_autogen\include -IE:\qt_work\geometry_process-master\src\hw2\include -IE:\qt_work\geometry_process-master\viewer\include -IE:\qt_work\geometry_process-master\geometry\include -external:IE:\Qt\6.9.3\msvc2022_64\include\QtCore -external:IE:\Qt\6.9.3\msvc2022_64\include -external:IE:\Qt\6.9.3\msvc2022_64\mkspecs\win32-msvc -external:IE:\Qt\6.9.3\msvc2022_64\include\QtGui -external:IE:\Qt\6.9.3\msvc2022_64\include\QtWidgets -external:IE:\Qt\6.9.3\msvc2022_64\include\QtOpenGL -external:IE:\Qt\6.9.3\msvc2022_64\include\QtOpenGLWidgets -external:IE:\graphics_env\eigen-3.4.0 -external:W0
+  OBJECT_DIR = src\hw2\CMakeFiles\hw2.dir
+  OBJECT_FILE_DIR = src\hw2\CMakeFiles\hw2.dir\src
+  TARGET_COMPILE_PDB = src\hw2\CMakeFiles\hw2.dir\
+  TARGET_PDB = bin\hw2.pdb
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target hw2
@@ -418,7 +427,7 @@ build src\hw2\CMakeFiles\hw2.dir\src\hw2.cpp.obj: CXX_COMPILER__hw2_unscanned_De
 #############################################
 # Link the executable bin\hw2.exe
 
-build bin\hw2.exe: CXX_EXECUTABLE_LINKER__hw2_Debug src\hw2\CMakeFiles\hw2.dir\hw2_autogen\mocs_compilation.cpp.obj src\hw2\CMakeFiles\hw2.dir\src\hw2.cpp.obj | lib\mesh_viewer.lib lib\geometry.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Widgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Widgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib || lib\geometry.lib lib\mesh_viewer.lib src\hw2\hw2_autogen src\hw2\hw2_autogen_timestamp_deps
+build bin\hw2.exe: CXX_EXECUTABLE_LINKER__hw2_Debug src\hw2\CMakeFiles\hw2.dir\hw2_autogen\mocs_compilation.cpp.obj src\hw2\CMakeFiles\hw2.dir\src\hw2.cpp.obj src\hw2\CMakeFiles\hw2.dir\src\mesh_processor.cpp.obj | lib\mesh_viewer.lib lib\geometry.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Widgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Widgetsd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLd.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib E$:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib || lib\geometry.lib lib\mesh_viewer.lib src\hw2\hw2_autogen src\hw2\hw2_autogen_timestamp_deps
   FLAGS = /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = lib\mesh_viewer.lib  lib\geometry.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLWidgetsd.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Widgetsd.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLd.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib  opengl32.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Widgetsd.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6OpenGLd.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Guid.lib  E:\Qt\6.9.3\msvc2022_64\lib\Qt6Cored.lib  mpr.lib  userenv.lib  d3d11.lib  dxgi.lib  dxguid.lib  d3d12.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

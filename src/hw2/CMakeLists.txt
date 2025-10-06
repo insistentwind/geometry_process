@@ -10,7 +10,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 
 add_executable(hw2
     src/hw2.cpp
-)
+    include/mesh_processor.h
+    src/mesh_processor.cpp)
 
 target_include_directories(hw2 PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/include

@@ -225,5 +225,7 @@ hw2_autogen/timestamp: \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindThreads.cmake \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindVulkan.cmake \
 	E:/qt_work/geometry_process-master/src/hw2/CMakeLists.txt \
+	E:/qt_work/geometry_process-master/src/hw2/include/mesh_processor.h \
 	E:/qt_work/geometry_process-master/src/hw2/src/hw2.cpp \
+	E:/qt_work/geometry_process-master/src/hw2/src/mesh_processor.cpp \
 	E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe

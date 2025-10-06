@@ -63,12 +63,5 @@ private:
      * 这是需要自定义网格处理算法的地方
      * 例如：拉普拉斯平滑、网格简化、细分等等
      */
-    void processGeometry(std::vector<int>& indexes);
-
-    double dijkstra(int start_index, int end_index, geometry::HalfEdgeMesh& mesh);
-
-    int find_min_distance_node(
-        const std::vector<double>& dist,
-        const std::vector<bool>& visited);
-    
+    void processGeometry();
 };

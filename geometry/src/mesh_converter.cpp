@@ -39,7 +39,7 @@ std::vector<std::vector<int>> MeshConverter::convertIndicesToFaces(const std::ve
     }
     return faces;
 }
-
+// 这里是从obj构建半边数据结构
 void MeshConverter::buildMeshFromQtData(HalfEdgeMesh& mesh,
                                         const std::vector<QVector3D>& qVertices,
                                         const std::vector<unsigned int>& indices) {

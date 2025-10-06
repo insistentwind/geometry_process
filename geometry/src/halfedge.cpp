@@ -185,7 +185,7 @@ void HalfEdgeMesh::clear() {
 }
 
 /**
- * @brief 从OBJ格式数据构建半边网格结构（仅位置）
+ * @brief 从OBJ格式数据构建半边网格结构（仅位置）****
  */
 void HalfEdgeMesh::buildFromOBJ(const std::vector<Eigen::Vector3d>& vertexPositions,
                                const std::vector<std::vector<int>>& faceIndices) {
@@ -197,7 +197,8 @@ void HalfEdgeMesh::buildFromOBJ(const std::vector<Eigen::Vector3d>& vertexPositi
     }
 
     // 创建顶点
-    vertices.reserve(vertexPositions.size());
+	vertices.reserve(vertexPositions.size());// 这里是预分配空间
+    
     for (size_t i = 0; i < vertexPositions.size(); ++i) {
         vertices.push_back(std::make_unique<Vertex>(vertexPositions[i], static_cast<int>(i)));
     }

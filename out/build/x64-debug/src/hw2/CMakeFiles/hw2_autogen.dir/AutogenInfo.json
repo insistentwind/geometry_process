@@ -311,7 +311,15 @@
 	"CROSS_CONFIG" : false,
 	"DEP_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/deps",
 	"DEP_FILE_RULE_NAME" : "hw2_autogen/timestamp",
-	"HEADERS" : [],
+	"HEADERS" : 
+	[
+		[
+			"E:/qt_work/geometry_process-master/src/hw2/include/mesh_processor.h",
+			"MU",
+			"6YEA5652QU/moc_mesh_processor.cpp",
+			null
+		]
+	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
 	"INCLUDE_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/include",
 	"MOC_COMPILATION_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/hw2_autogen/mocs_compilation.cpp",
@@ -375,7 +383,12 @@
 	"SETTINGS_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw2/CMakeFiles/hw2_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
-		[ "E:/qt_work/geometry_process-master/src/hw2/src/hw2.cpp", "MU", null ]
+		[ "E:/qt_work/geometry_process-master/src/hw2/src/hw2.cpp", "MU", null ],
+		[
+			"E:/qt_work/geometry_process-master/src/hw2/src/mesh_processor.cpp",
+			"MU",
+			null
+		]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],
