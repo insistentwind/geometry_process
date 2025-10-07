@@ -15,7 +15,7 @@ class HalfEdge;
 class Vertex {
 public:
     Eigen::Vector3d position;
-    Eigen::Vector3d normal;
+    Eigen::Vector3d normal;// 
     Eigen::Vector2d texCoords;
     Eigen::Vector3d color;
     HalfEdge* halfEdge;

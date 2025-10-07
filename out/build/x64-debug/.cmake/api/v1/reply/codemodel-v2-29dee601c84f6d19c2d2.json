@@ -11,7 +11,8 @@
 						1,
 						2,
 						3,
-						4
+						4,
+						5
 					],
 					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
 					"minimumCMakeVersion" : 
@@ -48,9 +49,9 @@
 					"source" : "viewer",
 					"targetIndexes" : 
 					[
-						7,
-						8,
-						9
+						10,
+						11,
+						12
 					]
 				},
 				{
@@ -86,6 +87,23 @@
 						5,
 						6
 					]
+				},
+				{
+					"build" : "src/hw3",
+					"jsonFile" : "directory-src.hw3-Debug-c73bd026cb2bffa58c88.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 4,
+					"source" : "src/hw3",
+					"targetIndexes" : 
+					[
+						7,
+						8,
+						9
+					]
 				}
 			],
 			"name" : "Debug",
@@ -96,7 +114,8 @@
 					[
 						1,
 						2,
-						3
+						3,
+						4
 					],
 					"directoryIndexes" : 
 					[
@@ -118,9 +137,9 @@
 					"parentIndex" : 0,
 					"targetIndexes" : 
 					[
-						7,
-						8,
-						9
+						10,
+						11,
+						12
 					]
 				},
 				{
@@ -150,6 +169,20 @@
 						5,
 						6
 					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						5
+					],
+					"name" : "hw3",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						7,
+						8,
+						9
+					]
 				}
 			],
 			"targets" : 
@@ -164,7 +197,7 @@
 				{
 					"directoryIndex" : 3,
 					"id" : "hw1::@88ce4058fe9bf03ba715",
-					"jsonFile" : "target-hw1-Debug-f0e89c518825dd8e34ce.json",
+					"jsonFile" : "target-hw1-Debug-d6c45b86c0d53941d92c.json",
 					"name" : "hw1",
 					"projectIndex" : 2
 				},
@@ -185,7 +218,7 @@
 				{
 					"directoryIndex" : 4,
 					"id" : "hw2::@672f01f9ab1c2840c951",
-					"jsonFile" : "target-hw2-Debug-e5091c66e8c53d864f52.json",
+					"jsonFile" : "target-hw2-Debug-dd03d3a64cf021f01c07.json",
 					"name" : "hw2",
 					"projectIndex" : 3
 				},
@@ -204,9 +237,30 @@
 					"projectIndex" : 3
 				},
 				{
+					"directoryIndex" : 5,
+					"id" : "hw3::@18f3f2bd4df51aa57828",
+					"jsonFile" : "target-hw3-Debug-b88856a342d1279b7c16.json",
+					"name" : "hw3",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "hw3_autogen::@18f3f2bd4df51aa57828",
+					"jsonFile" : "target-hw3_autogen-Debug-ee59d1a4f430674bbec3.json",
+					"name" : "hw3_autogen",
+					"projectIndex" : 4
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "hw3_autogen_timestamp_deps::@18f3f2bd4df51aa57828",
+					"jsonFile" : "target-hw3_autogen_timestamp_deps-Debug-004344c577260d01b124.json",
+					"name" : "hw3_autogen_timestamp_deps",
+					"projectIndex" : 4
+				},
+				{
 					"directoryIndex" : 2,
 					"id" : "mesh_viewer::@4ad571843d929affe7de",
-					"jsonFile" : "target-mesh_viewer-Debug-3554698cdbfd97bb97ea.json",
+					"jsonFile" : "target-mesh_viewer-Debug-8522710b5c72486f8fb5.json",
 					"name" : "mesh_viewer",
 					"projectIndex" : 1
 				},

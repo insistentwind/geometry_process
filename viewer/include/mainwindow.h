@@ -12,9 +12,10 @@
 /* --------------------------------------------------------------------------
  * MainWindow
  * 负责:
- *   - 文件打开/恢复/触发处理按钮
- *   - 保存原始模型数据用于恢复
- *   - 触发异步处理信号(objLoaded)
+ *   - 文件打开/还原/处理按钮
+ *   - 保存原始模型用于还原
+ *   - 发出异步处理信号(objLoaded)
+ *   - 新增: 顶点彩色点显示开关按钮
  * -------------------------------------------------------------------------- */
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -34,8 +35,9 @@ signals:
 
 private slots:
     void openFile();       // 打开模型
-    void restoreModel();   // 恢复原始模型
+    void restoreModel();   // 还原原始模型
     void requestProcess(); // 触发再次处理
+    void togglePoints();   // 显示/隐藏彩色顶点点
 
 private:
     void createMenus();
@@ -43,6 +45,9 @@ private:
     GLWidget *glWidget { nullptr };
     QPushButton *restoreButton { nullptr };
     QPushButton *processButton { nullptr };
+    QPushButton *togglePointsButton { nullptr }; // 新增按钮
+
+    bool pointsVisible = true; // 当前彩色点显示状态
 
     std::vector<QVector3D> originalVertices;   // 原始顶点
     std::vector<unsigned int> originalIndices; // 原始索引

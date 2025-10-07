@@ -1,20 +1,26 @@
 cmake_minimum_required(VERSION 3.16)
-project(w2 LANGUAGES CXX)
+project(hw3 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Find Qt packages
+# Find packages
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 
-add_executable(w2
-    src/w2.cpp
+add_executable(hw3
+    src/hw3.cpp
+    include/mesh_processor.h
+    src/mesh_processor.cpp)
+
+target_include_directories(hw3 PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(w2
+target_link_libraries(hw3
     PRIVATE
         mesh_viewer
+        geometry::halfedge  # 使用共享的几何库
         Qt6::Core
         Qt6::Gui
         Qt6::Widgets
@@ -24,12 +30,12 @@ target_link_libraries(w2
 
 # Qt部署设置
 if(WIN32)
-    add_custom_command(TARGET w2 POST_BUILD
+    add_custom_command(TARGET hw3 POST_BUILD
         COMMAND "${WINDEPLOYQT_EXECUTABLE}"
-            --debug    # Debug构建
+            --debug
             --no-compiler-runtime
             --no-system-d3d-compiler
-            \"$<TARGET_FILE:w2>\"
-        COMMENT "Deploying Qt libraries for w2..."
+            \"$<TARGET_FILE:hw3>\"
+        COMMENT "Deploying Qt libraries for hw3..."
     )
 endif()

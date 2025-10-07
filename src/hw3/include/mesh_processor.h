@@ -50,8 +50,6 @@ public:
      */
     bool isValid() const { return mesh.isValid(); }
 
-    std::vector<QVector3D> extractColors() const;
-
     /**
      * @brief 清空当前网格数据
      */
@@ -66,12 +64,4 @@ private:
      * 例如：拉普拉斯平滑、网格简化、细分等等
      */
     void processGeometry();
-
-    void gaussianCurvature();
-
-    void meanCurvature();
-
-    void cotangentCurvature();
-
-    
 };

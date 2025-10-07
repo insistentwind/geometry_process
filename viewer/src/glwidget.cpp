@@ -13,7 +13,7 @@
  *  - 载入与存储网格顶点/索引/颜色数据
  *  - OpenGL 上下文初始化与着色器构建
  *  - 相机/交互(旋转、缩放)
- *  - 绘制主网格(线框) + MST 高亮线段
+ *  - 绘制主网格(线框) + MST 高亮线段 + 可选彩色顶点点
  * -------------------------------------------------------------------------- */
 
 GLWidget::GLWidget(QWidget* parent)
@@ -80,59 +80,40 @@ void GLWidget::updateMeshWithColors(const std::vector<QVector3D>& v,
         perVertexColor = false;
     }
 
-    // 3. 若此时 OpenGL 上下文还不可用（窗口尚未初始化完成），提前返回；
-    //    数据仍已保存于 CPU，稍后 initializeGL 后你可以再次调用或触发一次重上传
     if (!isValid()) return;
 
-    // 4. 上传顶点位置到顶点缓冲 (VBO)
-    //    allocate 会重新分配并复制数据（当前使用 DynamicDraw，允许后续多次更新）
     vertexBuf.bind();
     vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
 
-    // 5. 上传索引 (EBO)，供 glDrawElements 按三角形装配
     indexBuf.bind();
     indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
 
-    // 6. 上传颜色缓冲，与位置一一对应
     colorBuf.bind();
     colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
 
-    // 7. 重新计算模型包围盒 & 视距等（可能模型尺寸变化）
     calculateModelBounds();
-
-    // 8. 请求窗口重绘（Qt 事件循环稍后调用 paintGL）
     update();
 }
 
 /* ------------------------------ 更新 MST 线段 ----------------------------- */
 void GLWidget::updateMSTEdges(const std::vector<std::pair<int, int>>& edges) {
-    // 1. 清空旧的 MST 线段顶点缓存（CPU 侧）
     mstLineVertices.clear();
-    // 2. 预分配容量（每条无向边转成两个端点）以减少 vector 扩容开销
     mstLineVertices.reserve(edges.size() * 2);
 
-    // 3. 将 (i,j) 顶点索引对转换为实际 3D 坐标并追加
     for (const auto& e : edges) {
         int a = e.first;
         int b = e.second;
-        // 基础合法性检查：索引在当前顶点数组范围内
         if (a >= 0 && b >= 0 && a < static_cast<int>(vertices.size()) && b < static_cast<int>(vertices.size())) {
-            // 直接两次 push_back 构成一条线段的两个端点（GL_LINES）
             mstLineVertices.push_back(vertices[a]);
             mstLineVertices.push_back(vertices[b]);
         }
-        // 若非法则忽略该边（不抛异常，保证稳健性）
     }
 
-    // 4. 若显存中的 MST 线段缓冲还未创建，先创建
     if (!mstLineBuf.isCreated()) {
-		mstLineBuf.create();// 线段缓冲是为了绘制红色线段
+        mstLineBuf.create();
     }
-    // 5. 绑定并上传新线段数据（即使为空也会正确处理）
     mstLineBuf.bind();
     mstLineBuf.allocate(mstLineVertices.data(), static_cast<int>(mstLineVertices.size() * sizeof(QVector3D)));
-
-    // 6. 请求重绘：下一帧 paintGL 中会检测 mstLineVertices 是否为空来决定是否绘制红线
     update();
 }
 
@@ -176,7 +157,10 @@ void GLWidget::initializeGL() {
 
     glClearColor(0.1f, 0.12f, 0.15f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 使用线框模式
+    glEnable(GL_PROGRAM_POINT_SIZE); // 允许点大小由固定函数或着色器控制
+
+    // 根据线框标志设定模式（默认 wireframe=true -> 线框）
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
     vertexBuf.create();
     indexBuf.create();
@@ -214,6 +198,9 @@ void GLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (vertices.empty() || !program || !program->isLinked()) return;
 
+    // 如 wireframe 标志变化，可在外部调用 setWireframe 后触发更新，这里同步状态
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+
     // 构建 MVP 矩阵
     float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
     QMatrix4x4 proj;  proj.perspective(45.0f, aspect, 0.01f, 100.0f);
@@ -226,32 +213,41 @@ void GLWidget::paintGL() {
     program->bind();
     program->setUniformValue("u_mvp", mvp);
 
-    // 主网格
+    // 主网格线框：强制使用白色，不受 per-vertex color 影响
     vertexBuf.bind();
     program->enableAttributeArray(0);
     program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
 
-    colorBuf.bind();
-    program->enableAttributeArray(1);
-    program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+    // 禁用颜色数组，统一设为白
+    program->disableAttributeArray(1);
+    glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
 
     indexBuf.bind();
     glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
-    // 第二遍：绘制 MST 红色线段
+    // 可选：绘制 MST 红色线段（保持逻辑不变）
     if (!mstLineVertices.empty()) {
         glLineWidth(3.0f);
-        program->disableAttributeArray(1);          // 不使用颜色缓冲
-        glVertexAttrib3f(1, 1.0f, 0.0f, 0.0f);       // 固定红色
+        program->disableAttributeArray(1);
+        glVertexAttrib3f(1, 1.0f, 0.0f, 0.0f);
         mstLineBuf.bind();
         program->enableAttributeArray(0);
         program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
         glDrawArrays(GL_LINES, 0, static_cast<int>(mstLineVertices.size()));
         glLineWidth(1.0f);
-        // 恢复颜色缓冲
+    }
+
+    // 彩色顶点点渲染（仅展示顶点标量/属性颜色）
+    if (showColoredPoints && perVertexColor) {
+        glPointSize(pointSize);
+        // 重新启用颜色属性并绑定颜色缓冲
+        vertexBuf.bind();
+        program->enableAttributeArray(0);
+        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
         colorBuf.bind();
         program->enableAttributeArray(1);
         program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        glDrawArrays(GL_POINTS, 0, static_cast<int>(vertices.size()));
     }
 
     program->disableAttributeArray(0);

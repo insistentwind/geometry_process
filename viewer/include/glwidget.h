@@ -22,14 +22,18 @@ public:
                               const std::vector<unsigned int>& indices,
                               const std::vector<QVector3D>& colorsIn);
     void updateMSTEdges(const std::vector<std::pair<int,int>>& edges);
-    void clearMSTEdges(); // 新增：清除MST高亮线
+    void clearMSTEdges(); // 清除MST线段
 
     bool loadObject(const QString& fileName); // 加载OBJ文件
     const std::vector<QVector3D>& getVertices() const; // 当前顶点
     const std::vector<unsigned int>& getIndices() const; // 当前索引
 
-    // 可选接口：切换线框/填充显示
+    // 切换线框
     void setWireframe(bool enabled) { wireframe = enabled; update(); }
+
+    // 控制彩色顶点点渲染（仅显示点颜色，线框保持白色）
+    void setShowColoredPoints(bool enabled) { showColoredPoints = enabled; update(); }
+    void setPointSize(float psz) { pointSize = psz; update(); }
 
 protected:
     void initializeGL() override;
@@ -40,32 +44,34 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void calculateModelBounds();  // 计算模型边界
+    void calculateModelBounds();  // 计算模型包围盒
     
     ObjLoader objLoader;
     QOpenGLShaderProgram *program {nullptr};
     QOpenGLBuffer vertexBuf {QOpenGLBuffer::VertexBuffer};
     QOpenGLBuffer indexBuf {QOpenGLBuffer::IndexBuffer};
     QOpenGLBuffer colorBuf {QOpenGLBuffer::VertexBuffer};
-    QOpenGLBuffer mstLineBuf {QOpenGLBuffer::VertexBuffer}; // 线段坐标
+    QOpenGLBuffer mstLineBuf {QOpenGLBuffer::VertexBuffer}; // MST 线段缓冲
 
-    // 鼠标交互
+    // 交互
     QPoint lastPos;
     float distance;
     float rotationX;
     float rotationY;
-    float modelOffsetY;  // Y轴偏移
+    float modelOffsetY;  // Y 偏移
 
     // 渲染数据
     std::vector<QVector3D> vertices;
     std::vector<unsigned int> indices;
     std::vector<QVector3D> colors;
-    std::vector<QVector3D> mstLineVertices; // 线段顶点对序列
+    std::vector<QVector3D> mstLineVertices; // MST线段顶点
 
     QMatrix4x4 projection; // 透视投影矩阵
 
-    bool wireframe = true;           // 初始为线框模式
-    bool perVertexColor = false;     // 初始不使用五颜六色
+    bool wireframe = true;           // 是否线框
+    bool perVertexColor = false;     // 是否有外部顶点颜色
+    bool showColoredPoints = true;   // 是否绘制彩色顶点点
+    float pointSize = 6.0f;          // 顶点点大小
 };
 
 #endif // GLWIDGET_H

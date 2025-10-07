@@ -52,11 +52,10 @@ int main(int argc, char* argv[])
 
     // 处理完成时更新显示
     QObject::connect(asyncProcessor, &AsyncMeshProcessor::processingFinished,
-        [&window, &processor](const std::vector<QVector3D>& vertices,
+        [&window](const std::vector<QVector3D>& vertices,
             const std::vector<unsigned int>& indices) {
-                auto colors = processor.extractColors();
-                window.updateMeshWithColors(vertices, indices, colors);
                 std::cout << "Async mesh processing completed. Updating display..." << std::endl;
+                window.updateMesh(vertices, indices);
         });
 
     // 处理错误

@@ -21,112 +21,54 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
     return geometry::MeshConverter::convertMeshToQtData(mesh);
 }
 
-void MeshProcessor::processGeometry() {
-    // Laplace平滑算法 - 更激进的设置
-    // 参数设置
-    const int iterations = 20;       // 增加迭代次数到20次
-    const double lambda = 0.9;       // 增大平滑系数到0.9（接近1会更平滑）
-    
-    std::cout << "==== Laplace Smoothing Started ====" << std::endl;
-    std::cout << "Vertices: " << mesh.vertices.size() << std::endl;
-    std::cout << "Faces: " << mesh.faces.size() << std::endl;
-    std::cout << "Iterations: " << iterations << ", Lambda: " << lambda << std::endl;
-    std::cout << "WARNING: Using aggressive smoothing parameters!" << std::endl;
-    
-    for (int iter = 0; iter < iterations; ++iter) {
-        // 存储每个顶点的新位置
-        std::vector<Eigen::Vector3d> newPositions(mesh.vertices.size());
-        int verticesWithNeighbors = 0;
-        int totalNeighbors = 0;
-        
-        // 对每个顶点计算其邻域顶点的平均位置
-        for (size_t i = 0; i < mesh.vertices.size(); ++i) {
-            auto& vertex = mesh.vertices[i];
-            
-            // 收集邻域顶点（一环邻域）
-            std::vector<Eigen::Vector3d> neighborPositions;
-            
-            // 通过半边遍历邻域顶点
-            if (vertex->halfEdge) {
-                auto startHE = vertex->halfEdge;
-                auto currentHE = startHE;
-                int maxIterations = 100; // 防止无限循环
-                int iterCount = 0;
-                
-                do {
-                    // 当前半边的终点是邻域顶点
-                    if (currentHE->next && currentHE->next->vertex) {
-                        neighborPositions.push_back(currentHE->next->vertex->position);
-                    }
-                    
-                    // 移动到下一个围绕该顶点的半边
-                    // 通过pair半边的next来继续绕顶点旋转
-                    if (currentHE->pair && currentHE->pair->next) {
-                        currentHE = currentHE->pair->next;
-                    } else {
-                        // 边界情况：没有pair，说明是边界边
-                        break;
-                    }
-                    
-                    iterCount++;
-                    if (iterCount >= maxIterations) {
-                        std::cerr << "Warning: Potential infinite loop at vertex " << i << std::endl;
-                        break;
-                    }
-                    
-                } while (currentHE && currentHE != startHE);
-                
-                if (!neighborPositions.empty()) {
-                    verticesWithNeighbors++;
-                    totalNeighbors += neighborPositions.size();
-                }
-            }
-            
-            // 计算邻域顶点的平均位置（Laplace算子）
-            if (!neighborPositions.empty()) {
-                Eigen::Vector3d laplacian(0.0, 0.0, 0.0);
-                for (const auto& pos : neighborPositions) {
-                    laplacian += pos;
-                }
-                laplacian /= static_cast<double>(neighborPositions.size());
-                
-                // 使用加权平均更新位置
-                // new_pos = old_pos + lambda * (laplacian - old_pos)
-                newPositions[i] = vertex->position + lambda * (laplacian - vertex->position);
-            } else {
-                // 如果没有邻域（孤立顶点或边界），保持原位置
-                newPositions[i] = vertex->position;
-            }
+/* 提取顶点颜色 (若未来算法写入顶点颜色) */
+std::vector<QVector3D> MeshProcessor::extractColors() const {
+    std::vector<QVector3D> cols; 
+    cols.reserve(mesh.vertices.size());
+    for (const auto& vp : mesh.vertices) {
+        if (vp) {
+            const auto& c = vp->color;
+            cols.emplace_back((float)c.x(), (float)c.y(), (float)c.z());
         }
-        
-        // 计算位移量统计
-        double totalDisplacement = 0.0;
-        double maxDisplacement = 0.0;
-        
-        // 更新所有顶点位置
-        for (size_t i = 0; i < mesh.vertices.size(); ++i) {
-            double displacement = (newPositions[i] - mesh.vertices[i]->position).norm();
-            totalDisplacement += displacement;
-            maxDisplacement = std::max(maxDisplacement, displacement);
-            
-            mesh.vertices[i]->position = newPositions[i];
-        }
-        
-        double avgDisplacement = totalDisplacement / mesh.vertices.size();
-        double avgNeighbors = verticesWithNeighbors > 0 ? 
-            static_cast<double>(totalNeighbors) / verticesWithNeighbors : 0.0;
-        
-        std::cout << "Iteration " << (iter + 1) << ": "
-                  << "Avg displacement = " << avgDisplacement
-                  << ", Max displacement = " << maxDisplacement << std::endl;
-        
-        // 每5次迭代输出一次详细信息
-        if ((iter + 1) % 5 == 0) {
-            std::cout << "  -> Progress: " << ((iter + 1) * 100 / iterations) << "% "
-                      << "(Vertices with neighbors = " << verticesWithNeighbors
-                      << ", Avg neighbors = " << avgNeighbors << ")" << std::endl;
+        else {
+            cols.emplace_back(1.f, 1.f, 1.f);
         }
     }
-    
-    std::cout << "==== Laplace Smoothing Completed ====" << std::endl;
+    return cols;
 }
+
+//homework2
+// 用的是封闭曲面
+void MeshProcessor::processGeometry() {
+    meanCurvature();
+}
+//平均曲率实现
+void MeshProcessor::meanCurvature() {
+    int size = mesh.vertices.size();
+
+    for (int i = 0; i < size; i++) {
+        //对于每个顶点，计算它的一阶邻域对应的平均曲率
+        geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
+        Eigen::Vector3d mean_curvature = { 0 , 0, 0 };
+        Eigen::Vector3d total_value = { 0 , 0, 0 };//记录定点数总和
+        int count = 0;//记录这个邻域的大小
+        do {
+            total_value += hf->getEndVertex()->position;
+            count++;
+            hf = hf->pair->next;// 遍历下一个顶点
+        } while (hf != mesh.vertices[i]->halfEdge);
+        mean_curvature = mesh.vertices[i]->position * count - total_value;// 颜色对应基本系数
+        mesh.vertices[i]->color = mean_curvature * 255;
+    }
+}
+
+void MeshProcessor::cotangentCurvature() {
+
+}
+
+void MeshProcessor::gaussianCurvature() {
+
+}
+
+
+

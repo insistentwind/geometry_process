@@ -195,11 +195,11 @@
 	"dependencies" : 
 	[
 		{
-			"backtrace" : 0,
-			"id" : "mesh_viewer_autogen::@4ad571843d929affe7de"
+			"id" : "mesh_viewer_autogen_timestamp_deps::@4ad571843d929affe7de"
 		},
 		{
-			"id" : "mesh_viewer_autogen_timestamp_deps::@4ad571843d929affe7de"
+			"backtrace" : 0,
+			"id" : "mesh_viewer_autogen::@4ad571843d929affe7de"
 		}
 	],
 	"id" : "mesh_viewer::@4ad571843d929affe7de",

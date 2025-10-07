@@ -6,29 +6,33 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
     // 子控件创建
-    glWidget      = new GLWidget(this);
-    restoreButton = new QPushButton(tr("recover model"), this);
-    processButton = new QPushButton(tr("denoise"), this);
+    glWidget            = new GLWidget(this);
+    restoreButton       = new QPushButton(tr("recover model"), this);
+    processButton       = new QPushButton(tr("denoise"), this);
+    togglePointsButton  = new QPushButton(tr("hide points"), this); // 初始为显示状态
 
-    // 顶部按钮条
+    // 按钮行
     auto *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(restoreButton);
     buttonLayout->addWidget(processButton);
+    buttonLayout->addWidget(togglePointsButton);
     buttonLayout->addStretch();
 
     // 主布局
-    auto *central   = new QWidget(this);
+    auto *central    = new QWidget(this);
     auto *mainLayout = new QVBoxLayout(central);
     mainLayout->addLayout(buttonLayout);
     mainLayout->addWidget(glWidget, 1);
     central->setLayout(mainLayout);
     setCentralWidget(central);
 
-    // 连接信号槽
+    // 信号槽
     connect(restoreButton, &QPushButton::clicked,
             this, &MainWindow::restoreModel);
     connect(processButton, &QPushButton::clicked,
             this, &MainWindow::requestProcess);
+    connect(togglePointsButton, &QPushButton::clicked,
+            this, &MainWindow::togglePoints);
 
     createMenus();
 }
@@ -47,7 +51,7 @@ void MainWindow::openFile() {
     if (!fileName.isEmpty() && glWidget->loadObject(fileName)) {
         originalVertices = glWidget->getVertices();
         originalIndices  = glWidget->getIndices();
-        glWidget->clearMSTEdges();   // 打开新文件时清除旧高亮
+        glWidget->clearMSTEdges();   // 打开文件时清除旧高亮
         emit objLoaded(glWidget->getVertices(), glWidget->getIndices());
     }
 }
@@ -55,7 +59,7 @@ void MainWindow::openFile() {
 void MainWindow::restoreModel() {
     if (!originalVertices.empty()) {
         glWidget->updateMesh(originalVertices, originalIndices);
-        glWidget->clearMSTEdges(); // 清除 MST 高亮
+        glWidget->clearMSTEdges(); // 清除 MST 线
     }
 }
 
@@ -72,4 +76,10 @@ void MainWindow::updateMeshWithColors(const std::vector<QVector3D>& vertices,
                                       const std::vector<unsigned int>& indices,
                                       const std::vector<QVector3D>& colors) {
     glWidget->updateMeshWithColors(vertices, indices, colors);
+}
+
+void MainWindow::togglePoints() {
+    pointsVisible = !pointsVisible;
+    glWidget->setShowColoredPoints(pointsVisible);
+    togglePointsButton->setText(pointsVisible ? tr("hide points") : tr("show points"));
 }
