@@ -65,7 +65,7 @@ private:
      */
     void processGeometry(std::vector<int>& indexes);
 
-    double dijkstra(int start_index, int end_index, geometry::HalfEdgeMesh& mesh);
+    std::vector<double> dijkstra(int start_index, geometry::HalfEdgeMesh& mesh);
 
     int find_min_distance_node(
         const std::vector<double>& dist,

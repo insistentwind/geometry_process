@@ -10,6 +10,7 @@ public:
     bool loadOBJ(const std::string& path);
 
     std::vector<QVector3D> vertices;
+    std::vector<QVector3D> colors;
     std::vector<QVector3D> normals;
     std::vector<unsigned int> indices;
 };

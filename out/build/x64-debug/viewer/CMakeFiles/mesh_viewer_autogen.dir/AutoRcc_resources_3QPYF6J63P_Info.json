@@ -1,0 +1,26 @@
+{
+	"BUILD_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/mesh_viewer_autogen",
+	"CMAKE_BINARY_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer",
+	"CMAKE_CURRENT_SOURCE_DIR" : "E:/qt_work/geometry_process-master/viewer",
+	"CMAKE_SOURCE_DIR" : "E:/qt_work/geometry_process-master",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/mesh_viewer_autogen/include",
+	"INPUTS" : 
+	[
+		"E:/qt_work/geometry_process-master/viewer/shaders/basic.frag",
+		"E:/qt_work/geometry_process-master/viewer/shaders/basic.vert"
+	],
+	"LOCK_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/AutoRcc_resources_3QPYF6J63P_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "3QPYF6J63P",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "E:/Qt/6.9.3/msvc2022_64/bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "E:/qt_work/geometry_process-master/out/build/x64-debug/viewer/CMakeFiles/mesh_viewer_autogen.dir/AutoRcc_resources_3QPYF6J63P_Used.txt",
+	"SOURCE" : "E:/qt_work/geometry_process-master/viewer/shaders/resources.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}

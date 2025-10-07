@@ -24,44 +24,101 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
 }
 // work1 找到任意给的两个顶点之间的最短路径
 // 给出的points 应该是点的序号，而不是点的坐标
+// cube模型不行，好像不是封闭就不行
+void MeshProcessor::processGeometry(std::vector<int>& indexe) {
 
-void MeshProcessor::processGeometry(std::vector<int>& indexes) {
+	std::vector<std::vector<double>> res(mesh.vertices.size(), std::vector<double>(mesh.vertices.size(), 0));
 
     std::cout << "==== homework 1 Started ====" << std::endl;
     std::cout << "Vertices: " << mesh.vertices.size() << std::endl;
     std::cout << "Faces: " << mesh.faces.size() << std::endl;
 
-    int point_size = indexes.size();
-    if (point_size < 2) {
-		std::cout << "Please select at least two points." << std::endl;
-    }
+    // 初始化所有顶点的颜色为白色
+    //for (auto& vertex : mesh.vertices) {
+    //    vertex->color = Eigen::Vector3d(1.0, 1.0, 1.0); // White
+    //}
+
+    //int point_size = indexes.size();
+  //  if (point_size < 2) {
+		//std::cout << "Please select at least two points." << std::endl;
+  //  }
+    int point_size = mesh.vertices.size();
     //下面开始找出每两个点之间的最短路径
     // 需要使用封闭的模型，否则v -> halfedge -> pair -> next可能会出现空指针
-    for (int i = 0; i < point_size - 1; i++) {
-        int start_index = indexes[i];
-        for(int j = i + 1; j < point_size ; j++){
-            int end_index = indexes[j];
-            if (start_index < 0 || start_index >= mesh.vertices.size() ||
-                end_index < 0 || end_index >= mesh.vertices.size())
-                std::cout << "Point index out of range: " << std::endl;
-
-            double shortest_length = dijkstra(start_index, end_index, mesh);
-            std::cout << "Shortest path from vertex " << start_index
-                << " to vertex " << end_index
-                << " is " << shortest_length << std::endl;
-		}
-        
+    for (int i = 0; i < point_size; i++) {
+		int start_index = i;
+        std::vector<double> res_now = dijkstra(start_index, mesh);
+		res[start_index] = res_now;
+        res_now.clear();
     }
-  
-    
-    std::cout << "==== Homework 1 Completed ====" << std::endl;
+    std::cout << "==== Complete Graph Constructed ====" << std::endl;
+
+    // 构建MST
+	std::vector<std::vector<double>> mst(point_size, std::vector<double>(point_size, 0));
+	std::vector<bool> in_mst(point_size, false);// 记录哪些点已经在MST中
+    std::vector<int> parent(point_size, -1);      // 存储 MST 中的父节点
+    std::vector<double> key(point_size, INT_MAX); // 最小距离数组
+	// 利用Prim算法构建MST
+    // 利用stack存储没有访问的顶点
+    key[0] = 0; // 从第一个点（全局索引 0）开始
+    for (int count = 0; count < point_size; count++) {
+        int u = -1;
+
+		double min_val = INT_MAX;// 找到 key 值最小的点 u
+
+        for (int i = 0; i < point_size; i++) {
+            if (!in_mst[i] && key[i] < min_val) {
+                min_val = key[i];
+                u = i;
+            }
+		}// 这里找到了prim的下一个点u
+
+        if (u == -1) break; // 所有的点都已连接
+        in_mst[u] = true; // 将 u 加入 MST 集合
+
+        // 2. 记录 MST 边（如果你需要可视化）
+        if (parent[u] != -1) {
+            // 边是 parent[u] 到 u，距离是 key[u]
+            mst[parent[u]][u] = key[u];
+            //mst[u][parent[u]] = key[u];
+            std::cout << "Edge added: " << parent[u] << " - " << u << " with distance " << key[u] << std::endl;
+        }
+
+        // 3. 更新 u 的所有邻居 v 的 key 值（**核心扩张步骤**）
+        for (int v = 0; v < point_size; v++) {
+            // res[u][v] 是 u 到 v 的距离
+            if (!in_mst[v] && res[u][v] < key[v]) {
+                // 每次直接保留上一个取得的顶点，
+                parent[v] = u; // 记录 u 为 v 的父节点
+                key[v] = res[u][v]; // 更新最小连接距离
+            }
+        }
+    }
+	// MST构建完成
+	// 下面，我想把这些最小生成树的边设置为红色，对应回到图中的网格中去
+    // 帮我想一下怎么做
+    for(int i = 0; i < point_size; i++) {
+        for (int j = i + 1; j < point_size; j++) {
+            if (mst[i][j] != 0 || mst[j][i] != 0) {
+                // i 和 j 之间有一条MST边，将它们的顶点颜色设置为红色
+                if (i < mesh.vertices.size() && j < mesh.vertices.size()) {
+                    mesh.vertices[i]->color = Eigen::Vector3d(1.0, 0.0, 0.0); // Red
+                    mesh.vertices[j]->color = Eigen::Vector3d(1.0, 0.0, 0.0); // Red
+                }
+            }
+        }
+    }
+
+    std::cout << "==== Homework 1  Completed ====" << std::endl;
 }
 
 
-double MeshProcessor::dijkstra(int start_index, int end_index, geometry::HalfEdgeMesh& mesh) {
+const double INF = std::numeric_limits<double>::infinity();
+
+std::vector<double> MeshProcessor::dijkstra(int start_index, geometry::HalfEdgeMesh& mesh) {
     const int size = mesh.vertices.size();
     std::vector<bool> visited(size, false);// 访问数组
-    std::vector<double> dist(size, INT_MAX); //距离初始化为无穷大
+    std::vector<double> dist(size, INF); //距离初始化为无穷大
     dist[start_index] = 0; //起点距离为0
 
     for (int i = 0; i < size; i++) {
@@ -88,10 +145,9 @@ double MeshProcessor::dijkstra(int start_index, int end_index, geometry::HalfEdg
         } while (current_halfedge != mesh.vertices[u]->halfEdge);
 		// 如果已经访问到了终点，可以提前结束   这里还一定要do while
     }
-	return dist[end_index];
+	return dist;
 
 }
-const double INF = std::numeric_limits<double>::infinity();
 
 
 

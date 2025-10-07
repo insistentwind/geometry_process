@@ -23,6 +23,7 @@ set(VIEWER_SOURCES
     src/mainwindow.cpp
     src/objloader.cpp
     src/async_mesh_processor.cpp
+    shaders/resources.qrc   # 简单着色器资源
 )
 
 # Create viewer library

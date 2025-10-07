@@ -1,5 +1,6 @@
 mesh_viewer_autogen/timestamp: \
 	E:/Qt/6.9.3/msvc2022_64/include/QtCore/QObject \
+	E:/Qt/6.9.3/msvc2022_64/include/QtCore/QString \
 	E:/Qt/6.9.3/msvc2022_64/include/QtCore/QThread \
 	E:/Qt/6.9.3/msvc2022_64/include/QtCore/q17memory.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtCore/q20functional.h \
@@ -178,15 +179,16 @@ mesh_viewer_autogen/timestamp: \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qtguiexports.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qtguiglobal.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qtransform.h \
+	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qvector2d.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qvector3d.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qvector4d.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qvectornd.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qwindowdefs.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qwindowdefs_win.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/QOpenGLBuffer \
-	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/QOpenGLVertexArrayObject \
+	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/QOpenGLShaderProgram \
 	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/qopenglbuffer.h \
-	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/qopenglvertexarrayobject.h \
+	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/qopenglshaderprogram.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/qtopenglexports.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGL/qtopenglglobal.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtOpenGLWidgets/QOpenGLWidget \
@@ -444,6 +446,7 @@ mesh_viewer_autogen/timestamp: \
 	E:/qt_work/geometry_process-master/viewer/include/glwidget.h \
 	E:/qt_work/geometry_process-master/viewer/include/mainwindow.h \
 	E:/qt_work/geometry_process-master/viewer/include/objloader.h \
+	E:/qt_work/geometry_process-master/viewer/shaders/resources.qrc \
 	E:/qt_work/geometry_process-master/viewer/src/async_mesh_processor.cpp \
 	E:/qt_work/geometry_process-master/viewer/src/glwidget.cpp \
 	E:/qt_work/geometry_process-master/viewer/src/mainwindow.cpp \

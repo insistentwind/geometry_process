@@ -2279,6 +2279,9 @@
 			"path" : "E:/VsStudio_config/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake"
 		},
 		{
+			"path" : "viewer/shaders/resources.qrc"
+		},
+		{
 			"path" : "src/hw1/CMakeLists.txt"
 		},
 		{

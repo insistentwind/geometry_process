@@ -4,25 +4,23 @@
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
-#include <QOpenGLVertexArrayObject>
 #include <QMatrix4x4>
 #include "objloader.h"
+#include <QOpenGLShaderProgram>
+#include <QString>
+#include <vector>
 
-class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
-{
+class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 
 public:
-    GLWidget(QWidget *parent = nullptr);
-    ~GLWidget();
+    explicit GLWidget(QWidget *parent = nullptr);
+    ~GLWidget() override;
 
-    bool loadObject(const QString &fileName);
-    void updateMesh(const std::vector<QVector3D>& vertices,
-                   const std::vector<unsigned int>& indices);
-    
-    // 获取当前网格数据的方法
-    const std::vector<QVector3D>& getVertices() const { return objLoader.vertices; }
-    const std::vector<unsigned int>& getIndices() const { return objLoader.indices; }
+    void updateMesh(const std::vector<QVector3D>& vertices, const std::vector<unsigned int>& indices);
+    bool loadObject(const QString& fileName); // 加载OBJ文件
+    const std::vector<QVector3D>& getVertices() const; // 当前顶点
+    const std::vector<unsigned int>& getIndices() const; // 当前索引
 
 protected:
     void initializeGL() override;
@@ -33,18 +31,27 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void calculateModelBounds();  // 计算模型边界的私有函数
+    void calculateModelBounds();  // 计算模型边界
     
     ObjLoader objLoader;
-    QOpenGLBuffer vbo;
-    QOpenGLVertexArrayObject vao;
-    QMatrix4x4 projection;
-    QMatrix4x4 modelView;
+    QOpenGLShaderProgram *program {nullptr};
+    QOpenGLBuffer vertexBuf {QOpenGLBuffer::VertexBuffer};
+    QOpenGLBuffer indexBuf {QOpenGLBuffer::IndexBuffer};
+    QOpenGLBuffer colorBuf {QOpenGLBuffer::VertexBuffer};
+
+    // 鼠标交互
     QPoint lastPos;
     float distance;
     float rotationX;
     float rotationY;
-    float modelOffsetY;  // 模型Y轴偏移量，用于将底部对齐到屏幕底部
+    float modelOffsetY;  // Y轴偏移
+
+    // 渲染数据
+    std::vector<QVector3D> vertices;
+    std::vector<unsigned int> indices;
+    std::vector<QVector3D> colors;
+
+    QMatrix4x4 projection; // 透视投影矩阵
 };
 
 #endif // GLWIDGET_H
