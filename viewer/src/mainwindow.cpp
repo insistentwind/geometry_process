@@ -7,8 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     glWidget = new GLWidget(this);
-
-    // 按钮区
     restoreButton = new QPushButton(tr("recover model"), this);
     processButton = new QPushButton(tr("denoise"), this);
 
@@ -24,53 +22,48 @@ MainWindow::MainWindow(QWidget *parent)
     central->setLayout(mainLayout);
     setCentralWidget(central);
 
-    // 连接按钮槽
     connect(restoreButton, &QPushButton::clicked, this, &MainWindow::restoreModel);
     connect(processButton, &QPushButton::clicked, this, &MainWindow::requestProcess);
 
     createMenus();
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow() {}
 
-void MainWindow::createMenus()
-{
+void MainWindow::createMenus() {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(tr("&Open"), this, &MainWindow::openFile);
     fileMenu->addSeparator();
     fileMenu->addAction(tr("E&xit"), this, &QWidget::close);
 }
 
-void MainWindow::openFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Open OBJ File"), "", tr("OBJ Files (*.obj)"));
-
+void MainWindow::openFile() {
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open OBJ File"), "", tr("OBJ Files (*.obj)"));
     if (!fileName.isEmpty() && glWidget->loadObject(fileName)) {
-        // 缓存原始数据
         originalVertices = glWidget->getVertices();
         originalIndices = glWidget->getIndices();
+        glWidget->clearMSTEdges();
         emit objLoaded(glWidget->getVertices(), glWidget->getIndices());
     }
 }
 
-void MainWindow::restoreModel()
-{
+void MainWindow::restoreModel() {
     if (!originalVertices.empty()) {
         glWidget->updateMesh(originalVertices, originalIndices);
+        glWidget->clearMSTEdges(); // 清除MST高亮
     }
 }
 
-void MainWindow::requestProcess()
-{
-    // 使用当前显示的数据再次触发处理
+void MainWindow::requestProcess() {
     emit objLoaded(glWidget->getVertices(), glWidget->getIndices());
 }
 
-void MainWindow::updateMesh(const std::vector<QVector3D>& vertices,
-                          const std::vector<unsigned int>& indices)
-{
+void MainWindow::updateMesh(const std::vector<QVector3D>& vertices, const std::vector<unsigned int>& indices) {
     glWidget->updateMesh(vertices, indices);
+}
+
+void MainWindow::updateMeshWithColors(const std::vector<QVector3D>& vertices,
+                                      const std::vector<unsigned int>& indices,
+                                      const std::vector<QVector3D>& colors) {
+    glWidget->updateMeshWithColors(vertices, indices, colors);
 }

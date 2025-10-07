@@ -52,10 +52,16 @@ int main(int argc, char *argv[])
 
     // 处理完成时更新显示
     QObject::connect(asyncProcessor, &AsyncMeshProcessor::processingFinished,
-        [&window](const std::vector<QVector3D>& vertices,
-                 const std::vector<unsigned int>& indices) {
+        [&window, &processor](const std::vector<QVector3D>& vertices,
+                              const std::vector<unsigned int>& indices) {
             std::cout << "Async mesh processing completed. Updating display..." << std::endl;
-            window.updateMesh(vertices, indices);
+            auto colors = processor.extractColors();
+            window.updateMeshWithColors(vertices, indices, colors);
+            auto mstEdges = processor.extractMSTEdges();
+            // 通过 glWidget 接口更新 MST 线，需要访问 glWidget，可在 MainWindow 提供转发
+            // 这里直接使用 dynamic_cast 找到子控件（简单方式）
+            auto gl = window.findChild<GLWidget*>();
+            if(gl){ gl->updateMSTEdges(mstEdges); }
         });
 
     // 处理错误

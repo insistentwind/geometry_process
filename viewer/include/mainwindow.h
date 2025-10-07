@@ -19,6 +19,10 @@ public:
 
     void updateMesh(const std::vector<QVector3D>& vertices,
                    const std::vector<unsigned int>& indices);
+    // 新增：带颜色的网格更新
+    void updateMeshWithColors(const std::vector<QVector3D>& vertices,
+                              const std::vector<unsigned int>& indices,
+                              const std::vector<QVector3D>& colors);
 
 signals:
     void objLoaded(const std::vector<QVector3D>& vertices,

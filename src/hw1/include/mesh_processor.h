@@ -55,6 +55,15 @@ public:
      */
     void clear() { mesh.clear(); }
 
+    /**
+     * @brief 提取当前 mesh 中的顶点颜色（若无颜色则给白色）
+     * @return 顶点颜色组成的数组
+     */
+    std::vector<QVector3D> extractColors() const;
+
+    // 基于 halfEdges 的 edgeColor (红色表示 MST) 动态提取 MST 边 (first < second)
+    std::vector<std::pair<int,int>> extractMSTEdges() const;
+
 private:
     geometry::HalfEdgeMesh mesh;  ///< 半边网格对象，存储转换后的网格数据
 
@@ -70,5 +79,4 @@ private:
     int find_min_distance_node(
         const std::vector<double>& dist,
         const std::vector<bool>& visited);
-    
 };

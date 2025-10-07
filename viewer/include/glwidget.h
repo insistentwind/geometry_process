@@ -18,9 +18,18 @@ public:
     ~GLWidget() override;
 
     void updateMesh(const std::vector<QVector3D>& vertices, const std::vector<unsigned int>& indices);
+    void updateMeshWithColors(const std::vector<QVector3D>& vertices,
+                              const std::vector<unsigned int>& indices,
+                              const std::vector<QVector3D>& colorsIn);
+    void updateMSTEdges(const std::vector<std::pair<int,int>>& edges);
+    void clearMSTEdges(); // 新增：清除MST高亮线
+
     bool loadObject(const QString& fileName); // 加载OBJ文件
     const std::vector<QVector3D>& getVertices() const; // 当前顶点
     const std::vector<unsigned int>& getIndices() const; // 当前索引
+
+    // 可选接口：切换线框/填充显示
+    void setWireframe(bool enabled) { wireframe = enabled; update(); }
 
 protected:
     void initializeGL() override;
@@ -38,6 +47,7 @@ private:
     QOpenGLBuffer vertexBuf {QOpenGLBuffer::VertexBuffer};
     QOpenGLBuffer indexBuf {QOpenGLBuffer::IndexBuffer};
     QOpenGLBuffer colorBuf {QOpenGLBuffer::VertexBuffer};
+    QOpenGLBuffer mstLineBuf {QOpenGLBuffer::VertexBuffer}; // 线段坐标
 
     // 鼠标交互
     QPoint lastPos;
@@ -50,8 +60,12 @@ private:
     std::vector<QVector3D> vertices;
     std::vector<unsigned int> indices;
     std::vector<QVector3D> colors;
+    std::vector<QVector3D> mstLineVertices; // 线段顶点对序列
 
     QMatrix4x4 projection; // 透视投影矩阵
+
+    bool wireframe = true;           // 初始为线框模式
+    bool perVertexColor = false;     // 初始不使用五颜六色
 };
 
 #endif // GLWIDGET_H
