@@ -35,6 +35,9 @@ GLWidget::~GLWidget() {
     delete program;
     doneCurrent();
 }
+/*
+* 这里是根据顶点idx来绘制曲面？
+*/
 
 /* ---------------------------- 数据更新: 主网格 ---------------------------- */
 void GLWidget::updateMesh(const std::vector<QVector3D>& v,
@@ -63,51 +66,73 @@ void GLWidget::updateMesh(const std::vector<QVector3D>& v,
 void GLWidget::updateMeshWithColors(const std::vector<QVector3D>& v,
                                     const std::vector<unsigned int>& idx,
                                     const std::vector<QVector3D>& cols) {
-    vertices = v;
-    indices  = idx;
+    // 1. 复制/接收外部传入的网格几何数据到本地缓存（CPU 侧保存一份，方便后续再上传或做查询）
+    vertices = v;          // 顶点位置列表
+    indices  = idx;        // 三角面索引 (按 3 个一组构成三角形)
 
+    // 2. 处理颜色数据: 若传入颜色数组尺寸与顶点一致则使用；否则退化为全白
     if (cols.size() == v.size()) {
-        colors = cols;
-        perVertexColor = true;
+        colors = cols;     // 使用外部 per-vertex 颜色
+        perVertexColor = true;  // 标记启用自定义颜色（可用于渲染策略判断）
     } else {
+        // 尺寸不匹配 -> 填充为白色，避免越界/未定义访问
         colors.assign(v.size(), QVector3D(1.0f, 1.0f, 1.0f));
         perVertexColor = false;
     }
 
+    // 3. 若此时 OpenGL 上下文还不可用（窗口尚未初始化完成），提前返回；
+    //    数据仍已保存于 CPU，稍后 initializeGL 后你可以再次调用或触发一次重上传
     if (!isValid()) return;
 
+    // 4. 上传顶点位置到顶点缓冲 (VBO)
+    //    allocate 会重新分配并复制数据（当前使用 DynamicDraw，允许后续多次更新）
     vertexBuf.bind();
     vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
 
+    // 5. 上传索引 (EBO)，供 glDrawElements 按三角形装配
     indexBuf.bind();
     indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
 
+    // 6. 上传颜色缓冲，与位置一一对应
     colorBuf.bind();
     colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
 
+    // 7. 重新计算模型包围盒 & 视距等（可能模型尺寸变化）
     calculateModelBounds();
+
+    // 8. 请求窗口重绘（Qt 事件循环稍后调用 paintGL）
     update();
 }
 
 /* ------------------------------ 更新 MST 线段 ----------------------------- */
 void GLWidget::updateMSTEdges(const std::vector<std::pair<int, int>>& edges) {
+    // 1. 清空旧的 MST 线段顶点缓存（CPU 侧）
     mstLineVertices.clear();
+    // 2. 预分配容量（每条无向边转成两个端点）以减少 vector 扩容开销
     mstLineVertices.reserve(edges.size() * 2);
 
+    // 3. 将 (i,j) 顶点索引对转换为实际 3D 坐标并追加
     for (const auto& e : edges) {
         int a = e.first;
         int b = e.second;
+        // 基础合法性检查：索引在当前顶点数组范围内
         if (a >= 0 && b >= 0 && a < static_cast<int>(vertices.size()) && b < static_cast<int>(vertices.size())) {
+            // 直接两次 push_back 构成一条线段的两个端点（GL_LINES）
             mstLineVertices.push_back(vertices[a]);
             mstLineVertices.push_back(vertices[b]);
         }
+        // 若非法则忽略该边（不抛异常，保证稳健性）
     }
 
+    // 4. 若显存中的 MST 线段缓冲还未创建，先创建
     if (!mstLineBuf.isCreated()) {
-        mstLineBuf.create();
+		mstLineBuf.create();// 线段缓冲是为了绘制红色线段
     }
+    // 5. 绑定并上传新线段数据（即使为空也会正确处理）
     mstLineBuf.bind();
     mstLineBuf.allocate(mstLineVertices.data(), static_cast<int>(mstLineVertices.size() * sizeof(QVector3D)));
+
+    // 6. 请求重绘：下一帧 paintGL 中会检测 mstLineVertices 是否为空来决定是否绘制红线
     update();
 }
 

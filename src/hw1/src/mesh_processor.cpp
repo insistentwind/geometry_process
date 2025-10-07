@@ -44,7 +44,7 @@ std::vector<std::pair<int, int>> MeshProcessor::extractMSTEdges() const {
     result.reserve(mesh.halfEdges.size() / 2);
     std::unordered_set<long long> used;
     auto keyFn = [](int a, int b) {
-        return ((long long)std::min(a, b) << 32) | (unsigned)std::max(a, b);
+		return ((long long)std::min(a, b) << 32) | (unsigned)std::max(a, b);// 这里是为了生成唯一键，|的作用
     };
     for (const auto& heUP : mesh.halfEdges) {
         auto* he = heUP.get();
