@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
             std::cout << "Async mesh processing completed. Updating display..." << std::endl;
             auto colors = processor.extractColors();
             window.updateMeshWithColors(vertices, indices, colors);
+			// 提取并显示MST边
             auto mstEdges = processor.extractMSTEdges();
             // 通过 glWidget 接口更新 MST 线，需要访问 glWidget，可在 MainWindow 提供转发
             // 这里直接使用 dynamic_cast 找到子控件（简单方式）
