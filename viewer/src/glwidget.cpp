@@ -199,30 +199,30 @@ void GLWidget::paintGL() {
     float farPlane  = std::max(1000.0f * nearPlane, distance + modelRadius * 4.0f);
 
     QMatrix4x4 proj;  proj.perspective(45.0f, aspect, nearPlane, farPlane);
-    QMatrix4x4 view;  // 相机在球面坐标(绕中心转)
 
-    // 计算相机位置（绕 Z 取 up）
     float rx = qDegreesToRadians(rotationX);
     float ry = qDegreesToRadians(rotationY);
     float cosX = std::cos(rx);
+
     QVector3D camPos(
         distance * std::sin(ry) * cosX,
         distance * std::sin(rx),
         distance * std::cos(ry) * cosX
     );
+
     QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
-    QVector3D up(0,1,0);
 
-    // 构造 lookAt
-    QMatrix4x4 lookAt;
-    lookAt.lookAt(camPos + target, target, up);
+    // 过顶时翻转 up 以保持场景不倒转
+    QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
 
-    QMatrix4x4 mvp = proj * lookAt; // 模型已中心化, 不再单独 model 变换
+    QMatrix4x4 view;
+    view.lookAt(camPos + target, target, up);
+
+    QMatrix4x4 mvp = proj * view;
 
     program->bind();
     program->setUniformValue("u_mvp", mvp);
 
-    // 主网格 (线框/填充) 统一白色
     vertexBuf.bind();
     program->enableAttributeArray(0);
     program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
@@ -232,7 +232,6 @@ void GLWidget::paintGL() {
     indexBuf.bind();
     glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
-    // MST 线段 (红色)
     if (!mstLineVertices.empty()) {
         glLineWidth(3.0f);
         program->disableAttributeArray(1);
@@ -244,7 +243,6 @@ void GLWidget::paintGL() {
         glLineWidth(1.0f);
     }
 
-    // 彩色顶点点 (属性可视化)
     if (showColoredPoints && perVertexColor) {
         glPointSize(pointSize);
         vertexBuf.bind();
@@ -288,7 +286,7 @@ void GLWidget::resetView() {
     rotationX = 0.0f;
     rotationY = 0.0f;
     panOffset = QVector2D(0,0);
-    distance = modelRadius * 2.2f; // 稍远一点看到整体
+    distance = modelRadius * 2.2f;
     distance = std::clamp(distance, 0.5f * modelRadius, 10.0f * modelRadius);
 }
 
@@ -323,13 +321,16 @@ void GLWidget::mouseMoveEvent(QMouseEvent* e) {
     int dx = e->x() - lastPos.x();
     int dy = e->y() - lastPos.y();
 
-    if (e->buttons() & Qt::LeftButton) { // 旋转
-        rotationY += dx * 0.5f;
-        rotationX += dy * 0.5f;
-        rotationX = std::clamp(rotationX, -89.9f, 89.9f); // 防止翻转
+    if (e->buttons() & Qt::LeftButton) {
+        // 方向修改: 右拖 -> 模型右旋 (摄像机左转) 通过减号调整
+        rotationY -= dx * 0.5f;
+        rotationX += dy * 0.5f; // 允许穿越 ±90
+        // 限制 pitch 在 (-179,179) 防止 tan/cos 精度问题
+        if (rotationX > 179.f) rotationX -= 360.f;
+        if (rotationX < -179.f) rotationX += 360.f;
         update();
-    } else if (e->buttons() & Qt::MiddleButton) { // 平移 (按距离和视口尺寸缩放)
-        float panScale = distance * 0.0015f; // 可调系数
+    } else if (e->buttons() & Qt::MiddleButton) { // 平移
+        float panScale = distance * 0.0015f;
         panOffset += QVector2D(-dx * panScale, dy * panScale);
         update();
     }
@@ -338,11 +339,10 @@ void GLWidget::mouseMoveEvent(QMouseEvent* e) {
 }
 
 void GLWidget::wheelEvent(QWheelEvent* e) {
-    // 指数缩放，缩放速度随滚轮幅度调整
-    float steps = e->angleDelta().y() / 120.0f; // 每个刻度 120 单位
-    float factor = std::pow(0.9f, steps); // 每步缩放 0.9
+    float steps = e->angleDelta().y() / 120.0f;
+    float factor = std::pow(0.9f, steps);
     distance *= factor;
-    float minDist = 0.1f * modelRadius; // 更靠近可进到模型内部
+    float minDist = 0.1f * modelRadius;
     float maxDist = 20.0f * modelRadius;
     distance = std::clamp(distance, minDist, maxDist);
     update();
