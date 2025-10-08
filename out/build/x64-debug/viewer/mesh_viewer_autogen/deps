@@ -145,6 +145,7 @@ mesh_viewer_autogen/timestamp: \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/QMatrix4x4 \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/QOpenGLFunctions \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/QSurfaceFormat \
+	E:/Qt/6.9.3/msvc2022_64/include/QtGui/QVector2D \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/QVector3D \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qaction.h \
 	E:/Qt/6.9.3/msvc2022_64/include/QtGui/qbitmap.h \

@@ -5,6 +5,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QMatrix4x4>
+#include <QVector2D>
 #include "objloader.h"
 #include <QOpenGLShaderProgram>
 #include <QString>
@@ -44,8 +45,9 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
-    void calculateModelBounds();  // 计算模型包围盒
-    
+    void calculateModelBounds();  // 计算模型包围盒(中心/半径)
+    void resetView();              // 重置视图到初始状态
+
     ObjLoader objLoader;
     QOpenGLShaderProgram *program {nullptr};
     QOpenGLBuffer vertexBuf {QOpenGLBuffer::VertexBuffer};
@@ -55,10 +57,14 @@ private:
 
     // 交互
     QPoint lastPos;
-    float distance;
-    float rotationX;
-    float rotationY;
-    float modelOffsetY;  // Y 偏移
+    float distance;        // 相机到目标中心距离
+    float rotationX;       // 上下旋转角
+    float rotationY;       // 左右旋转角
+    QVector2D panOffset;   // 在视图平面的平移 (X/Y)
+
+    // 模型尺度
+    QVector3D modelCenter; // 模型中心
+    float modelRadius;     // 包围球半径
 
     // 渲染数据
     std::vector<QVector3D> vertices;

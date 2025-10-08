@@ -110,7 +110,30 @@ void MeshProcessor::cotangentCurvature() {
 }
 
 void MeshProcessor::gaussianCurvature() {
+    int size = mesh.vertices.size();
 
+    //遍历每个顶点，先拿到一阶邻域的所有顶点个数
+    for (int i = 0; i < size; i++) {
+        if (mesh.vertices[i]->isBoundary()) continue;//跳过边界点
+        double area = 0.0;//记录区域面积
+        Eigen::Vector3d gauss_curvature = { 0, 0, 0 };
+        geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
+        // 从这个点出发，先拿到所有的一阶邻域的顶点
+        std::vector<geometry::Vertex*> one_ring_vertices;
+        while (hf->pair->next != mesh.vertices[i]->halfEdge) {
+            one_ring_vertices.push_back(hf->getEndVertex());
+            hf = hf->pair->next;
+        }
+        int one_ring_size = one_ring_vertices.size();
+
+        for (int j = 0; j < one_ring_size; j++) {
+            //开始计算这个顶点的cotangent曲率
+            geometry::Vertex* v0 = one_ring_vertices[(j - 1 + one_ring_size) % one_ring_size];
+            geometry::Vertex* v1 = one_ring_vertices[j];
+            geometry::Vertex* v2 = one_ring_vertices[(j + 1) % one_ring_size];
+            geometry::Vertex* vi = mesh.vertices[i].get();
+        }
+    }
 }
 
 

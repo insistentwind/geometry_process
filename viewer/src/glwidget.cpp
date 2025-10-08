@@ -8,12 +8,7 @@
 #include <limits>
 
 /* --------------------------------------------------------------------------
- * GLWidget
- * 负责:
- *  - 载入与存储网格顶点/索引/颜色数据
- *  - OpenGL 上下文初始化与着色器构建
- *  - 相机/交互(旋转、缩放)
- *  - 绘制主网格(线框) + MST 高亮线段 + 可选彩色顶点点
+ * GLWidget 改进版: 添加轨道相机(中心化, 平移, 更平滑缩放)
  * -------------------------------------------------------------------------- */
 
 GLWidget::GLWidget(QWidget* parent)
@@ -21,7 +16,9 @@ GLWidget::GLWidget(QWidget* parent)
       distance(4.0f),
       rotationX(0.0f),
       rotationY(0.0f),
-      modelOffsetY(0.0f) {
+      panOffset(0.0f, 0.0f),
+      modelCenter(0,0,0),
+      modelRadius(1.0f) {
     Q_INIT_RESOURCE(resources);
     setFocusPolicy(Qt::StrongFocus);
 }
@@ -35,9 +32,6 @@ GLWidget::~GLWidget() {
     delete program;
     doneCurrent();
 }
-/*
-* 这里是根据顶点idx来绘制曲面？
-*/
 
 /* ---------------------------- 数据更新: 主网格 ---------------------------- */
 void GLWidget::updateMesh(const std::vector<QVector3D>& v,
@@ -59,6 +53,7 @@ void GLWidget::updateMesh(const std::vector<QVector3D>& v,
     colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
 
     calculateModelBounds();
+    resetView();
     update();
 }
 
@@ -66,16 +61,13 @@ void GLWidget::updateMesh(const std::vector<QVector3D>& v,
 void GLWidget::updateMeshWithColors(const std::vector<QVector3D>& v,
                                     const std::vector<unsigned int>& idx,
                                     const std::vector<QVector3D>& cols) {
-    // 1. 复制/接收外部传入的网格几何数据到本地缓存（CPU 侧保存一份，方便后续再上传或做查询）
-    vertices = v;          // 顶点位置列表
-    indices  = idx;        // 三角面索引 (按 3 个一组构成三角形)
+    vertices = v;
+    indices  = idx;
 
-    // 2. 处理颜色数据: 若传入颜色数组尺寸与顶点一致则使用；否则退化为全白
     if (cols.size() == v.size()) {
-        colors = cols;     // 使用外部 per-vertex 颜色
-        perVertexColor = true;  // 标记启用自定义颜色（可用于渲染策略判断）
+        colors = cols;
+        perVertexColor = true;
     } else {
-        // 尺寸不匹配 -> 填充为白色，避免越界/未定义访问
         colors.assign(v.size(), QVector3D(1.0f, 1.0f, 1.0f));
         perVertexColor = false;
     }
@@ -92,6 +84,7 @@ void GLWidget::updateMeshWithColors(const std::vector<QVector3D>& v,
     colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
 
     calculateModelBounds();
+    resetView();
     update();
 }
 
@@ -157,9 +150,8 @@ void GLWidget::initializeGL() {
 
     glClearColor(0.1f, 0.12f, 0.15f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_PROGRAM_POINT_SIZE); // 允许点大小由固定函数或着色器控制
+    glEnable(GL_PROGRAM_POINT_SIZE);
 
-    // 根据线框标志设定模式（默认 wireframe=true -> 线框）
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
     vertexBuf.create();
@@ -198,34 +190,49 @@ void GLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (vertices.empty() || !program || !program->isLinked()) return;
 
-    // 如 wireframe 标志变化，可在外部调用 setWireframe 后触发更新，这里同步状态
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
-    // 构建 MVP 矩阵
     float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
-    QMatrix4x4 proj;  proj.perspective(45.0f, aspect, 0.01f, 100.0f);
-    QMatrix4x4 view;  view.translate(0.0f, 0.0f, -distance);
-    QMatrix4x4 model; model.translate(0.0f, modelOffsetY, 0.0f);
-    model.rotate(rotationX, 1.0f, 0.0f, 0.0f);
-    model.rotate(rotationY, 0.0f, 1.0f, 0.0f);
-    QMatrix4x4 mvp = proj * view * model;
+
+    // 动态 near/far 基于模型尺度
+    float nearPlane = std::max(0.001f, modelRadius * 0.01f);
+    float farPlane  = std::max(1000.0f * nearPlane, distance + modelRadius * 4.0f);
+
+    QMatrix4x4 proj;  proj.perspective(45.0f, aspect, nearPlane, farPlane);
+    QMatrix4x4 view;  // 相机在球面坐标(绕中心转)
+
+    // 计算相机位置（绕 Z 取 up）
+    float rx = qDegreesToRadians(rotationX);
+    float ry = qDegreesToRadians(rotationY);
+    float cosX = std::cos(rx);
+    QVector3D camPos(
+        distance * std::sin(ry) * cosX,
+        distance * std::sin(rx),
+        distance * std::cos(ry) * cosX
+    );
+    QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+    QVector3D up(0,1,0);
+
+    // 构造 lookAt
+    QMatrix4x4 lookAt;
+    lookAt.lookAt(camPos + target, target, up);
+
+    QMatrix4x4 mvp = proj * lookAt; // 模型已中心化, 不再单独 model 变换
 
     program->bind();
     program->setUniformValue("u_mvp", mvp);
 
-    // 主网格线框：强制使用白色，不受 per-vertex color 影响
+    // 主网格 (线框/填充) 统一白色
     vertexBuf.bind();
     program->enableAttributeArray(0);
     program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-
-    // 禁用颜色数组，统一设为白
     program->disableAttributeArray(1);
     glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
 
     indexBuf.bind();
     glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
-    // 可选：绘制 MST 红色线段（保持逻辑不变）
+    // MST 线段 (红色)
     if (!mstLineVertices.empty()) {
         glLineWidth(3.0f);
         program->disableAttributeArray(1);
@@ -237,10 +244,9 @@ void GLWidget::paintGL() {
         glLineWidth(1.0f);
     }
 
-    // 彩色顶点点渲染（仅展示顶点标量/属性颜色）
+    // 彩色顶点点 (属性可视化)
     if (showColoredPoints && perVertexColor) {
         glPointSize(pointSize);
-        // 重新启用颜色属性并绑定颜色缓冲
         vertexBuf.bind();
         program->enableAttributeArray(0);
         program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
@@ -272,30 +278,25 @@ void GLWidget::calculateModelBounds() {
         minZ = std::min(minZ, v.z()); maxZ = std::max(maxZ, v.z());
     }
 
-    float sizeX = maxX - minX;
-    float sizeY = maxY - minY;
-    float sizeZ = maxZ - minZ;
-    float maxSize = std::max({ sizeX, sizeY, sizeZ });
+    modelCenter = QVector3D((minX + maxX) * 0.5f, (minY + maxY) * 0.5f, (minZ + maxZ) * 0.5f);
+    QVector3D extents(maxX - minX, maxY - minY, maxZ - minZ);
+    modelRadius = std::max({ extents.x(), extents.y(), extents.z() }) * 0.5f;
+    if (modelRadius < 1e-6f) modelRadius = 1.0f;
+}
 
-    // 小模型统一放大
-    if (maxSize < 1.0f && maxSize > 0.0f) {
-        float scale = 2.0f / maxSize;
-        for (auto& v : vertices) {
-            const_cast<QVector3D&>(v) = v * scale;
-        }
-        maxSize *= scale;
-        minY    *= scale;
-    }
-
-    distance     = std::max(2.0f, std::min(maxSize * 2.0f, 50.0f));
-    modelOffsetY = -minY - 0.2f;
+void GLWidget::resetView() {
+    rotationX = 0.0f;
+    rotationY = 0.0f;
+    panOffset = QVector2D(0,0);
+    distance = modelRadius * 2.2f; // 稍远一点看到整体
+    distance = std::clamp(distance, 0.5f * modelRadius, 10.0f * modelRadius);
 }
 
 /* ------------------------------- 载入 OBJ 文件 ---------------------------- */
 bool GLWidget::loadObject(const QString& file) {
     if (objLoader.loadOBJ(file.toStdString())) {
         updateMesh(objLoader.vertices, objLoader.indices);
-        mstLineVertices.clear(); // 清除旧的 MST 线
+        mstLineVertices.clear();
         return true;
     }
     return false;
@@ -312,22 +313,37 @@ void GLWidget::resizeGL(int w, int h) {
 /* --------------------------------- 交互事件 -------------------------------- */
 void GLWidget::mousePressEvent(QMouseEvent* e) {
     lastPos = e->pos();
+    if (e->button() == Qt::RightButton) {
+        resetView();
+        update();
+    }
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* e) {
     int dx = e->x() - lastPos.x();
     int dy = e->y() - lastPos.y();
-    if (e->buttons() & Qt::LeftButton) {
+
+    if (e->buttons() & Qt::LeftButton) { // 旋转
         rotationY += dx * 0.5f;
         rotationX += dy * 0.5f;
+        rotationX = std::clamp(rotationX, -89.9f, 89.9f); // 防止翻转
+        update();
+    } else if (e->buttons() & Qt::MiddleButton) { // 平移 (按距离和视口尺寸缩放)
+        float panScale = distance * 0.0015f; // 可调系数
+        panOffset += QVector2D(-dx * panScale, dy * panScale);
         update();
     }
+
     lastPos = e->pos();
 }
 
 void GLWidget::wheelEvent(QWheelEvent* e) {
-    float delta = e->angleDelta().y() / 120.0f; // 每个滚轮刻度 120
-    distance -= delta * 0.6f;
-    distance = std::clamp(distance, 1.0f, 80.0f);
+    // 指数缩放，缩放速度随滚轮幅度调整
+    float steps = e->angleDelta().y() / 120.0f; // 每个刻度 120 单位
+    float factor = std::pow(0.9f, steps); // 每步缩放 0.9
+    distance *= factor;
+    float minDist = 0.1f * modelRadius; // 更靠近可进到模型内部
+    float maxDist = 20.0f * modelRadius;
+    distance = std::clamp(distance, minDist, maxDist);
     update();
 }
