@@ -59,7 +59,7 @@ public:
     bool isBoundary() const { return pair == nullptr; }
     Vertex* getEndVertex() const { return next->vertex; }
 };
-
+// 什么是HalfEdgeMesh， 这个类主要是用来存储和操作半边数据结构的
 class HalfEdgeMesh {
 public:
     std::vector<std::unique_ptr<Vertex>> vertices;
