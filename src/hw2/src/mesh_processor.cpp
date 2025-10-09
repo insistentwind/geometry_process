@@ -1,4 +1,4 @@
-#include "mesh_processor.h"
+ï»¿#include "mesh_processor.h"
 #include <mesh_converter.h>
 #include <iostream>
 
@@ -6,22 +6,22 @@ std::pair<std::vector<QVector3D>, std::vector<unsigned int>>
 MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
                               const std::vector<unsigned int>& indices) {
     
-    // ²½Öè1£ºÊ¹ÓÃgeometryÄ£¿éµÄMeshConverter¹¹½¨°ë±ßÍø¸ñ
+    // æ­¥éª¤1ï¼šä½¿ç”¨geometryæ¨¡å—çš„MeshConverteræ„å»ºåŠè¾¹ç½‘æ ¼
     geometry::MeshConverter::buildMeshFromQtData(mesh, vertices, indices);
 
-    // ²½Öè2£ºÑéÖ¤°ë±ß½á¹¹µÄÕıÈ·ĞÔ
+    // æ­¥éª¤2ï¼šéªŒè¯åŠè¾¹ç»“æ„çš„æ­£ç¡®æ€§
     if (!mesh.isValid()) {
         std::cerr << "Warning: Generated half-edge mesh is invalid!" << std::endl;
     }
 
-    // ²½Öè3£ºÖ´ĞĞÊµ¼ÊµÄ¼¸ºÎ´¦Àí²Ù×÷£¨ÕâÊÇĞèÒª×Ô¼ºÊµÏÖµÄ²¿·Ö£©
+    // æ­¥éª¤3ï¼šæ‰§è¡Œå®é™…çš„å‡ ä½•å¤„ç†æ“ä½œï¼ˆè¿™æ˜¯éœ€è¦è‡ªå·±å®ç°çš„éƒ¨åˆ†ï¼‰
     processGeometry();
 
-    // ²½Öè4£ºÊ¹ÓÃgeometryÄ£¿éµÄMeshConverter½«½á¹û×ª»ØQt¸ñÊ½
+    // æ­¥éª¤4ï¼šä½¿ç”¨geometryæ¨¡å—çš„MeshConverterå°†ç»“æœè½¬å›Qtæ ¼å¼
     return geometry::MeshConverter::convertMeshToQtData(mesh);
 }
 
-/* ÌáÈ¡¶¥µãÑÕÉ« (ÈôÎ´À´Ëã·¨Ğ´Èë¶¥µãÑÕÉ«) */
+/* æå–é¡¶ç‚¹é¢œè‰² (è‹¥æœªæ¥ç®—æ³•å†™å…¥é¡¶ç‚¹é¢œè‰²) */
 std::vector<QVector3D> MeshProcessor::extractColors() const {
     std::vector<QVector3D> cols; 
     cols.reserve(mesh.vertices.size());
@@ -38,42 +38,46 @@ std::vector<QVector3D> MeshProcessor::extractColors() const {
 }
 
 //homework2
-// ÓÃµÄÊÇ·â±ÕÇúÃæ
+// ç”¨çš„æ˜¯å°é—­æ›²é¢
 void MeshProcessor::processGeometry() {
     //meanCurvature();
-	//cotangentCurvature();
-	gaussianCurvature();
+	cotangentCurvature();
+	//gaussianCurvature();
 }
-//Æ½¾ùÇúÂÊÊµÏÖ
+//å¹³å‡æ›²ç‡å®ç°
 void MeshProcessor::meanCurvature() {
     int size = mesh.vertices.size();
 
     for (int i = 0; i < size; i++) {
-        //¶ÔÓÚÃ¿¸ö¶¥µã£¬¼ÆËãËüµÄÒ»½×ÁÚÓò¶ÔÓ¦µÄÆ½¾ùÇúÂÊ
+        //å¯¹äºæ¯ä¸ªé¡¶ç‚¹ï¼Œè®¡ç®—å®ƒçš„ä¸€é˜¶é‚»åŸŸå¯¹åº”çš„å¹³å‡æ›²ç‡
         geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
         Eigen::Vector3d mean_curvature = { 0 , 0, 0 };
-        Eigen::Vector3d total_value = { 0 , 0, 0 };//¼ÇÂ¼¶¨µãÊı×ÜºÍ
-        int count = 0;//¼ÇÂ¼Õâ¸öÁÚÓòµÄ´óĞ¡
+        Eigen::Vector3d total_value = { 0 , 0, 0 };//è®°å½•å®šç‚¹æ•°æ€»å’Œ
+        int count = 0;//è®°å½•è¿™ä¸ªé‚»åŸŸçš„å¤§å°
         do {
             total_value += hf->getEndVertex()->position;
             count++;
-            hf = hf->pair->next;// ±éÀúÏÂÒ»¸ö¶¥µã
+            hf = hf->pair->next;// éå†ä¸‹ä¸€ä¸ªé¡¶ç‚¹
         } while (hf != mesh.vertices[i]->halfEdge);
-        mean_curvature = mesh.vertices[i]->position * count - total_value;// ÑÕÉ«¶ÔÓ¦»ù±¾ÏµÊı
+        mean_curvature = mesh.vertices[i]->position * count - total_value;// é¢œè‰²å¯¹åº”åŸºæœ¬ç³»æ•°
         mesh.vertices[i]->color = mean_curvature * 255;
     }
 }
-// cotangentÇúÂÊÊµÏÖ
+// cotangentæ›²ç‡å®ç°
 void MeshProcessor::cotangentCurvature() {
 	int size = mesh.vertices.size();
 
-	//±éÀúÃ¿¸ö¶¥µã£¬ÏÈÄÃµ½Ò»½×ÁÚÓòµÄËùÓĞ¶¥µã¸öÊı
+    std::vector<double> curvature_magnitudes(size);
+    double global_max_mag = -1e10;
+    double global_min_mag = 1e10;
+
+	//éå†æ¯ä¸ªé¡¶ç‚¹ï¼Œå…ˆæ‹¿åˆ°ä¸€é˜¶é‚»åŸŸçš„æ‰€æœ‰é¡¶ç‚¹ä¸ªæ•°
     for (int i = 0; i < size; i++) {
-		if (mesh.vertices[i]->isBoundary()) continue;//Ìø¹ı±ß½çµã
-		double area = 0.0;//¼ÇÂ¼ÇøÓòÃæ»ı
+		if (mesh.vertices[i]->isBoundary()) continue;//è·³è¿‡è¾¹ç•Œç‚¹
+		double area = 0.0;//è®°å½•åŒºåŸŸé¢ç§¯
         Eigen::Vector3d cotangent_curvature = { 0, 0, 0 };
 		geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
-        // ´ÓÕâ¸öµã³ö·¢£¬ÏÈÄÃµ½ËùÓĞµÄÒ»½×ÁÚÓòµÄ¶¥µã
+        // ä»è¿™ä¸ªç‚¹å‡ºå‘ï¼Œå…ˆæ‹¿åˆ°æ‰€æœ‰çš„ä¸€é˜¶é‚»åŸŸçš„é¡¶ç‚¹
 		std::vector<geometry::Vertex*> one_ring_vertices;
         while(hf -> pair -> next != mesh.vertices[i]->halfEdge){
             one_ring_vertices.push_back(hf->getEndVertex());
@@ -82,7 +86,7 @@ void MeshProcessor::cotangentCurvature() {
 		int one_ring_size = one_ring_vertices.size();
 
         for (int j = 0; j < one_ring_size; j++) {
-			//¿ªÊ¼¼ÆËãÕâ¸ö¶¥µãµÄcotangentÇúÂÊ
+			//å¼€å§‹è®¡ç®—è¿™ä¸ªé¡¶ç‚¹çš„cotangentæ›²ç‡
 			geometry::Vertex* v0 = one_ring_vertices[(j - 1 + one_ring_size) %one_ring_size];
 			geometry::Vertex* v1 = one_ring_vertices[j];
 			geometry::Vertex* v2 = one_ring_vertices[(j + 1)%one_ring_size];
@@ -94,17 +98,47 @@ void MeshProcessor::cotangentCurvature() {
 			Eigen::Vector3d v2v1 = v1->position - v2->position;
             Eigen::Vector3d v2vi = vi->position - v2->position;
 
-			double cos_theta0 = v0v1.dot(v0vi) / (v0v1.norm() * v0vi.norm());
+			//double cos_theta0 = v0v1.dot(v0vi) ;
+            double cos_theta0 = v0v1.dot(v0vi) / (v0v1.norm() * v0vi.norm());
 
-			double cos_theta1 = (v2v1).dot(v2vi) / (v2v1.norm() * v2vi.norm());
+			//double cos_theta1 = (v2v1).dot(v2vi) ;
+            double cos_theta1 = (v2v1).dot(v2vi) / (v2v1.norm() * v2vi.norm());
 
-            cotangent_curvature += (cos_theta0 + cos_theta1) * (v1->position - vi->position);
-            // ¼ÆËãÕâÁ½¿éÈı½ÇĞÎËùÕ¼Ãæ»ı
-			area += (v0v1.cross(v0vi)).norm() + (v2v1.cross(v2vi)).norm();//°´ÕÕ¾ØĞÎÀ´ËãÁË
+			double cot_0 = cos_theta0 / sqrt(1 - cos_theta0 * cos_theta0);
+
+            double cot_1 = cos_theta1 / sqrt(1 - cos_theta1 * cos_theta1);
+
+            cotangent_curvature += (cot_0 + cot_1) * (v1->position - vi->position);
+            // è®¡ç®—è¿™ä¸¤å—ä¸‰è§’å½¢æ‰€å é¢ç§¯
+			area += (v0v1.cross(v0vi)).norm() + (v2v1.cross(v2vi)).norm();//æŒ‰ç…§çŸ©å½¢æ¥ç®—äº†
         }
 
 		cotangent_curvature = cotangent_curvature / (4 * area);
-		mesh.vertices[i]->color = cotangent_curvature * 255;
+        // --- æœ€ç»ˆå½’ä¸€åŒ–ï¼Œè®¡ç®—æ¨¡é•¿ï¼Œå¹¶è®°å½• ---
+        double curvature_magnitude = cotangent_curvature.norm();
+
+        curvature_magnitudes[i] = curvature_magnitude;
+
+        // æ›´æ–°å…¨å±€æœ€å¤§/æœ€å°å€¼
+        global_max_mag = std::max(global_max_mag, curvature_magnitude);
+        global_min_mag = std::min(global_min_mag, curvature_magnitude);
+
+        // é¢œè‰²æ˜ å°„: ä½æ›²ç‡ -> æ·¡è“, ä¸­ç­‰ -> ç»¿è‰², é«˜æ›²ç‡ -> çº¢è‰²
+        double range = std::max(1e-12, global_max_mag - global_min_mag); // é˜²æ­¢é™¤é›¶
+        double lowT  = global_min_mag + range * 0.1; // ä½é˜ˆå€¼
+        double highT = global_min_mag + range * 0.35; // é«˜é˜ˆå€¼
+        Eigen::Vector3d color;
+        if (curvature_magnitude <= lowT) {
+            // æ·¡è“ (light blue)
+            color = Eigen::Vector3d(0.0, 0.0, 1.0);
+        } else if (curvature_magnitude <= highT) {
+            // ç»¿è‰² (medium)
+            color = Eigen::Vector3d(0.0, 1.0, 0.0);
+        } else {
+            // çº¢è‰² (high)
+            color = Eigen::Vector3d(1.0, 0.0, 0.0);
+        }
+        mesh.vertices[i]->color = color * 255.0;
         std::cout << "vertex " << i << " cotangent_curvature: " << cotangent_curvature.transpose() << std::endl;
     }
 
@@ -114,16 +148,16 @@ void MeshProcessor::gaussianCurvature() {
     int size = mesh.vertices.size();
     std::vector<double> curvature(size, 0);
     double max_curvature = 1;
-    //±éÀúÃ¿¸ö¶¥µã£¬ÏÈÄÃµ½Ò»½×ÁÚÓòµÄËùÓĞ¶¥µã¸öÊı
+    //éå†æ¯ä¸ªé¡¶ç‚¹ï¼Œå…ˆæ‹¿åˆ°ä¸€é˜¶é‚»åŸŸçš„æ‰€æœ‰é¡¶ç‚¹ä¸ªæ•°
     for (int i = 0; i < size; i++) {
-        if (mesh.vertices[i]->isBoundary()) continue;//Ìø¹ı±ß½çµã
+        if (mesh.vertices[i]->isBoundary()) continue;//è·³è¿‡è¾¹ç•Œç‚¹
         
         double gauss_curvature = 0.0;
 
         double theta = 0.0;
-		double area = 0.0;//¼ÇÂ¼ÇøÓòÃæ»ı
+		double area = 0.0;//è®°å½•åŒºåŸŸé¢ç§¯
         geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
-        // ´ÓÕâ¸öµã³ö·¢£¬ÏÈÄÃµ½ËùÓĞµÄÒ»½×ÁÚÓòµÄ¶¥µã
+        // ä»è¿™ä¸ªç‚¹å‡ºå‘ï¼Œå…ˆæ‹¿åˆ°æ‰€æœ‰çš„ä¸€é˜¶é‚»åŸŸçš„é¡¶ç‚¹
         std::vector<geometry::Vertex*> one_ring_vertices;
         while (hf->pair->next != mesh.vertices[i]->halfEdge) {
             one_ring_vertices.push_back(hf->getEndVertex());
@@ -132,7 +166,7 @@ void MeshProcessor::gaussianCurvature() {
         int one_ring_size = one_ring_vertices.size();
 
         for (int j = 0; j < one_ring_size; j++) {
-            //¿ªÊ¼¼ÆËãÕâ¸ö¶¥µãµÄgaussÇúÂÊ
+            //å¼€å§‹è®¡ç®—è¿™ä¸ªé¡¶ç‚¹çš„gaussæ›²ç‡
             geometry::Vertex* v0 = one_ring_vertices[(j - 1 + one_ring_size) % one_ring_size];
             geometry::Vertex* v1 = one_ring_vertices[j];
             geometry::Vertex* vi = mesh.vertices[i].get();
@@ -155,61 +189,74 @@ void MeshProcessor::gaussianCurvature() {
     }
     std::cout << "max gauss_curvature: " << max_curvature << std::endl;
 
-    // ¸´ÖÆ²¢ÅÅĞò£¬ÓÃÓÚ²éÕÒ°Ù·ÖÎ»Êı
+    // å¤åˆ¶å¹¶æ’åºï¼Œç”¨äºæŸ¥æ‰¾ç™¾åˆ†ä½æ•°
     std::vector<double> sorted_curvatures = curvature;
     std::sort(sorted_curvatures.begin(), sorted_curvatures.end());
 
-    // --- 1. È·¶¨Â³°ô¹éÒ»»¯·¶Î§ ---
-    // Ê¹ÓÃ 95% ºÍ 5% °Ù·ÖÎ»ÊıÀ´ÅÅ³ı×î¼«¶ËµÄ 10% Òì³£Öµ
-    int idx_95 = (int)(size * 0.95);
-    int idx_05 = (int)(size * 0.05);
-
-    double K_robust_max = sorted_curvatures[idx_95];
-    double K_robust_min = sorted_curvatures[idx_05];
-
-    // Â³°ô·¶Î§µÄ³¤¶È
-    double K_RANGE = K_robust_max - K_robust_min;
-
-    // --- 2. ÑÕÉ«Ó³ÉäÑ­»· ---
-    if (K_RANGE < 1e-9) {
-        // ´¦ÀíËùÓĞÇúÂÊ¶¼ÏàÍ¬£¨»ò½Ó½ü£©µÄÇé¿ö£¬±ÜÃâ³ıÁã
-        K_RANGE = 1.0;
-        K_robust_min = K_robust_max - 1.0;
-    }
-
     for (int i = 0; i < size; i++) {
-        // if (mesh.vertices[i]->isBoundary()) continue; // ¼ÙÉèÄúÔÚÕâÀïÌø¹ı±ß½çµã
-
-        double K_i = curvature[i];
-
-        // a) ²Ã¼ô/Ç¯ÖÆ K_i µ½Â³°ô·¶Î§ [K_robust_min, K_robust_max]
-        K_i = std::min(K_i, K_robust_max);
-        K_i = std::max(K_i, K_robust_min);
-
-        // b) ¹éÒ»»¯µ½ [0, 1] ·¶Î§ (K_norm = 0 ÊÇ K_robust_min, K_norm = 1 ÊÇ K_robust_max)
-        double K_norm = (K_i - K_robust_min) / K_RANGE;
-
-        // c) Èı¶ÎÊ½¸ß¶Ô±È¶ÈÉ«Æ× (À¶ -> ÂÌ -> ºì)
-        Eigen::Vector3d color;
-
-        // K_norm < 0.5: À¶µ½ÂÌ (0 -> 1)
-        if (K_norm < 0.5) {
-            double t = K_norm * 2.0; // ·¶Î§ [0, 1]
-            color[0] = 0.0;          // ºìÉ«·ÖÁ¿: 0
-            color[1] = t;            // ÂÌÉ«·ÖÁ¿: 0 -> 1
-            color[2] = 1.0 - t;      // À¶É«·ÖÁ¿: 1 -> 0
+		// ç›´æ¥è®¾ç½®é¢œè‰²ï¼Œè“è‰²è¡¨ç¤ºè´Ÿæ›²ç‡ï¼Œçº¢è‰²è¡¨ç¤ºæ­£æ›²ç‡
+		double K_i = curvature[i];
+		Eigen::Vector3d color;
+        if (K_i > 0) {
+            color = Eigen::Vector3d(1.0, 0.0, 0.0); // çº¢è‰²åˆ†é‡: 1, ç»¿è‰²åˆ†é‡: 0, è“è‰²åˆ†é‡: 0
         }
-        // K_norm >= 0.5: ÂÌµ½ºì (1 -> 0)
         else {
-            double t = (K_norm - 0.5) * 2.0; // ·¶Î§ [0, 1]
-            color[0] = t;            // ºìÉ«·ÖÁ¿: 0 -> 1
-            color[1] = 1.0 - t;      // ÂÌÉ«·ÖÁ¿: 1 -> 0
-            color[2] = 0.0;          // À¶É«·ÖÁ¿: 0
-        }
-
-        // ×ª»»Îª [0, 255] ·¶Î§
-        mesh.vertices[i]->color = color * 255.0;
+            color = Eigen::Vector3d(0.0, 0.0, 1.0); // çº¢è‰²åˆ†é‡: 0, ç»¿è‰²åˆ†é‡: 0, è“è‰²åˆ†é‡: 1
+		}
+		mesh.vertices[i]->color = color * 255.0;
     }
+
+    //// --- 1. ç¡®å®šé²æ£’å½’ä¸€åŒ–èŒƒå›´ ---
+    //// ä½¿ç”¨ 95% å’Œ 5% ç™¾åˆ†ä½æ•°æ¥æ’é™¤æœ€æç«¯çš„ 10% å¼‚å¸¸å€¼
+    //int idx_95 = (int)(size * 0.95);
+    //int idx_05 = (int)(size * 0.05);
+
+    //double K_robust_max = sorted_curvatures[idx_95];
+    //double K_robust_min = sorted_curvatures[idx_05];
+
+    //// é²æ£’èŒƒå›´çš„é•¿åº¦
+    //double K_RANGE = K_robust_max - K_robust_min;
+
+    //// --- 2. é¢œè‰²æ˜ å°„å¾ªç¯ ---
+    //if (K_RANGE < 1e-9) {
+    //    // å¤„ç†æ‰€æœ‰æ›²ç‡éƒ½ç›¸åŒï¼ˆæˆ–æ¥è¿‘ï¼‰çš„æƒ…å†µï¼Œé¿å…é™¤é›¶
+    //    K_RANGE = 1.0;
+    //    K_robust_min = K_robust_max - 1.0;
+    //}
+
+    //for (int i = 0; i < size; i++) {
+    //    // if (mesh.vertices[i]->isBoundary()) continue; // å‡è®¾æ‚¨åœ¨è¿™é‡Œè·³è¿‡è¾¹ç•Œç‚¹
+
+    //    double K_i = curvature[i];
+
+    //    // a) è£å‰ª/é’³åˆ¶ K_i åˆ°é²æ£’èŒƒå›´ [K_robust_min, K_robust_max]
+    //    K_i = std::min(K_i, K_robust_max);
+    //    K_i = std::max(K_i, K_robust_min);
+
+    //    // b) å½’ä¸€åŒ–åˆ° [0, 1] èŒƒå›´ (K_norm = 0 æ˜¯ K_robust_min, K_norm = 1 æ˜¯ K_robust_max)
+    //    double K_norm = (K_i - K_robust_min) / K_RANGE;
+
+    //    // c) ä¸‰æ®µå¼é«˜å¯¹æ¯”åº¦è‰²è°± (è“ -> ç»¿ -> çº¢)
+    //    Eigen::Vector3d color;
+
+    //    // K_norm < 0.5: è“åˆ°ç»¿ (0 -> 1)
+    //    if (K_norm < 0.5) {
+    //        double t = K_norm * 2.0; // èŒƒå›´ [0, 1]
+    //        color[0] = 0.0;          // çº¢è‰²åˆ†é‡: 0
+    //        color[1] = t;            // ç»¿è‰²åˆ†é‡: 0 -> 1
+    //        color[2] = 1.0 - t;      // è“è‰²åˆ†é‡: 1 -> 0
+    //    }
+    //    // K_norm >= 0.5: ç»¿åˆ°çº¢ (1 -> 0)
+    //    else {
+    //        double t = (K_norm - 0.5) * 2.0; // èŒƒå›´ [0, 1]
+    //        color[0] = t;            // çº¢è‰²åˆ†é‡: 0 -> 1
+    //        color[1] = 1.0 - t;      // ç»¿è‰²åˆ†é‡: 1 -> 0
+    //        color[2] = 0.0;          // è“è‰²åˆ†é‡: 0
+    //    }
+
+    //    // è½¬æ¢ä¸º [0, 255] èŒƒå›´
+    //    mesh.vertices[i]->color = color * 255.0;
+    //}
 
 
 }

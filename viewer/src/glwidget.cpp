@@ -33,15 +33,23 @@ GLWidget::~GLWidget() {
     doneCurrent();
 }
 
+void GLWidget::cycleColorDisplayMode() {
+    if (colorMode == ColorDisplayMode::PointsOnly)
+        colorMode = ColorDisplayMode::Faces;
+    else
+        colorMode = ColorDisplayMode::PointsOnly;
+    update();
+}
+
 /* ---------------------------- 数据更新: 主网格 ---------------------------- */
 void GLWidget::updateMesh(const std::vector<QVector3D>& v,
                           const std::vector<unsigned int>& idx) {
     vertices = v;
     indices  = idx;
-    perVertexColor = false; // 默认不使用外部颜色
+    perVertexColor = false;
     colors.assign(vertices.size(), QVector3D(1.0f, 1.0f, 1.0f));
 
-    if (!isValid()) return; // OpenGL 尚未初始化
+    if (!isValid()) return;
 
     vertexBuf.bind();
     vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
@@ -115,7 +123,7 @@ void GLWidget::clearMSTEdges() {
     mstLineVertices.clear();
     if (mstLineBuf.isCreated()) {
         mstLineBuf.bind();
-        mstLineBuf.allocate(nullptr, 0); // 释放显存
+        mstLineBuf.allocate(nullptr, 0);
     }
     update();
 }
@@ -223,15 +231,23 @@ void GLWidget::paintGL() {
     program->bind();
     program->setUniformValue("u_mvp", mvp);
 
+    // Geometry (faces) draw
     vertexBuf.bind();
     program->enableAttributeArray(0);
     program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-    program->disableAttributeArray(1);
-    glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
+    if (perVertexColor && colorMode == ColorDisplayMode::Faces) {
+        colorBuf.bind();
+        program->enableAttributeArray(1);
+        program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+    } else {
+        program->disableAttributeArray(1);
+        glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
+    }
 
     indexBuf.bind();
     glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
+    // MST lines
     if (!mstLineVertices.empty()) {
         glLineWidth(3.0f);
         program->disableAttributeArray(1);
@@ -243,14 +259,20 @@ void GLWidget::paintGL() {
         glLineWidth(1.0f);
     }
 
-    if (showColoredPoints && perVertexColor) {
+    // FIX: 允许在恢复后显示点云，即使 perVertexColor 为假
+    if (showColoredPoints) {
         glPointSize(pointSize);
         vertexBuf.bind();
         program->enableAttributeArray(0);
         program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        colorBuf.bind();
-        program->enableAttributeArray(1);
-        program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        if (perVertexColor) {
+            colorBuf.bind();
+            program->enableAttributeArray(1);
+            program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        } else {
+            program->disableAttributeArray(1);
+            glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f); // 采用白色作为默认颜色
+        }
         glDrawArrays(GL_POINTS, 0, static_cast<int>(vertices.size()));
     }
 

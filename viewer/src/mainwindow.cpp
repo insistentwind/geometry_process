@@ -10,12 +10,14 @@ MainWindow::MainWindow(QWidget *parent)
     restoreButton       = new QPushButton(tr("recover model"), this);
     processButton       = new QPushButton(tr("denoise"), this);
     togglePointsButton  = new QPushButton(tr("hide points"), this); // 初始为显示状态
+    colorModeButton     = new QPushButton(tr("mode: points"), this); // 初始模式
 
     // 按钮行
     auto *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(restoreButton);
     buttonLayout->addWidget(processButton);
     buttonLayout->addWidget(togglePointsButton);
+    buttonLayout->addWidget(colorModeButton);
     buttonLayout->addStretch();
 
     // 主布局
@@ -33,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::requestProcess);
     connect(togglePointsButton, &QPushButton::clicked,
             this, &MainWindow::togglePoints);
+    connect(colorModeButton, &QPushButton::clicked,
+            this, &MainWindow::cycleColorMode);
 
     createMenus();
 }
@@ -82,4 +86,20 @@ void MainWindow::togglePoints() {
     pointsVisible = !pointsVisible;
     glWidget->setShowColoredPoints(pointsVisible);
     togglePointsButton->setText(pointsVisible ? tr("hide points") : tr("show points"));
+}
+
+void MainWindow::cycleColorMode() {
+    glWidget->cycleColorDisplayMode();
+    updateColorModeButtonText();
+}
+
+void MainWindow::updateColorModeButtonText() {
+    switch (glWidget->getColorDisplayMode()) {
+        case GLWidget::ColorDisplayMode::PointsOnly:
+            colorModeButton->setText(tr("mode: points"));
+            break;
+        case GLWidget::ColorDisplayMode::Faces:
+            colorModeButton->setText(tr("mode: faces"));
+            break;
+    }
 }
