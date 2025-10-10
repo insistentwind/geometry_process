@@ -883,7 +883,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "6"
+			"value" : "7"
 		},
 		{
 			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
@@ -6515,7 +6515,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw3"
+			"value" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw4"
 		},
 		{
 			"name" : "hw3_IS_TOP_LEVEL",
@@ -6539,7 +6539,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "E:/qt_work/geometry_process-master/src/hw3"
+			"value" : "E:/qt_work/geometry_process-master/src/hw4"
 		},
 		{
 			"name" : "mesh_viewer_BINARY_DIR",

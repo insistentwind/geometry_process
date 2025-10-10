@@ -29,7 +29,8 @@
 			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreConfig.cmake",
 			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6/Qt6Config.cmake",
 			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiTargets.cmake",
-			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake"
+			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Gui/Qt6GuiConfig.cmake",
+			"src/hw4/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -133,6 +134,15 @@
 				"file" : 0,
 				"line" : 16,
 				"parent" : 0
+			},
+			{
+				"file" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 8,
+				"line" : 16,
+				"parent" : 20
 			}
 		]
 	},
@@ -215,6 +225,10 @@
 					"path" : "E:/qt_work/geometry_process-master/src/hw3/include"
 				},
 				{
+					"backtrace" : 21,
+					"path" : "E:/qt_work/geometry_process-master/src/hw4/include"
+				},
+				{
 					"backtrace" : 2,
 					"path" : "E:/qt_work/geometry_process-master/viewer/include"
 				},
@@ -293,11 +307,11 @@
 			"id" : "mesh_viewer::@4ad571843d929affe7de"
 		},
 		{
-			"id" : "hw3_autogen_timestamp_deps::@18f3f2bd4df51aa57828"
-		},
-		{
 			"backtrace" : 0,
 			"id" : "hw3_autogen::@18f3f2bd4df51aa57828"
+		},
+		{
+			"id" : "hw3_autogen_timestamp_deps::@18f3f2bd4df51aa57828"
 		}
 	],
 	"id" : "hw3::@18f3f2bd4df51aa57828",

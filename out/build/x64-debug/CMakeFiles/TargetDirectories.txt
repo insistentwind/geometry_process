@@ -23,3 +23,8 @@ E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw3/CMakeFiles/edit_c
 E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw3/CMakeFiles/rebuild_cache.dir
 E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw3/CMakeFiles/hw3_autogen_timestamp_deps.dir
 E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw3/CMakeFiles/hw3_autogen.dir
+E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw4/CMakeFiles/hw4.dir
+E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw4/CMakeFiles/edit_cache.dir
+E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw4/CMakeFiles/rebuild_cache.dir
+E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw4/CMakeFiles/hw4_autogen_timestamp_deps.dir
+E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw4/CMakeFiles/hw4_autogen.dir

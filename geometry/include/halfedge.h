@@ -15,6 +15,8 @@ class HalfEdge;
 class Vertex {
 public:
     Eigen::Vector3d position;
+	Eigen::Vector3d old_position; // 用于某些算法中存储旧位置
+	Eigen::Vector3d old_normal;   // 用于某些算法中存储旧法线
     Eigen::Vector3d normal;// 
     Eigen::Vector2d texCoords;
     Eigen::Vector3d color;
@@ -37,6 +39,8 @@ public:
     HalfEdge* halfEdge;
     int index;
     Eigen::Vector3d normal;
+	Eigen::Vector3d old_normal; // 用于某些算法中存储旧法线
+	Eigen::Vector3d center_point;// 面心
     Face(int idx) : halfEdge(nullptr), index(idx), normal(Eigen::Vector3d::Zero()) {}
     void computeNormal();
     double computeArea() const;

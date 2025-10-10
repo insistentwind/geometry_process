@@ -30,6 +30,7 @@ add_subdirectory (viewer)
 add_subdirectory (src/hw1)
 add_subdirectory (src/hw2) 
 add_subdirectory (src/hw3) 
+add_subdirectory (src/hw4) 
 
 # Qt部署设置（移动到每个work的CMakeLists.txt中）
 if(WIN32)
