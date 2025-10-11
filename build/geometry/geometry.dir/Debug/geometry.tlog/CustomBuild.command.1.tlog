@@ -1,0 +1,10 @@
+^E:\QT_WORK\GEOMETRY_PROCESS-MASTER\GEOMETRY\CMAKELISTS.TXT
+setlocal
+E:\VsCode\cmake\bin\cmake.exe -SE:/qt_work/geometry_process-master -BE:/qt_work/geometry_process-master/build --check-stamp-file E:/qt_work/geometry_process-master/build/geometry/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

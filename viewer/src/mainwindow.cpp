@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     processButton       = new QPushButton(tr("denoise"), this);
     togglePointsButton  = new QPushButton(tr("hide points"), this); // 初始为显示状态
     colorModeButton     = new QPushButton(tr("mode: points"), this); // 初始模式
+    filledFaceButton    = new QPushButton(tr("show filled"), this); // 新增
 
     // 按钮行
     auto *buttonLayout = new QHBoxLayout();
@@ -18,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     buttonLayout->addWidget(processButton);
     buttonLayout->addWidget(togglePointsButton);
     buttonLayout->addWidget(colorModeButton);
+    buttonLayout->addWidget(filledFaceButton);
     buttonLayout->addStretch();
 
     // 主布局
@@ -37,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::togglePoints);
     connect(colorModeButton, &QPushButton::clicked,
             this, &MainWindow::cycleColorMode);
+    connect(filledFaceButton, &QPushButton::clicked,
+            this, &MainWindow::toggleFilledFaces);
 
     createMenus();
 }
@@ -93,6 +97,11 @@ void MainWindow::cycleColorMode() {
     updateColorModeButtonText();
 }
 
+void MainWindow::toggleFilledFaces() {
+    glWidget->toggleFilledFaces();
+    updateFilledFaceButtonText();
+}
+
 void MainWindow::updateColorModeButtonText() {
     switch (glWidget->getColorDisplayMode()) {
         case GLWidget::ColorDisplayMode::PointsOnly:
@@ -102,4 +111,8 @@ void MainWindow::updateColorModeButtonText() {
             colorModeButton->setText(tr("mode: faces"));
             break;
     }
+}
+
+void MainWindow::updateFilledFaceButtonText() {
+    filledFaceButton->setText(glWidget->isShowingFilledFaces() ? tr("hide filled") : tr("show filled"));
 }

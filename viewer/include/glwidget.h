@@ -15,7 +15,7 @@ class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 
 public:
-    enum class ColorDisplayMode { PointsOnly, Faces }; // 新增：颜色显示模式
+    enum class ColorDisplayMode { PointsOnly, Faces }; // 颜色显示模式
 
     explicit GLWidget(QWidget *parent = nullptr);
     ~GLWidget() override;
@@ -36,10 +36,13 @@ public:
     void setShowColoredPoints(bool enabled) { showColoredPoints = enabled; update(); }
     void setPointSize(float psz) { pointSize = psz; update(); }
 
-    // 新增：设置 / 循环颜色显示模式
     void setColorDisplayMode(ColorDisplayMode m) { colorMode = m; update(); }
     void cycleColorDisplayMode();
     ColorDisplayMode getColorDisplayMode() const { return colorMode; }
+
+    // 新增：切换填充面显示
+    void toggleFilledFaces() { showFilledFaces = !showFilledFaces; update(); }
+    bool isShowingFilledFaces() const { return showFilledFaces; }
 
 protected:
     void initializeGL() override;
@@ -81,7 +84,8 @@ private:
     bool showColoredPoints = true;
     float pointSize = 6.0f;
 
-    ColorDisplayMode colorMode { ColorDisplayMode::PointsOnly }; // 当前模式
+    ColorDisplayMode colorMode { ColorDisplayMode::PointsOnly };
+    bool showFilledFaces = false; // 是否显示填充面
 };
 
 #endif // GLWIDGET_H

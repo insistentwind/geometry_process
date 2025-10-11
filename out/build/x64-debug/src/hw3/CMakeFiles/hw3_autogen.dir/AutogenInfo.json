@@ -347,7 +347,6 @@
 	"MOC_INCLUDES" : 
 	[
 		"E:/qt_work/geometry_process-master/src/hw3/include",
-		"E:/qt_work/geometry_process-master/src/hw4/include",
 		"E:/qt_work/geometry_process-master/viewer/include",
 		"E:/qt_work/geometry_process-master/geometry/include",
 		"E:/Qt/6.9.3/msvc2022_64/include/QtCore",

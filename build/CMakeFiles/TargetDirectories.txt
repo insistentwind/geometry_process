@@ -1,0 +1,12 @@
+E:/qt_work/geometry_process-master/build/CMakeFiles/ALL_BUILD.dir
+E:/qt_work/geometry_process-master/build/CMakeFiles/ZERO_CHECK.dir
+E:/qt_work/geometry_process-master/build/geometry/CMakeFiles/geometry.dir
+E:/qt_work/geometry_process-master/build/viewer/CMakeFiles/mesh_viewer.dir
+E:/qt_work/geometry_process-master/build/viewer/CMakeFiles/ALL_BUILD.dir
+E:/qt_work/geometry_process-master/build/src/hw1/CMakeFiles/hw1.dir
+E:/qt_work/geometry_process-master/build/src/hw1/CMakeFiles/ALL_BUILD.dir
+E:/qt_work/geometry_process-master/build/src/hw2/CMakeFiles/hw2.dir
+E:/qt_work/geometry_process-master/build/src/hw2/CMakeFiles/ALL_BUILD.dir
+E:/qt_work/geometry_process-master/build/src/hw3/CMakeFiles/hw3.dir
+E:/qt_work/geometry_process-master/build/src/hw3/CMakeFiles/ALL_BUILD.dir
+E:/qt_work/geometry_process-master/build/src/hw4/CMakeFiles/hw4.dir

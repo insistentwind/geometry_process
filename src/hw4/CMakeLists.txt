@@ -13,7 +13,7 @@ add_executable(hw4
     include/mesh_processor.h
     src/mesh_processor.cpp)
 
-target_include_directories(hw3 PRIVATE 
+target_include_directories(hw4 PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 

@@ -20,94 +20,112 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
     // 步骤4：使用geometry模块的MeshConverter将结果转回Qt格式
     return geometry::MeshConverter::convertMeshToQtData(mesh);
 }
-
+// bilateral normal filtering + gauss-seidel position update
 void MeshProcessor::processGeometry() {
 	double sigma_r = 0.25;
 	double sigma_s = 0.25;
 
-
+	int flag = 1;
 	int face_size = mesh.faces.size();
-	for (int i = 0; i < face_size; i++) {
-		// 直接用面积大小来设置 sigma_s
+	// 迭代更新面法线
+	double threshold = 1;
+	do {
+		threshold = 0;
+		for (int i = 0; i < face_size; i++) {
+			// 直接用面积大小来设置 sigma_s
 
-		//face【i】的法向用双边滤波来拟合
-		geometry::Face* f = mesh.faces[i].get();// 当前面为什么要用get？
-		f->computeNormal();
-		Eigen::Vector3d new_normal = { 0 , 0, 0 };
-		f->old_normal = f->normal;// 先存储旧法线
+			//face【i】的法向用双边滤波来拟合
+			geometry::Face* f = mesh.faces[i].get();// 当前面为什么要用get？
+			//f->computeNormal();
+			Eigen::Vector3d new_normal = { 0 , 0, 0 };
+			f->old_normal = f->normal;// 先存储旧法线
 
-		Eigen::Vector3d fi = f->normal;
-		Eigen::Vector3d point1 = f->halfEdge->vertex->position;
-		Eigen::Vector3d point2 = f->halfEdge->next->vertex->position;
-		Eigen::Vector3d point3 = f->halfEdge->next->next->vertex->position;
-		Eigen::Vector3d center_i = (point1 + point2 + point3) / 3;
+			Eigen::Vector3d fi = f->normal;
+			Eigen::Vector3d point1 = f->halfEdge->vertex->position;
+			Eigen::Vector3d point2 = f->halfEdge->next->vertex->position;
+			Eigen::Vector3d point3 = f->halfEdge->next->next->vertex->position;
+			Eigen::Vector3d center_i = (point1 + point2 + point3) / 3;
 
-		f->center_point = center_i;// 面心存储起来
+			f->center_point = center_i;// 面心存储起来
 
-		geometry::HalfEdge* hf = f->halfEdge;
-		double kp = 0.0;
-		do {
-			Eigen::Vector3d v0 = hf->vertex->position;
-			Eigen::Vector3d v1 = hf->getEndVertex()->position;
-			if(hf->pair == nullptr) {
+			geometry::HalfEdge* hf = f->halfEdge;
+			double kp = 0.0;
+			do {
+				Eigen::Vector3d v0 = hf->vertex->position;
+				Eigen::Vector3d v1 = hf->getEndVertex()->position;
+				if (hf->pair == nullptr) {
+					hf = hf->next;
+					continue;// 跳过边界点
+				}
+				Eigen::Vector3d v2 = hf->pair->next->getEndVertex()->position;
+				//拿到邻域三角形的三个顶点
+				double Ws = 0.0;
+				double Wr = 0.0;
+				Eigen::Vector3d fj = (v1 - v0).cross(v2 - v0);
+				double area = fj.norm() * 0.5;
+
+				fj.normalize();
+
+				Eigen::Vector3d center_j = (v0 + v1 + v2) / 3;
+
+				Ws = exp(-std::abs((center_i - center_j).norm() * (center_i - center_j).norm()) / (2 * sigma_s * sigma_s));
+
+				Wr = exp(-std::abs((1 - fi.dot(fj)) * (1 - fi.dot(fj))) / (2 * sigma_r * sigma_r));
+
+				new_normal += fj * area * Ws * Wr;
+				kp += area * Ws * Wr;
+
 				hf = hf->next;
-				continue;// 跳过边界点
-			}
-			Eigen::Vector3d v2 = hf->pair->next->getEndVertex()->position;
-			//拿到邻域三角形的三个顶点
-			double Ws = 0.0;
-			double Wr = 0.0;
-			Eigen::Vector3d fj = (v1 - v0).cross(v2 - v0);
-			double area = fj.norm() * 0.5;
+			} while (hf != f->halfEdge);
 
-			fj.normalize();
+			new_normal /= kp;
 
-			Eigen::Vector3d center_j = (v0 + v1 + v2) / 3;
-
-			Ws = exp(-std::abs((center_i - center_j).norm() * (center_i - center_j).norm()) / (2 * sigma_s * sigma_s));
-
-			Wr = exp(-std::abs((1 - fi.dot(fj)) * (1 - fi.dot(fj))) / (2 * sigma_r * sigma_r));
-
-			new_normal += fj * area * Ws * Wr;
-			kp += area * Ws * Wr;
-
-			hf = hf->next;
-		} while (hf != f->halfEdge);
-		new_normal /= kp;
-
-		new_normal.normalize();
-		f->normal = new_normal;// 新法线赋值
-	}
+			new_normal.normalize();
+			f->normal = new_normal;// 新法线赋值
+			threshold = std::min(threshold,1.0 - std::abs(f->normal.dot(f->old_normal)));
+		}
+		if(threshold < 1e-5) flag = 0;
+	} while (flag != 0);
 	//现在每个平面的法线设置好了，要更新每个顶点的位置
 	int vector_size = mesh.vertices.size();
-	for (int i = 0; i < vector_size; i++) {
-		geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
-		geometry::Vertex* vertex = hf->vertex;
-		vertex->old_position = vertex->position;// 先存储旧位置
-		Eigen::Vector3d gauss_seidel = { 0, 0, 0 };
-		int count = 0;
-		Eigen::Vector3d xi = vertex->old_position;
 
-		do {
-			geometry::Face* face = hf->face;
-			Eigen::Vector3d cj = face->center_point;
-			Eigen::Vector3d nj = face->normal;
+	do {
+		
 
-			gauss_seidel += nj * nj.transpose() * (cj - xi);
+		for (int i = 0; i < vector_size; i++) {
+			geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
+			geometry::Vertex* vertex = hf->vertex;
+			vertex->old_position = vertex->position;// 先存储旧位置
+			Eigen::Vector3d gauss_seidel = { 0, 0, 0 };
+			int count = 0;
+			Eigen::Vector3d xi = vertex->old_position;
 
-			count++;
-			if (hf->pair == nullptr) {
-				break;
+			do {
+				geometry::Face* face = hf->face;
+				Eigen::Vector3d cj = face->center_point;
+				Eigen::Vector3d nj = face->normal;
+
+				gauss_seidel += nj * nj.transpose() * (cj - xi);
+
+				count++;
+				if (hf->pair == nullptr) {
+					break;
+				}
+				hf = hf->pair->next;
+			} while (hf != mesh.vertices[i]->halfEdge);
+
+			if (count > 0) {
+				gauss_seidel /= count;
+				vertex->position += gauss_seidel;
 			}
-			hf = hf->pair->next;
-		} while (hf != mesh.vertices[i]->halfEdge);
 
-		if (count > 0) {
-			gauss_seidel /= count;
-			vertex->position += gauss_seidel;
+			threshold = std::min(threshold, (vertex->position - vertex->old_position).norm());
+
 		}
 
-	}
+
+	} while (threshold > 1e-5);
+
 }
 
 

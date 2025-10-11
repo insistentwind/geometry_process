@@ -39,16 +39,19 @@ private slots:
     void requestProcess(); // 触发再次处理
     void togglePoints();   // 显示/隐藏彩色顶点点
     void cycleColorMode(); // 新增：循环颜色显示模式
+    void toggleFilledFaces(); // 新增：切换填充面
 
 private:
     void createMenus();
     void updateColorModeButtonText();
+    void updateFilledFaceButtonText();
 
     GLWidget *glWidget { nullptr };
     QPushButton *restoreButton { nullptr };
     QPushButton *processButton { nullptr };
     QPushButton *togglePointsButton { nullptr }; // 新增按钮
     QPushButton *colorModeButton { nullptr }; // 新增：模式按钮
+    QPushButton *filledFaceButton { nullptr }; // 新增按钮
 
     bool pointsVisible = true; // 当前彩色点显示状态
 

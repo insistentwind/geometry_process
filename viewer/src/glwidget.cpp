@@ -198,14 +198,12 @@ void GLWidget::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (vertices.empty() || !program || !program->isLinked()) return;
 
-    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+    // 线框模式始终保持，用于轮廓；填充面可选叠加
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
-
-    // 动态 near/far 基于模型尺度
     float nearPlane = std::max(0.001f, modelRadius * 0.01f);
     float farPlane  = std::max(1000.0f * nearPlane, distance + modelRadius * 4.0f);
-
     QMatrix4x4 proj;  proj.perspective(45.0f, aspect, nearPlane, farPlane);
 
     float rx = qDegreesToRadians(rotationX);
@@ -219,35 +217,43 @@ void GLWidget::paintGL() {
     );
 
     QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
-
-    // 过顶时翻转 up 以保持场景不倒转
     QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
 
-    QMatrix4x4 view;
-    view.lookAt(camPos + target, target, up);
-
+    QMatrix4x4 view; view.lookAt(camPos + target, target, up);
     QMatrix4x4 mvp = proj * view;
 
     program->bind();
     program->setUniformValue("u_mvp", mvp);
 
-    // Geometry (faces) draw
+    // 先可选绘制填充面 (GL_FILL)，再绘制线框 (GL_LINE) 覆盖提高可见性
+    if (showFilledFaces) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        vertexBuf.bind();
+        program->enableAttributeArray(0);
+        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        if (perVertexColor && colorMode == ColorDisplayMode::Faces) {
+            colorBuf.bind();
+            program->enableAttributeArray(1);
+            program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        } else {
+            program->disableAttributeArray(1);
+            glVertexAttrib3f(1, 0.85f, 0.85f, 0.85f); // 默认淡灰
+        }
+        indexBuf.bind();
+        glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+
+    // 再绘制线框
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     vertexBuf.bind();
     program->enableAttributeArray(0);
     program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-    if (perVertexColor && colorMode == ColorDisplayMode::Faces) {
-        colorBuf.bind();
-        program->enableAttributeArray(1);
-        program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
-    } else {
-        program->disableAttributeArray(1);
-        glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
-    }
-
+    program->disableAttributeArray(1);
+    glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
     indexBuf.bind();
     glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
-    // MST lines
+    // MST 线
     if (!mstLineVertices.empty()) {
         glLineWidth(3.0f);
         program->disableAttributeArray(1);
@@ -259,7 +265,7 @@ void GLWidget::paintGL() {
         glLineWidth(1.0f);
     }
 
-    // FIX: 允许在恢复后显示点云，即使 perVertexColor 为假
+    // 点云
     if (showColoredPoints) {
         glPointSize(pointSize);
         vertexBuf.bind();
@@ -271,7 +277,7 @@ void GLWidget::paintGL() {
             program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
         } else {
             program->disableAttributeArray(1);
-            glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f); // 采用白色作为默认颜色
+            glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
         }
         glDrawArrays(GL_POINTS, 0, static_cast<int>(vertices.size()));
     }
@@ -344,14 +350,12 @@ void GLWidget::mouseMoveEvent(QMouseEvent* e) {
     int dy = e->y() - lastPos.y();
 
     if (e->buttons() & Qt::LeftButton) {
-        // 方向修改: 右拖 -> 模型右旋 (摄像机左转) 通过减号调整
         rotationY -= dx * 0.5f;
-        rotationX += dy * 0.5f; // 允许穿越 ±90
-        // 限制 pitch 在 (-179,179) 防止 tan/cos 精度问题
+        rotationX += dy * 0.5f;
         if (rotationX > 179.f) rotationX -= 360.f;
         if (rotationX < -179.f) rotationX += 360.f;
         update();
-    } else if (e->buttons() & Qt::MiddleButton) { // 平移
+    } else if (e->buttons() & Qt::MiddleButton) {
         float panScale = distance * 0.0015f;
         panOffset += QVector2D(-dx * panScale, dy * panScale);
         update();
