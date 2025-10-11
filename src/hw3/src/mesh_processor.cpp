@@ -15,7 +15,9 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
     }
 
     // 步骤3：执行实际的几何处理操作（这是需要自己实现的部分）
-    processGeometry();
+    //processGeometry();
+
+	cotangentCurvature();
 
     // 步骤4：使用geometry模块的MeshConverter将结果转回Qt格式
     return geometry::MeshConverter::convertMeshToQtData(mesh);
@@ -124,6 +126,80 @@ void MeshProcessor::processGeometry() {
 		}
 
 
+	} while (threshold > 1e-5);
+
+}
+// cotangent laplacian curvature
+void MeshProcessor::cotangentCurvature() {
+	int size = mesh.vertices.size();
+
+	std::vector<double> curvature_magnitudes(size);
+	double global_max_mag = -1e10;
+	double global_min_mag = 1e10;
+	double threshold = 1.0;
+
+	do {
+		//遍历每个顶点，先拿到一阶邻域的所有顶点个数
+		for (int i = 0; i < size; i++) {
+			mesh.vertices[i]->old_position = mesh.vertices[i]->position;
+			if (mesh.vertices[i]->isBoundary()) continue;//跳过边界点
+			double area = 0.0;//记录区域面积
+			Eigen::Vector3d cotangent_curvature = { 0, 0, 0 };
+			geometry::HalfEdge* hf = mesh.vertices[i]->halfEdge;
+			// 从这个点出发，先拿到所有的一阶邻域的顶点
+			std::vector<geometry::Vertex*> one_ring_vertices;
+			while (hf->pair->next != mesh.vertices[i]->halfEdge) {
+				one_ring_vertices.push_back(hf->getEndVertex());
+				hf = hf->pair->next;
+			}
+			int one_ring_size = one_ring_vertices.size();
+
+			for (int j = 0; j < one_ring_size; j++) {
+				//开始计算这个顶点的cotangent曲率
+				geometry::Vertex* v0 = one_ring_vertices[(j - 1 + one_ring_size) % one_ring_size];
+				geometry::Vertex* v1 = one_ring_vertices[j];
+				geometry::Vertex* v2 = one_ring_vertices[(j + 1) % one_ring_size];
+				geometry::Vertex* vi = mesh.vertices[i].get();
+
+				Eigen::Vector3d v0v1 = v1->position - v0->position;
+				Eigen::Vector3d v0vi = vi->position - v0->position;
+
+				Eigen::Vector3d v2v1 = v1->position - v2->position;
+				Eigen::Vector3d v2vi = vi->position - v2->position;
+
+				//double cos_theta0 = v0v1.dot(v0vi) ;
+
+				double cos_theta0 = v0v1.dot(v0vi) / (v0v1.norm() * v0vi.norm());
+
+				//double cos_theta1 = (v2v1).dot(v2vi) ;
+				double cos_theta1 = (v2v1).dot(v2vi) / (v2v1.norm() * v2vi.norm());
+				cos_theta0 = std::min(cos_theta0, 0.9);
+				cos_theta1 = std::min(cos_theta1, 0.9);
+				double cot_0 = cos_theta0 / sqrt(1 - cos_theta0 * cos_theta0);
+
+				double cot_1 = cos_theta1 / sqrt(1 - cos_theta1 * cos_theta1);
+
+				cotangent_curvature += (cot_0 + cot_1) * (v1->position - vi->position);
+				// 计算这两块三角形所占面积
+				area += (v0v1.cross(v0vi)).norm() + (v2v1.cross(v2vi)).norm();//按照矩形来算了
+			}
+
+			cotangent_curvature = cotangent_curvature / (4 * area);
+			// --- 最终归一化，计算模长，并记录 ---
+			double curvature_magnitude = cotangent_curvature.norm();
+
+			curvature_magnitudes[i] = curvature_magnitude;
+
+
+			// 更新全局最大/最小值
+			global_max_mag = std::max(global_max_mag, curvature_magnitude);
+			global_min_mag = std::min(global_min_mag, curvature_magnitude);
+			
+			
+			mesh.vertices[i]->position += cotangent_curvature * 0.0001;
+
+			threshold = std::min(threshold, (mesh.vertices[i]->position - mesh.vertices[i]->old_position).norm());
+		}
 	} while (threshold > 1e-5);
 
 }
