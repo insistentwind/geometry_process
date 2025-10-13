@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(hw4 LANGUAGES CXX)
+project(hw6 LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -8,16 +8,16 @@ set(CMAKE_AUTOUIC ON)
 # Find packages
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 
-add_executable(hw4
-    src/hw4.cpp
+add_executable(hw6
+    src/hw6.cpp
     include/mesh_processor.h
     src/mesh_processor.cpp)
 
-target_include_directories(hw4 PRIVATE 
+target_include_directories(hw6 PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(hw4
+target_link_libraries(hw6
     PRIVATE
         mesh_viewer
         geometry::halfedge  # 使用共享的几何库
@@ -30,12 +30,12 @@ target_link_libraries(hw4
 
 # Qt部署设置
 if(WIN32)
-    add_custom_command(TARGET hw4 POST_BUILD
+    add_custom_command(TARGET hw6 POST_BUILD
         COMMAND "${WINDEPLOYQT_EXECUTABLE}"
             --debug
             --no-compiler-runtime
             --no-system-d3d-compiler
-            \"$<TARGET_FILE:hw4>\"
-        COMMENT "Deploying Qt libraries for hw4..."
+            \"$<TARGET_FILE:hw6>\"
+        COMMENT "Deploying Qt libraries for hw6..."
     )
 endif()

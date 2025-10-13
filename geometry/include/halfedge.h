@@ -21,7 +21,8 @@ public:
     Eigen::Vector2d texCoords;
     Eigen::Vector3d color;
     HalfEdge* halfEdge;
-    int index;
+	int boundary_index = -1; // 边界索引，-1表示非边界顶点
+	int index;// 顶点索引
     Vertex(const Eigen::Vector3d& pos, int idx)
         : position(pos), normal(Eigen::Vector3d::Zero()), texCoords(Eigen::Vector2d::Zero()),
           color(Eigen::Vector3d::Ones()), halfEdge(nullptr), index(idx) {}

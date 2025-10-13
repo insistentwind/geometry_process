@@ -54,7 +54,6 @@ public:
      * @brief 清空当前网格数据
      */
     void clear() { mesh.clear(); }
-    void processGeometry_ultimate();
 
 private:
     geometry::HalfEdgeMesh mesh;  ///< 半边网格对象，存储转换后的网格数据
