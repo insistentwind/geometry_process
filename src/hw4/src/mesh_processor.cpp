@@ -17,7 +17,8 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
 	}
 
 	// 步骤3：执行实际的几何处理操作（这是需要自己实现的部分）
-	processGeometry();
+	//processGeometry();
+    processGeometry_ultimate();
 
 	// 步骤4：使用geometry模块的MeshConverter将结果转回Qt格式
 	return geometry::MeshConverter::convertMeshToQtData(mesh);
@@ -66,6 +67,7 @@ void MeshProcessor::processGeometry() {
 
 		boundary_cycle++;
 	}
+    // 记录每个边界环起点， 遍历渲染
 
 
 
@@ -170,7 +172,7 @@ void MeshProcessor::processGeometry_ultimate() {
         geometry::HalfEdge* he = start;
         int guard = 0;
         do {
-            loop.push_back(he);
+            loop.push_back(he);// 直接推送半边，起点为当前点
             visitedHE.insert(he);
             // 找下一条边界半边
             geometry::HalfEdge* cand = he->next;
@@ -228,9 +230,13 @@ void MeshProcessor::processGeometry_ultimate() {
     Eigen::VectorXd by = Eigen::VectorXd::Zero(n);
 
     // 多环：同心圆嵌入（半径递减）
-    // 外环半径 1.0，后续 r = 1.0 - 0.3 * loopId
+    // 外环半径 1.0，后续 r = 1.0 - 0.3 * 
+
+    int up = 2;
     for (size_t li = 0; li < loopInfos.size(); ++li) {
-        double r = 1.0 - 0.3 * li;
+       /* double r = 1.0 - 0.3 * li;*/
+        double r = 1.0; // 圆的半径
+        double a = up * li;// 参数方程常量系数
         if (r <= 0.05) r = 0.05; // 防止太小
         auto& verts = loopInfos[li].verts;
         int B = (int)verts.size();
@@ -238,7 +244,7 @@ void MeshProcessor::processGeometry_ultimate() {
             geometry::Vertex* v = verts[k];
             double t = double(k) / double(B); // 0..(B-1)/B
             double theta = 2.0 * M_PI * t;
-            double x = r * std::cos(theta);
+            double x = r * std::cos(theta) + a;
             double y = r * std::sin(theta);
             triplets.emplace_back(v->index, v->index, 1.0);
             bx(v->index) = x;

@@ -50,6 +50,7 @@ public:
 
 class HalfEdge {
 public:
+    int index;
     Vertex* vertex;   ///< 起点
     Face* face;       ///< 左侧面
     HalfEdge* next;   ///< 下一条
