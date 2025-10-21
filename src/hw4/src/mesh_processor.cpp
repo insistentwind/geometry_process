@@ -18,7 +18,8 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
 
 	// 步骤3：执行实际的几何处理操作（这是需要自己实现的部分）
 	//processGeometry();
-    processGeometry_ultimate();
+    //processGeometry_ultimate();
+    LSCM();
 
 	// 步骤4：使用geometry模块的MeshConverter将结果转回Qt格式
 	return geometry::MeshConverter::convertMeshToQtData(mesh);
@@ -311,4 +312,119 @@ void MeshProcessor::processGeometry_ultimate() {
         geometry::Vertex* v = vPtr.get();
         v->position = Eigen::Vector3d(solx[v->index], soly[v->index], 0.0);
     }
+}
+
+
+void MeshProcessor::LSCM() {
+    // 修正版 LSCM: 避免退化成一条直线
+    // 退化常见原因：所有三角形展开后 y 分量接近 0 (长条/共线)，或约束只在一条轴上。
+    // 稳定策略：
+    // 1. 精确按公式构造 z_j, z_k 展开 (i 为原点, j 在 x 轴)。
+    // 2. 若 y_k 非正或过小，用法线方向生成一个最小正值(保持共形结构)。
+    // 3. 两个锚点放在 (0,0) 与 (1,0)。不做额外缩放，避免整体压缩。
+    // 4. 面方程使用单位权或面积权 (这里用面积权提升稳健性)。
+
+    int n = (int)mesh.vertices.size();
+    int f = (int)mesh.faces.size();
+    if (n == 0 || f == 0) return;
+
+    // 记录原始 3D 到 old_position (若之前未写过)。
+    for (auto& v : mesh.vertices) v->old_position = v->position;
+
+    // 选两个边界锚点: 最远距离 (若边界不足用任意两点)
+    int anchorA = -1, anchorB = -1;
+    for (int i = 0; i < n; ++i) if (mesh.vertices[i]->isBoundary()) { anchorA = i; break; }
+    if (anchorA >= 0) {
+        double maxD = -1.0; Eigen::Vector3d pA = mesh.vertices[anchorA]->old_position;
+        for (int i = 0; i < n; ++i) if (i != anchorA && mesh.vertices[i]->isBoundary()) {
+            double d = (mesh.vertices[i]->old_position - pA).norm(); if (d > maxD) { maxD = d; anchorB = i; }
+        }
+    }
+    if (anchorA < 0 || anchorB < 0) { // 无足够边界
+        anchorA = 0; anchorB = (n > 1 ? 1 : 0); double maxD = -1.0;
+        for (int i = 0; i < n; i++)for (int j = i + 1; j < n; j++) { double d = (mesh.vertices[i]->old_position - mesh.vertices[j]->old_position).norm(); if (d > maxD) { maxD = d; anchorA = i; anchorB = j; } }
+    }
+    if (anchorA == anchorB) return;
+
+    // 系统：2*f + 4 行，2*n 列 (u(0..n-1), v(0..n-1))
+    int rows = 2 * f + 4;
+    int cols = 2 * n;
+    std::vector<Eigen::Triplet<double>> triplets;
+    Eigen::VectorXd b = Eigen::VectorXd::Zero(rows);
+
+    auto uId = [&](int vi) {return vi; };
+    auto vId = [&](int vi) {return vi + n; };
+
+    int r = 0;
+    for (int fi = 0; fi < f; ++fi) {
+        auto face = mesh.faces[fi].get();
+        auto he0 = face->halfEdge; auto he1 = he0->next; auto he2 = he1->next;
+        int i = he0->vertex->index;
+        int j = he1->vertex->index;
+        int k = he2->vertex->index;
+
+        Eigen::Vector3d p_i = mesh.vertices[i]->old_position;
+        Eigen::Vector3d p_j = mesh.vertices[j]->old_position;
+        Eigen::Vector3d p_k = mesh.vertices[k]->old_position;
+        Eigen::Vector3d e_ij = p_j - p_i;
+        Eigen::Vector3d e_ik = p_k - p_i;
+        double Lij = e_ij.norm();
+        double Lik = e_ik.norm();
+        if (Lij < 1e-14 || Lik < 1e-14) continue; // 退化跳过
+
+        // 展开: j 在 (Lij,0)
+        double xk = e_ik.dot(e_ij) / Lij; // k 在 e_ij 方向投影
+        double yk2 = std::max(0.0, e_ik.squaredNorm() - xk * xk);
+        double yk = (yk2 <= 1e-20 ? 1e-10 : std::sqrt(yk2)); // 极小则给一个正值防止整片拉成直线
+
+        // r = (z_j - z_i)/(z_k - z_i) = Lij / (xk + i yk)
+        std::complex<double> zj(Lij, 0.0); std::complex<double> zk(xk, yk);
+        if (std::abs(zk) < 1e-14) continue; // 退化
+        std::complex<double> r_c = zj / zk;
+        double rRe = r_c.real();
+        double rIm = r_c.imag();
+
+        // 面面积权重 (用原 3D 面积)
+        double area2 = e_ij.cross(e_ik).norm();
+        double w = 0.5 * area2;
+        // 约束1: (u_j-u_i) - rRe*(u_k-u_i) + rIm*(v_k-v_i) = 0
+        triplets.emplace_back(r, uId(j), w * 1.0);
+        triplets.emplace_back(r, uId(i), w * -1.0);
+        triplets.emplace_back(r, uId(k), w * -rRe);
+        triplets.emplace_back(r, uId(i), w * rRe); // 加回 rRe*u_i
+        triplets.emplace_back(r, vId(k), w * rIm);
+        triplets.emplace_back(r, vId(i), w * -rIm);
+        r++;
+        // 约束2: (v_j-v_i) - rRe*(v_k-v_i) - rIm*(u_k-u_i) = 0
+        triplets.emplace_back(r, vId(j), w * 1.0);
+        triplets.emplace_back(r, vId(i), w * -1.0);
+        triplets.emplace_back(r, vId(k), w * -rRe);
+        triplets.emplace_back(r, vId(i), w * rRe);
+        triplets.emplace_back(r, uId(k), w * -rIm);
+        triplets.emplace_back(r, uId(i), w * rIm);
+        r++;
+    }
+
+    // 锚点约束: uA=0, vA=0, uB=1, vB=0
+    triplets.emplace_back(r, uId(anchorA), 1.0); b[r] = 0.0; r++;
+    triplets.emplace_back(r, vId(anchorA), 1.0); b[r] = 0.0; r++;
+    triplets.emplace_back(r, uId(anchorB), 1.0); b[r] = 1.0; r++;
+    triplets.emplace_back(r, vId(anchorB), 1.0); b[r] = 0.0; r++;
+
+    int finalRows = r;
+    Eigen::SparseMatrix<double> M(finalRows, cols);
+    M.setFromTriplets(triplets.begin(), triplets.end());
+    Eigen::VectorXd b_use = b.head(finalRows);
+
+    // 最小二乘: (M^T M) x = M^T b
+    Eigen::SparseMatrix<double> MtM = M.transpose() * M;
+    Eigen::VectorXd MtB = M.transpose() * b_use;
+    for (int i = 0; i < cols; i++) MtM.coeffRef(i, i) += 1e-10; // 正则
+
+    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver; solver.compute(MtM);
+    if (solver.info() != Eigen::Success) { std::cerr << "LSCM: factorization failed" << std::endl; return; }
+    Eigen::VectorXd sol = solver.solve(MtB);
+    if (solver.info() != Eigen::Success) { std::cerr << "LSCM: solve failed" << std::endl; return; }
+
+    for (int i = 0; i < n; ++i) { double u = sol[uId(i)], v = sol[vId(i)]; mesh.vertices[i]->position = { (float)u,(float)v,0.0f }; }
 }

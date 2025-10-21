@@ -33,6 +33,7 @@ add_subdirectory (src/hw3)
 add_subdirectory (src/hw4) 
 add_subdirectory (src/hw5) 
 add_subdirectory (src/hw6) 
+add_subdirectory (src/hw7) 
 # Qt部署设置（移动到每个work的CMakeLists.txt中）
 if(WIN32)
     get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)

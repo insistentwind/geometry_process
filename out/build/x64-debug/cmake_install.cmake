@@ -72,6 +72,11 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw6/cmake_install.cmake")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw7/cmake_install.cmake")
+endif()
+
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)

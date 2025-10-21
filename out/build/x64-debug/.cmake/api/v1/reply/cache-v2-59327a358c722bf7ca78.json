@@ -883,7 +883,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "9"
+			"value" : "10"
 		},
 		{
 			"name" : "CMAKE_PLATFORM_INFO_INITIALIZED",
@@ -6648,6 +6648,42 @@
 			],
 			"type" : "STATIC",
 			"value" : "E:/qt_work/geometry_process-master/src/hw6"
+		},
+		{
+			"name" : "hw7_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw7"
+		},
+		{
+			"name" : "hw7_IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "OFF"
+		},
+		{
+			"name" : "hw7_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "E:/qt_work/geometry_process-master/src/hw7"
 		},
 		{
 			"name" : "mesh_viewer_BINARY_DIR",

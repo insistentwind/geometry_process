@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "bin/hw1.exe"
+			"path" : "bin/hw7.exe"
 		},
 		{
-			"path" : "bin/hw1.pdb"
+			"path" : "bin/hw7.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -22,7 +22,7 @@
 		],
 		"files" : 
 		[
-			"src/hw1/CMakeLists.txt",
+			"src/hw7/CMakeLists.txt",
 			"viewer/CMakeLists.txt",
 			"geometry/CMakeLists.txt",
 			"E:/Qt/6.9.3/msvc2022_64/lib/cmake/Qt6Core/Qt6CoreTargets.cmake",
@@ -131,7 +131,7 @@
 			{
 				"command" : 5,
 				"file" : 0,
-				"line" : 18,
+				"line" : 16,
 				"parent" : 0
 			}
 		]
@@ -208,11 +208,11 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw1/hw1_autogen/include"
+					"path" : "E:/qt_work/geometry_process-master/out/build/x64-debug/src/hw7/hw7_autogen/include"
 				},
 				{
 					"backtrace" : 19,
-					"path" : "E:/qt_work/geometry_process-master/src/hw1/include"
+					"path" : "E:/qt_work/geometry_process-master/src/hw7/include"
 				},
 				{
 					"backtrace" : 2,
@@ -278,7 +278,7 @@
 			[
 				0,
 				1,
-				2
+				3
 			]
 		}
 	],
@@ -286,21 +286,21 @@
 	[
 		{
 			"backtrace" : 2,
-			"id" : "geometry::@60d41218eef6b4657a56"
-		},
-		{
-			"backtrace" : 2,
 			"id" : "mesh_viewer::@4ad571843d929affe7de"
 		},
 		{
-			"backtrace" : 0,
-			"id" : "hw1_autogen::@88ce4058fe9bf03ba715"
+			"backtrace" : 2,
+			"id" : "geometry::@60d41218eef6b4657a56"
 		},
 		{
-			"id" : "hw1_autogen_timestamp_deps::@88ce4058fe9bf03ba715"
+			"backtrace" : 0,
+			"id" : "hw7_autogen::@3327df38afe7f617d5d6"
+		},
+		{
+			"id" : "hw7_autogen_timestamp_deps::@3327df38afe7f617d5d6"
 		}
 	],
-	"id" : "hw1::@88ce4058fe9bf03ba715",
+	"id" : "hw7::@3327df38afe7f617d5d6",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -425,12 +425,12 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "hw1",
-	"nameOnDisk" : "hw1.exe",
+	"name" : "hw7",
+	"nameOnDisk" : "hw7.exe",
 	"paths" : 
 	{
-		"build" : "src/hw1",
-		"source" : "src/hw1"
+		"build" : "src/hw7",
+		"source" : "src/hw7"
 	},
 	"sourceGroups" : 
 	[
@@ -440,14 +440,14 @@
 			[
 				0,
 				1,
-				2
+				3
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				3
+				2
 			]
 		},
 		{
@@ -471,36 +471,36 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/mocs_compilation.cpp",
+			"path" : "out/build/x64-debug/src/hw7/hw7_autogen/mocs_compilation.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/hw1/src/hw1.cpp",
+			"path" : "src/hw7/src/hw7.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "src/hw1/src/mesh_processor.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "src/hw1/include/mesh_processor.h",
+			"path" : "src/hw7/include/mesh_processor.h",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/hw7/src/mesh_processor.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/timestamp",
+			"path" : "out/build/x64-debug/src/hw7/hw7_autogen/timestamp",
 			"sourceGroupIndex" : 2
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "out/build/x64-debug/src/hw1/hw1_autogen/timestamp.rule",
+			"path" : "out/build/x64-debug/src/hw7/hw7_autogen/timestamp.rule",
 			"sourceGroupIndex" : 3
 		}
 	],
