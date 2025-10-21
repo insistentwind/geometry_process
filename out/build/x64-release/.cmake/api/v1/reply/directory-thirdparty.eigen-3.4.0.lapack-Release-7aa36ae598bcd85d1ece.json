@@ -1,0 +1,76 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"thirdparty/eigen-3.4.0/lapack/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 107,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 107,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"lib/eigen_lapack_static.lib"
+			],
+			"targetId" : "eigen_lapack_static::@46cdb0f37691e5c90140",
+			"targetIndex" : 604,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"lib/eigen_lapack.lib"
+			],
+			"targetId" : "eigen_lapack::@46cdb0f37691e5c90140",
+			"targetIndex" : 603,
+			"targetIsImportLibrary" : true,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Unspecified",
+			"destination" : "bin",
+			"paths" : 
+			[
+				"bin/eigen_lapack.dll"
+			],
+			"targetId" : "eigen_lapack::@46cdb0f37691e5c90140",
+			"targetIndex" : 603,
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "thirdparty/eigen-3.4.0/lapack",
+		"source" : "thirdparty/eigen-3.4.0/lapack"
+	}
+}

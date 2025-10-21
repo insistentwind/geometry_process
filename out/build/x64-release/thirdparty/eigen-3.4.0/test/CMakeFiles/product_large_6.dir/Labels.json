@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/D/qt_works/geometry_process/thirdparty/eigen-3.4.0/test/product_large.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "product_large_6"
+	}
+}

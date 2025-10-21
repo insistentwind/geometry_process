@@ -1,0 +1,79 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"thirdparty/eigen-3.4.0/unsupported/Eigen/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 25,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 30,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Devel",
+			"destination" : "include/eigen3/unsupported/Eigen",
+			"paths" : 
+			[
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/AdolcForward",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/AlignedVector3",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/ArpackSupport",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/AutoDiff",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/BVH",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/EulerAngles",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/FFT",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/IterativeSolvers",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/KroneckerProduct",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/LevenbergMarquardt",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/MatrixFunctions",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/MoreVectorization",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/MPRealSupport",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/NonLinearOptimization",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/NumericalDiff",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/OpenGLSupport",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/Polynomials",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/Skyline",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/SparseExtra",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/SpecialFunctions",
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/Splines"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "Devel",
+			"destination" : "include/eigen3/unsupported/Eigen",
+			"paths" : 
+			[
+				"thirdparty/eigen-3.4.0/unsupported/Eigen/src"
+			],
+			"type" : "directory"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "thirdparty/eigen-3.4.0/unsupported/Eigen",
+		"source" : "thirdparty/eigen-3.4.0/unsupported/Eigen"
+	}
+}

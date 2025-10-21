@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/D/qt_works/geometry_process/thirdparty/eigen-3.4.0/unsupported/test/idrs.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildUnsupported"
+		],
+		"name" : "idrs_1"
+	}
+}

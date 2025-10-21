@@ -3,6 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.16)
 
+
 project (mesh_works LANGUAGES CXX)
 
 # 设置C++标准
@@ -17,7 +18,7 @@ if(WIN32)
 endif()
 
 # 在添加geometry之前
-# add_subdirectory(thirdparty/Eigen)
+add_subdirectory(thirdparty/eigen-3.4.0)
 
 
 # 添加几何库（必须在其他项目之前）

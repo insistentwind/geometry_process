@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/D/qt_works/geometry_process/thirdparty/eigen-3.4.0/test/geo_orthomethods.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "geo_orthomethods_3"
+	}
+}

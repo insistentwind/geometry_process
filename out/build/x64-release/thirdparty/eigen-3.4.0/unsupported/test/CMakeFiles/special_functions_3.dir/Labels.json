@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/D/qt_works/geometry_process/thirdparty/eigen-3.4.0/unsupported/test/special_functions.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildUnsupported"
+		],
+		"name" : "special_functions_3"
+	}
+}

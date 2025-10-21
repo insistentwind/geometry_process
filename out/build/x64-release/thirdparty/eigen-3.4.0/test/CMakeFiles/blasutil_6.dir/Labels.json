@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/D/qt_works/geometry_process/thirdparty/eigen-3.4.0/test/blasutil.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "blasutil_6"
+	}
+}
