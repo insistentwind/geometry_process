@@ -10,6 +10,23 @@ project (mesh_works LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# MSVC统一使用 UTF-8 避免源文件编码警告 (C4828)
+if(MSVC)
+ add_compile_options(/utf-8)
+endif()
+
+#-------------- Windows SDK选择--------------
+# 可选：强制指定一个较新的 Windows11 SDK版本（示例：10.0.22621.0）
+# 如需关闭强制，可在配置时加 -DFORCE_WIN11_SDK=OFF
+option(FORCE_WIN11_SDK "Force Windows10 SDK (19041) selection" ON)
+if(WIN32 AND FORCE_WIN10_SDK)
+ # 如果未安装该版本会导致配置失败，请确保在 VS Installer 中已安装对应 Windows SDK
+ set(CMAKE_SYSTEM_VERSION 10.0.19041.0)
+ # 针对 VS生成器的额外变量（Ninja 下通常只看 CMAKE_SYSTEM_VERSION）
+ set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION 10.0.19041.0)
+endif()
+# ----------------------------------------------
+
 # Add Qt deployment settings
 if(WIN32)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
