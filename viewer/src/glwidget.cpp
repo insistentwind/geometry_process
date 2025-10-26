@@ -383,6 +383,8 @@ void GLWidget::mousePressEvent(QMouseEvent* e) {
  std::cout << "[GLWidget] Marked vertex " << hitVertex << " as FIXED (total: "
  << fixedVertices.size() << " fixed vertices)" << std::endl;
  }
+ // ? 立即触发重绘，显示蓝色高亮点
+ update();
  }
  else if (arapSelectionMode == ArapSelectionMode::SelectHandle) {
  // === Handle点选择模式：设置为拖动点 ===
@@ -403,6 +405,8 @@ void GLWidget::mousePressEvent(QMouseEvent* e) {
  //允许后续 mouseMoveEvent触发拖拽
  leftButtonDraggingHandle = true;
  std::cout << "[GLWidget] Selected vertex " << hitVertex << " as HANDLE (ready to drag)" << std::endl;
+ // ? 立即触发重绘，显示红色高亮点
+ update();
  }
  }
  return; // ARAP模式下，左键不旋转视图

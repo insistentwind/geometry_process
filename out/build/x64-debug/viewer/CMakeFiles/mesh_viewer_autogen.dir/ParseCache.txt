@@ -509,8 +509,10 @@ C:/D/qt_works/geometry_process/viewer/include/mainwindow.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtOpenGLWidgets/qtopenglwidgetsglobal.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QFileDialog
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QMainWindow
+ mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QMenu
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QMenuBar
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QPushButton
+ mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QToolButton
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QWidget
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qabstractbutton.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qdialog.h
@@ -521,6 +523,7 @@ C:/D/qt_works/geometry_process/viewer/include/mainwindow.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qpushbutton.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qsizepolicy.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtabwidget.h
+ mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtoolbutton.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtwidgets-config.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtwidgetsexports.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtwidgetsglobal.h

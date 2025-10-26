@@ -198,8 +198,10 @@ mesh_viewer_autogen/timestamp: \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtOpenGLWidgets/qtopenglwidgetsglobal.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QFileDialog \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QMainWindow \
+	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QMenu \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QMenuBar \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QPushButton \
+	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QToolButton \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/QWidget \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qabstractbutton.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qdialog.h \
@@ -210,6 +212,7 @@ mesh_viewer_autogen/timestamp: \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qpushbutton.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qsizepolicy.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtabwidget.h \
+	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtoolbutton.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtwidgets-config.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtwidgetsexports.h \
 	C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qtwidgetsglobal.h \

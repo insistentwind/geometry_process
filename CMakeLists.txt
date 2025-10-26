@@ -12,7 +12,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # MSVC统一使用 UTF-8 避免源文件编码警告 (C4828)
 if(MSVC)
- add_compile_options(/utf-8)
+    add_compile_options(/utf-8)
+    # 可选：禁用 C4828 警告（不推荐，应该修复源文件编码）
+    # add_compile_options(/wd4828)
 endif()
 
 #-------------- Windows SDK选择--------------

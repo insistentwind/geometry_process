@@ -6,17 +6,19 @@
 #include <QFileDialog>
 #include <QVector3D>
 #include <QPushButton>
+#include <QToolButton>
+#include <QMenu>
 #include <vector>
 #include "glwidget.h"
 
 /* --------------------------------------------------------------------------
  * MainWindow
- * 负责:
- *   - 文件打开/还原/处理按钮
- *   - 保存原始模型用于还原
- *   - 发出异步处理信号(objLoaded)
- *   - 顶点彩色点显示开关按钮
- *   - 新增: ARAP模式切换和固定点清除
+ * 功能:
+ *   - 文件加载/恢复/处理按钮
+ *   - 保存原始模型用于恢复
+ *- 提供异步处理信号(objLoaded)
+ *   - 颜色/填充显示切换按钮
+ *   - 新增: ARAP下拉菜单（整合4个按钮）
  * -------------------------------------------------------------------------- */
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -25,49 +27,52 @@ public:
     ~MainWindow() override;
 
     void updateMesh(const std::vector<QVector3D>& vertices,
-                    const std::vector<unsigned int>& indices);
+       const std::vector<unsigned int>& indices);
     void updateMeshWithColors(const std::vector<QVector3D>& vertices,
-                              const std::vector<unsigned int>& indices,
-                              const std::vector<QVector3D>& colors);
+   const std::vector<unsigned int>& indices,
+      const std::vector<QVector3D>& colors);
 
 signals:
     void objLoaded(const std::vector<QVector3D>& vertices,
-                   const std::vector<unsigned int>& indices);
+        const std::vector<unsigned int>& indices);
 
 private slots:
-    void openFile();       // 打开模型
-    void restoreModel();   // 还原原始模型
-    void requestProcess(); // 触发再次处理
-    void togglePoints();   // 显示/隐藏彩色顶点点
-    void cycleColorMode(); // 新增：循环颜色显示模式
-    void toggleFilledFaces(); // 新增：切换填充面
-    void toggleArapMode(); // 新增：切换ARAP模式
-    void clearArapFixed(); // 新增：清除ARAP固定点
-    void setArapModeFixed();  // 新增：切换到Fixed选择模式
-    void setArapModeHandle(); // 新增：切换到Handle选择模式
+    void openFile();       // 加载模型
+    void restoreModel();   // 恢复原始模型
+    void requestProcess(); // 请求再次处理
+    void togglePoints();   // 显示/隐藏彩色点云
+    void cycleColorMode(); // 按钮：循环切换颜色显示模式
+    void toggleFilledFaces(); // 按钮：切换填充面
+    void toggleArapMode(); // 按钮：切换ARAP模式
+ void clearArapFixed(); // 按钮：清除所有ARAP固定点
+    void setArapModeFixed();  // 按钮：切换到Fixed选择模式
+    void setArapModeHandle(); // 按钮：切换到Handle选择模式
 
 private:
     void createMenus();
     void updateColorModeButtonText();
     void updateFilledFaceButtonText();
-    void updateArapButtonText(); // 新增：更新ARAP按钮文本
-    void updateArapSelectionButtonText(); // 新增：更新选择模式按钮文本
+  void updateArapButtonText();
 
     GLWidget *glWidget { nullptr };
     QPushButton *restoreButton { nullptr };
     QPushButton *processButton { nullptr };
-    QPushButton *togglePointsButton { nullptr }; // 新增按钮
-    QPushButton *colorModeButton { nullptr }; // 新增：模式按钮
-    QPushButton *filledFaceButton { nullptr }; // 新增按钮
-    QPushButton *arapModeButton { nullptr };  // ARAP模式切换按钮
-    QPushButton *arapClearFixedButton { nullptr }; // 清除固定点按钮
-    QPushButton *arapSelectFixedButton { nullptr }; // 新增：选择Fixed模式按钮
-    QPushButton *arapSelectHandleButton { nullptr }; // 新增：选择Handle模式按钮
+    QPushButton *togglePointsButton { nullptr };
+    QPushButton *colorModeButton { nullptr };
+    QPushButton *filledFaceButton { nullptr };
+    
+    // ARAP 工具按钮和下拉菜单
+    QToolButton *arapToolButton { nullptr };
+    QMenu *arapMenu { nullptr };
+    QAction *arapEnterExitAction { nullptr };
+ QAction *arapSelectFixedAction { nullptr };
+    QAction *arapSelectHandleAction { nullptr };
+    QAction *arapClearFixedAction { nullptr };
 
-    bool pointsVisible = true; // 当前彩色点显示状态
+    bool pointsVisible = true;
 
-    std::vector<QVector3D> originalVertices;   // 原始顶点
-    std::vector<unsigned int> originalIndices; // 原始索引
+    std::vector<QVector3D> originalVertices;
+    std::vector<unsigned int> originalIndices;
 };
 
 #endif // MAINWINDOW_H
