@@ -312,7 +312,6 @@ C:/D/qt_works/geometry_process/viewer/include/glwidget.h
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtWidgets/qwidget.h
  mdp:C:/D/qt_works/geometry_process/viewer/include/glwidget.h
  mdp:C:/D/qt_works/geometry_process/viewer/include/objloader.h
-C:/D/qt_works/geometry_process/viewer/src/objloader.cpp
 C:/D/qt_works/geometry_process/viewer/include/mainwindow.h
  mmc:Q_OBJECT
  mdp:C:/D/Qt6/6.9.3/msvc2022_64/include/QtCore/QString
@@ -528,6 +527,7 @@ C:/D/qt_works/geometry_process/viewer/include/mainwindow.h
  mdp:C:/D/qt_works/geometry_process/viewer/include/glwidget.h
  mdp:C:/D/qt_works/geometry_process/viewer/include/mainwindow.h
  mdp:C:/D/qt_works/geometry_process/viewer/include/objloader.h
+C:/D/qt_works/geometry_process/viewer/src/objloader.cpp
 C:/D/qt_works/geometry_process/viewer/include/objloader.h
 C:/D/qt_works/geometry_process/viewer/src/async_mesh_processor.cpp
 C:/D/qt_works/geometry_process/viewer/src/glwidget.cpp

@@ -50,7 +50,11 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         "requestProcess",
         "togglePoints",
         "cycleColorMode",
-        "toggleFilledFaces"
+        "toggleFilledFaces",
+        "toggleArapMode",
+        "clearArapFixed",
+        "setArapModeFixed",
+        "setArapModeHandle"
     };
 
     QtMocHelpers::UintData qt_methods {
@@ -70,6 +74,14 @@ template <> constexpr inline auto MainWindow::qt_create_metaobjectdata<qt_meta_t
         QtMocHelpers::SlotData<void()>(11, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'toggleFilledFaces'
         QtMocHelpers::SlotData<void()>(12, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'toggleArapMode'
+        QtMocHelpers::SlotData<void()>(13, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'clearArapFixed'
+        QtMocHelpers::SlotData<void()>(14, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'setArapModeFixed'
+        QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'setArapModeHandle'
+        QtMocHelpers::SlotData<void()>(16, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -100,6 +112,10 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 4: _t->togglePoints(); break;
         case 5: _t->cycleColorMode(); break;
         case 6: _t->toggleFilledFaces(); break;
+        case 7: _t->toggleArapMode(); break;
+        case 8: _t->clearArapFixed(); break;
+        case 9: _t->setArapModeFixed(); break;
+        case 10: _t->setArapModeHandle(); break;
         default: ;
         }
     }
@@ -128,14 +144,14 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 7)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 7;
+        _id -= 11;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 7)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 7;
+        _id -= 11;
     }
     return _id;
 }

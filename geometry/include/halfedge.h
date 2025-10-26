@@ -14,6 +14,8 @@ class HalfEdge;
 
 class Vertex {
 public:
+    bool fixed = false;// 是否是固定的点
+    bool handle = false; // 是否是拖拽控制点（handle点）
     Eigen::Vector3d position;
 	Eigen::Vector3d old_position; // 用于某些算法中存储旧位置
 	Eigen::Vector3d old_normal;   // 用于某些算法中存储旧法线

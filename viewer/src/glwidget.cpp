@@ -6,14 +6,15 @@
 #include <QFile>
 #include <cmath>
 #include <limits>
+#include <iostream> // 添加iostream用于std::cout
 
 /* --------------------------------------------------------------------------
- * GLWidget 改进版: 添加轨道相机(中心化, 平移, 更平滑缩放)
+ * GLWidget 改进版: 添加轨道相机(中心化, 平移, 更平滑缩放) + ARAP交互
  * -------------------------------------------------------------------------- */
 
 GLWidget::GLWidget(QWidget* parent)
     : QOpenGLWidget(parent),
-      distance(4.0f),
+  distance(4.0f),
       rotationX(0.0f),
       rotationY(0.0f),
       panOffset(0.0f, 0.0f),
@@ -282,6 +283,35 @@ void GLWidget::paintGL() {
         glDrawArrays(GL_POINTS, 0, static_cast<int>(vertices.size()));
     }
 
+    // ARAP模式：高亮显示所有fixed顶点（蓝色大点）
+    if (arapActive && !fixedVertices.empty()) {
+    glPointSize(12.0f);  // 较大的点
+        vertexBuf.bind();
+      program->enableAttributeArray(0);
+        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        program->disableAttributeArray(1);
+glVertexAttrib3f(1, 0.2f, 0.5f, 1.0f);  // 蓝色
+
+        // 绘制所有fixed顶点
+        for (int vertexIndex : fixedVertices) {
+            if (vertexIndex >= 0 && vertexIndex < static_cast<int>(vertices.size())) {
+   glDrawArrays(GL_POINTS, vertexIndex, 1);
+     }
+        }
+    }
+    
+    // ARAP模式，绘制handle顶点（红色点）
+    if (arapActive && arapHandleVertex >= 0) {
+   glPointSize(15.0f);  // 更大的点
+  vertexBuf.bind();
+        program->enableAttributeArray(0);
+        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+        program->disableAttributeArray(1);
+        glVertexAttrib3f(1, 1.0f, 0.2f, 0.2f);  // 红色
+        
+ glDrawArrays(GL_POINTS, arapHandleVertex, 1);
+    }
+
     program->disableAttributeArray(0);
     program->disableAttributeArray(1);
     program->release();
@@ -314,7 +344,7 @@ void GLWidget::resetView() {
     rotationX = 0.0f;
     rotationY = 0.0f;
     panOffset = QVector2D(0,0);
-    distance = modelRadius * 2.2f;
+    distance = modelRadius * 3.5f;  // 增加到3.5倍，使模型显示更小
     distance = std::clamp(distance, 0.5f * modelRadius, 10.0f * modelRadius);
 }
 
@@ -338,38 +368,337 @@ void GLWidget::resizeGL(int w, int h) {
 
 /* --------------------------------- 交互事件 -------------------------------- */
 void GLWidget::mousePressEvent(QMouseEvent* e) {
-    lastPos = e->pos();
+  lastPos = e->pos();
+
+    // ARAP模式下的鼠标操作：根据选择模式决定行为
+    if (arapActive && e->button() == Qt::LeftButton) {
+     int hitVertex = pickVertex(e->pos());
+  
+        if (hitVertex >= 0) {
+  if (arapSelectionMode == ArapSelectionMode::SelectFixed) {
+          // === Fixed点选择模式：添加到fixed集合 ===
+     fixedVertices.insert(hitVertex);
+     
+         // 调用回调标记为fixed
+     if (arapSetFixedCallback) {
+        arapSetFixedCallback(hitVertex, true);
+  std::cout << "[GLWidget] Marked vertex " << hitVertex << " as FIXED (total: " 
+    << fixedVertices.size() << " fixed vertices)" << std::endl;
+      }
+          }
+  else if (arapSelectionMode == ArapSelectionMode::SelectHandle) {
+                // === Handle点选择模式：设置为拖动点 ===
+   arapHandleVertex = hitVertex;
+       leftButtonDraggingHandle = true;
+   
+// 记录handle深度，用于后续拖拽时坐标转换
+      handleDepth = (vertices[hitVertex] - modelCenter).length();
+         
+              std::cout << "[GLWidget] Selected vertex " << hitVertex << " as HANDLE (ready to drag)" << std::endl;
+            }
+        }
+   
+        return; // ARAP模式下，左键不旋转视图
+    }
+    
+    // 右键重置视图
     if (e->button() == Qt::RightButton) {
         resetView();
-        update();
-    }
+      update();
+  }
 }
 
+/**
+ * @brief 鼠标移动事件处理（覆盖原有实现以支持ARAP拖拽）
+ */
 void GLWidget::mouseMoveEvent(QMouseEvent* e) {
     int dx = e->x() - lastPos.x();
     int dy = e->y() - lastPos.y();
 
-    if (e->buttons() & Qt::LeftButton) {
-        rotationY -= dx * 0.5f;
-        rotationX += dy * 0.5f;
-        if (rotationX > 179.f) rotationX -= 360.f;
-        if (rotationX < -179.f) rotationX += 360.f;
-        update();
-    } else if (e->buttons() & Qt::MiddleButton) {
-        float panScale = distance * 0.0015f;
-        panOffset += QVector2D(-dx * panScale, dy * panScale);
-        update();
+    // ARAP模式下：只处理handle拖拽，不允许相机旋转
+    if (arapActive) {
+        if (leftButtonDraggingHandle && arapHandleVertex >= 0) {
+            performArapDrag(e->pos());
+        }
+        // ARAP模式下不处理其他鼠标移动（禁止相机旋转）
     }
-
+    // 正常模式：相机交互
+    else {
+        if (e->buttons() & Qt::LeftButton) {
+     rotationY -= dx * 0.5f;
+        rotationX += dy * 0.5f;
+            if (rotationX > 179.f) rotationX -= 360.f;
+         if (rotationX < -179.f) rotationX += 360.f;
+            update();
+        } else if (e->buttons() & Qt::MiddleButton) {
+ float panScale = distance * 0.0015f;
+  panOffset += QVector2D(-dx * panScale, dy * panScale);
+          update();
+        }
+    }
+    
     lastPos = e->pos();
+}
+
+/**
+ * @brief 鼠标释放事件处理
+ * 在ARAP模式下，释放左键时停止拖拽（但不清除handle）
+ */
+void GLWidget::mouseReleaseEvent(QMouseEvent* e) {
+    if (e->button() == Qt::LeftButton) {
+        if (arapActive && leftButtonDraggingHandle) {
+         leftButtonDraggingHandle = false;
+            std::cout << "[GLWidget] Stopped dragging handle" << std::endl;
+        }
+    }
 }
 
 void GLWidget::wheelEvent(QWheelEvent* e) {
     float steps = e->angleDelta().y() / 120.0f;
     float factor = std::pow(0.9f, steps);
     distance *= factor;
-    float minDist = 0.1f * modelRadius;
+  float minDist = 0.1f * modelRadius;
     float maxDist = 20.0f * modelRadius;
     distance = std::clamp(distance, minDist, maxDist);
     update();
 }
+
+/* ==================== ARAP交互功能实现 ==================== */
+
+/**
+ * @brief 切换ARAP模式
+ * 
+ * 进入ARAP模式时：
+ * - 调用arapBeginCallback初始化（保存old_position）
+ * - 左键点击选择fixed顶点
+ * - 左键拖拽执行ARAP变形
+ * 
+ * 退出ARAP模式时：
+ * - 重置handle顶点索引
+ * - 恢复正常相机交互
+ */
+void GLWidget::toggleArapMode() {
+  arapActive = !arapActive;
+    
+    if (!arapActive) {
+        // 退出ARAP模式，清理状态
+    fixedVertices.clear();
+      arapHandleVertex = -1;
+      leftButtonDraggingHandle = false;
+        arapSelectionMode = ArapSelectionMode::None; // 重置选择模式
+  std::cout << "[GLWidget] Exited ARAP mode" << std::endl;
+    } else {
+      // 进入ARAP模式，初始化（只调用一次）
+     if (arapBeginCallback) {
+    arapBeginCallback();
+        }
+        arapSelectionMode = ArapSelectionMode::SelectFixed; // 默认进入Fixed选择模式
+    std::cout << "[GLWidget] Entered ARAP mode - Use toolbar buttons to select Fixed/Handle vertices" << std::endl;
+    }
+
+    update();
+}
+
+/**
+ * @brief 清除所有已选择的固定顶点
+ */
+void GLWidget::clearArapFixedVertices() {
+    if (arapClearFixedCallback) {
+        arapClearFixedCallback();
+    }
+    
+    // 清空fixed顶点集合
+    fixedVertices.clear();
+    
+// 重置handle状态
+    arapHandleVertex = -1;
+    leftButtonDraggingHandle = false;
+    
+    std::cout << "[GLWidget] Cleared all fixed vertices" << std::endl;
+    update();
+}
+
+/**
+ * @brief 开始ARAP会话（如果回调已设置）
+ */
+void GLWidget::beginArapIfNeeded() {
+    if (arapBeginCallback) {
+    arapBeginCallback();
+        std::cout << "[GLWidget] ARAP session initialized" << std::endl;
+    }
+}
+
+/**
+ * @brief 屏幕坐标拾取最近的顶点
+ * @param pos 鼠标屏幕坐标
+ * @return 顶点索引，-1表示未拾取到
+ * 
+ * 实现原理：
+ * 1. 构建MVP矩阵（模型-视图-投影矩阵）
+ * 2. 将所有顶点变换到屏幕空间
+ * 3. 计算鼠标位置与每个顶点的屏幕距离
+ * 4. 返回距离最近且在15像素阈值内的顶点
+ */
+int GLWidget::pickVertex(const QPoint& pos) const {
+    if (vertices.empty()) return -1;
+    
+    // 构建MVP矩阵（与paintGL中相同）
+    float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
+QMatrix4x4 proj;
+    proj.perspective(45.0f, aspect, 0.01f, 1000.0f);
+    
+    float rx = qDegreesToRadians(rotationX);
+    float ry = qDegreesToRadians(rotationY);
+    float cosX = std::cos(rx);
+    
+    QVector3D camPos(
+        distance * std::sin(ry) * cosX,
+        distance * std::sin(rx),
+        distance * std::cos(ry) * cosX
+    );
+    
+    QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+    QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
+    
+    QMatrix4x4 view;
+    view.lookAt(camPos + target, target, up);
+    QMatrix4x4 mvp = proj * view;
+    
+    // 遍历所有顶点，找到屏幕距离最近的
+    int bestVertex = -1;
+float bestDistance = 15.0f; // 像素阈值：只拾取15像素内的顶点
+  
+    for (int i = 0; i < (int)vertices.size(); ++i) {
+        // 顶点变换到裁剪空间
+        QVector4D clipPos = mvp * QVector4D(vertices[i], 1.0f);
+        
+        if (clipPos.w() == 0) continue; // 避免除零
+        
+        // 透视除法，得到NDC坐标[-1,1]
+      QVector3D ndc(clipPos.x() / clipPos.w(), 
+               clipPos.y() / clipPos.w(), 
+          clipPos.z() / clipPos.w());
+     
+        // NDC转屏幕坐标
+        QPoint screenPos(
+  (int)((ndc.x() * 0.5f + 0.5f) * width()),
+     (int)((-ndc.y() * 0.5f + 0.5f) * height())
+        );
+        
+        // 计算屏幕距离
+        float dist = std::hypot((float)(screenPos.x() - pos.x()), 
+      (float)(screenPos.y() - pos.y()));
+        
+     if (dist < bestDistance) {
+            bestDistance = dist;
+      bestVertex = i;
+        }
+    }
+    
+    if (bestVertex >= 0) {
+std::cout << "[GLWidget] Picked vertex " << bestVertex 
+    << " at screen distance " << bestDistance << " pixels" << std::endl;
+    }
+    
+    return bestVertex;
+}
+
+/**
+ * @brief 屏幕坐标转世界3D坐标
+ * @param pos 屏幕坐标（鼠标位置）
+ * @param depth 深度值（距离相机的距离，用顶点原始深度）
+ * @return 3D世界坐标
+ * 
+ * 实现原理：
+ * 1. 将屏幕坐标归一化到NDC空间[-1,1]
+ * 2. 构建近平面和远平面上的两个点
+ * 3. 逆变换到世界空间
+ * 4. 沿视线方向移动到指定深度
+ * 
+ * 用途：将鼠标拖拽的2D轨迹转换为handle顶点的3D新位置
+ */
+QVector3D GLWidget::screenToWorld(const QPoint& pos, float depth) const {
+    // 构建MVP矩阵
+    float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
+    QMatrix4x4 proj;
+    proj.perspective(45.0f, aspect, 0.01f, 1000.0f);
+    
+    float rx = qDegreesToRadians(rotationX);
+  float ry = qDegreesToRadians(rotationY);
+  float cosX = std::cos(rx);
+    
+    QVector3D camPos(
+    distance * std::sin(ry) * cosX,
+        distance * std::sin(rx),
+        distance * std::cos(ry) * cosX
+    );
+    
+ QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+    QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
+    
+    QMatrix4x4 view;
+    view.lookAt(camPos + target, target, up);
+    
+    // 计算逆MVP矩阵
+    QMatrix4x4 invMVP = (proj * view).inverted();
+    
+    // 屏幕坐标转NDC
+    float nx = (2.0f * pos.x() / (float)width()) - 1.0f;
+    float ny = 1.0f - (2.0f * pos.y() / (float)height());
+    
+    // 构建近平面和远平面上的点
+    QVector4D nearPoint = invMVP * QVector4D(nx, ny, -1.0f, 1.0f);
+    QVector4D farPoint = invMVP * QVector4D(nx, ny, 1.0f, 1.0f);
+    
+    // 透视除法
+    nearPoint /= nearPoint.w();
+    farPoint /= farPoint.w();
+    
+    // 计算视线方向
+    QVector3D rayDir = (farPoint - nearPoint).toVector3D().normalized();
+    QVector3D rayOrigin = nearPoint.toVector3D();
+    
+    // 沿视线移动到指定深度
+    return rayOrigin + rayDir * depth;
+}
+
+/**
+ * @brief 执行ARAP拖拽变形
+ * @param pos 当前鼠标屏幕位置
+ * 
+ * 工作流程：
+ * 1. 将鼠标位置转换为3D坐标（保持handle原始深度）
+ * 2. 调用arapDragCallback执行ARAP算法
+ * 3. 用返回的新mesh更新显示
+ */
+void GLWidget::performArapDrag(const QPoint& pos) {
+    if (arapHandleVertex < 0 || !arapDragCallback) {
+        return;
+    }
+    
+    // 将屏幕坐标转换为3D世界坐标
+    QVector3D newWorldPos = screenToWorld(pos, handleDepth);
+    
+    // 调用ARAP算法回调
+    auto result = arapDragCallback(arapHandleVertex, newWorldPos);
+    
+    // 更新mesh显示
+    updateMesh(result.first, result.second);
+}
+
+/**
+ * @brief 设置ARAP选择模式
+ */
+void GLWidget::setArapSelectionMode(ArapSelectionMode mode) {
+    arapSelectionMode = mode;
+    
+    const char* modeNames[] = {"None", "SelectFixed", "SelectHandle"};
+    std::cout << "[GLWidget] ARAP selection mode: " << modeNames[static_cast<int>(mode)] << std::endl;
+    
+    update();
+}
+
+/**
+ * @brief 切换ARAP模式
+
+ */
