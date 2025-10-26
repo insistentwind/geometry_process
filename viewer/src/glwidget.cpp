@@ -368,89 +368,84 @@ void GLWidget::resizeGL(int w, int h) {
 
 /* --------------------------------- 交互事件 -------------------------------- */
 void GLWidget::mousePressEvent(QMouseEvent* e) {
-  lastPos = e->pos();
+ lastPos = e->pos();
 
-    // ARAP模式下的鼠标操作：根据选择模式决定行为
-    if (arapActive && e->button() == Qt::LeftButton) {
-     int hitVertex = pickVertex(e->pos());
-  
-        if (hitVertex >= 0) {
-  if (arapSelectionMode == ArapSelectionMode::SelectFixed) {
-          // === Fixed点选择模式：添加到fixed集合 ===
-     fixedVertices.insert(hitVertex);
-     
-         // 调用回调标记为fixed
-     if (arapSetFixedCallback) {
-        arapSetFixedCallback(hitVertex, true);
-  std::cout << "[GLWidget] Marked vertex " << hitVertex << " as FIXED (total: " 
-    << fixedVertices.size() << " fixed vertices)" << std::endl;
-      }
-          }
-  else if (arapSelectionMode == ArapSelectionMode::SelectHandle) {
-                // === Handle点选择模式：设置为拖动点 ===
-   arapHandleVertex = hitVertex;
-       leftButtonDraggingHandle = true;
-   
-// 记录handle深度，用于后续拖拽时坐标转换
-      handleDepth = (vertices[hitVertex] - modelCenter).length();
-         
-              std::cout << "[GLWidget] Selected vertex " << hitVertex << " as HANDLE (ready to drag)" << std::endl;
-            }
-        }
-   
-        return; // ARAP模式下，左键不旋转视图
-    }
-    
-    // 右键重置视图
-    if (e->button() == Qt::RightButton) {
-        resetView();
-      update();
-  }
+ // ARAP模式下的鼠标操作：根据选择模式决定行为
+ if (arapActive && e->button() == Qt::LeftButton) {
+ int hitVertex = pickVertex(e->pos());
+ if (hitVertex >=0) {
+ if (arapSelectionMode == ArapSelectionMode::SelectFixed) {
+ // === Fixed点选择模式：添加到fixed集合 ===
+ fixedVertices.insert(hitVertex);
+ // 调用回调标记为fixed
+ if (arapSetFixedCallback) {
+ arapSetFixedCallback(hitVertex, true);
+ std::cout << "[GLWidget] Marked vertex " << hitVertex << " as FIXED (total: "
+ << fixedVertices.size() << " fixed vertices)" << std::endl;
+ }
+ }
+ else if (arapSelectionMode == ArapSelectionMode::SelectHandle) {
+ // === Handle点选择模式：设置为拖动点 ===
+ arapHandleVertex = hitVertex;
+ //计算相机位置
+ float rx = qDegreesToRadians(rotationX);
+ float ry = qDegreesToRadians(rotationY);
+ float cosX = std::cos(rx);
+ QVector3D camPos(
+ distance * std::sin(ry) * cosX,
+ distance * std::sin(rx),
+ distance * std::cos(ry) * cosX
+ );
+ QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(),0.0f);
+ camPos += target;
+ //记录handle深度（距离相机）
+ handleDepth = (vertices[hitVertex] - camPos).length();
+ //允许后续 mouseMoveEvent触发拖拽
+ leftButtonDraggingHandle = true;
+ std::cout << "[GLWidget] Selected vertex " << hitVertex << " as HANDLE (ready to drag)" << std::endl;
+ }
+ }
+ return; // ARAP模式下，左键不旋转视图
+ }
+ //右键重置视图
+ if (e->button() == Qt::RightButton) {
+ resetView();
+ update();
+ }
 }
 
-/**
- * @brief 鼠标移动事件处理（覆盖原有实现以支持ARAP拖拽）
- */
 void GLWidget::mouseMoveEvent(QMouseEvent* e) {
-    int dx = e->x() - lastPos.x();
-    int dy = e->y() - lastPos.y();
+ int dx = e->x() - lastPos.x();
+ int dy = e->y() - lastPos.y();
 
-    // ARAP模式下：只处理handle拖拽，不允许相机旋转
-    if (arapActive) {
-        if (leftButtonDraggingHandle && arapHandleVertex >= 0) {
-            performArapDrag(e->pos());
-        }
-        // ARAP模式下不处理其他鼠标移动（禁止相机旋转）
-    }
-    // 正常模式：相机交互
-    else {
-        if (e->buttons() & Qt::LeftButton) {
-     rotationY -= dx * 0.5f;
-        rotationX += dy * 0.5f;
-            if (rotationX > 179.f) rotationX -= 360.f;
-         if (rotationX < -179.f) rotationX += 360.f;
-            update();
-        } else if (e->buttons() & Qt::MiddleButton) {
- float panScale = distance * 0.0015f;
-  panOffset += QVector2D(-dx * panScale, dy * panScale);
-          update();
-        }
-    }
-    
-    lastPos = e->pos();
+ if (arapActive) {
+ // 若已选定 handle 且左键仍按下则执行拖拽
+ if ((e->buttons() & Qt::LeftButton) && arapHandleVertex >=0 && leftButtonDraggingHandle) {
+ performArapDrag(e->pos());
+ }
+ } else {
+ if (e->buttons() & Qt::LeftButton) {
+ rotationY -= dx *0.5f;
+ rotationX += dy *0.5f;
+ if (rotationX >179.f) rotationX -=360.f;
+ if (rotationX < -179.f) rotationX +=360.f;
+ update();
+ } else if (e->buttons() & Qt::MiddleButton) {
+ float panScale = distance *0.0015f;
+ panOffset += QVector2D(-dx * panScale, dy * panScale);
+ update();
+ }
+ }
+ lastPos = e->pos();
 }
 
-/**
- * @brief 鼠标释放事件处理
- * 在ARAP模式下，释放左键时停止拖拽（但不清除handle）
- */
 void GLWidget::mouseReleaseEvent(QMouseEvent* e) {
-    if (e->button() == Qt::LeftButton) {
-        if (arapActive && leftButtonDraggingHandle) {
-         leftButtonDraggingHandle = false;
-            std::cout << "[GLWidget] Stopped dragging handle" << std::endl;
-        }
-    }
+ if (e->button() == Qt::LeftButton) {
+ if (arapActive && leftButtonDraggingHandle) {
+ leftButtonDraggingHandle = false;
+ std::cout << "[GLWidget] Stopped dragging handle" << std::endl;
+ }
+ }
 }
 
 void GLWidget::wheelEvent(QWheelEvent* e) {
@@ -669,7 +664,7 @@ QVector3D GLWidget::screenToWorld(const QPoint& pos, float depth) const {
  * 工作流程：
  * 1. 将鼠标位置转换为3D坐标（保持handle原始深度）
  * 2. 调用arapDragCallback执行ARAP算法
- * 3. 用返回的新mesh更新显示
+ * 3. 用返回的新mesh更新显示（仅更新顶点缓冲，不重置视图）
  */
 void GLWidget::performArapDrag(const QPoint& pos) {
     if (arapHandleVertex < 0 || !arapDragCallback) {
@@ -679,26 +674,32 @@ void GLWidget::performArapDrag(const QPoint& pos) {
     // 将屏幕坐标转换为3D世界坐标
     QVector3D newWorldPos = screenToWorld(pos, handleDepth);
     
-    // 调用ARAP算法回调
+ // 调用ARAP算法回调
     auto result = arapDragCallback(arapHandleVertex, newWorldPos);
     
-    // 更新mesh显示
-    updateMesh(result.first, result.second);
+    // 只更新顶点数据，不重置视图或重新计算包围盒
+    vertices = result.first;
+    indices = result.second;
+    
+    if (!isValid()) return;
+    
+    // 只更新 GPU 缓冲区
+    vertexBuf.bind();
+    vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
+    
+    indexBuf.bind();
+    indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
+    
+    // 不调用 calculateModelBounds() 和 resetView()
+    update();  // 仅触发重绘
 }
 
 /**
  * @brief 设置ARAP选择模式
  */
 void GLWidget::setArapSelectionMode(ArapSelectionMode mode) {
-    arapSelectionMode = mode;
-    
-    const char* modeNames[] = {"None", "SelectFixed", "SelectHandle"};
-    std::cout << "[GLWidget] ARAP selection mode: " << modeNames[static_cast<int>(mode)] << std::endl;
-    
-    update();
+ arapSelectionMode = mode;
+ const char* modeNames[] = {"None", "SelectFixed", "SelectHandle"};
+ std::cout << "[GLWidget] ARAP selection mode: " << modeNames[static_cast<int>(mode)] << std::endl;
+ update();
 }
-
-/**
- * @brief 切换ARAP模式
-
- */

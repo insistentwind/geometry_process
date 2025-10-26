@@ -191,9 +191,9 @@ double MeshProcessor::wij_caculate(geometry::HalfEdge* hf, int i) {
 	double cot_alpha = e1i_old.dot(e1j_old) / e1i_old.cross(e1j_old).norm();
 	double cot_beta = e0i_old.dot(e0j_old) / e0i_old.cross(e0j_old).norm();
 
-	const double max_cot_abs = 1.0e2; // 设置一个合理的绝对值上限, e.g., 100,000
-	cot_alpha = std::max(-max_cot_abs, std::min(max_cot_abs, cot_alpha));
-	cot_beta = std::max(-max_cot_abs, std::min(max_cot_abs, cot_beta));
+	const double max_cot_abs = 10; // 设置一个合理的绝对值上限, e.g., 100,000 保证是正值
+	cot_alpha = std::abs(std::max(- max_cot_abs, std::min(max_cot_abs, cot_alpha)));
+	cot_beta = std::abs(std::max(-max_cot_abs, std::min(max_cot_abs, cot_beta)));
 
 	return (cot_alpha + cot_beta) / 2.0;
 }
@@ -287,12 +287,13 @@ MeshProcessor::applyArapDrag(int handleIndex, const QVector3D& newPosition) {
 	          << " to (" << newPosition.x() << ", " << newPosition.y() << ", " << newPosition.z() << ")" << std::endl;
 
 	// ===== 核心逻辑 =====
-	// 1. 更新当前拖动点（handle点）的位置
+	// 1. 更新当前拖动点（handle点）的位置为完整 3D 坐标
 	double original_z = mesh.vertices[handleIndex]->position.z();
 	mesh.vertices[handleIndex]->position = Eigen::Vector3d(
 		newPosition.x(), 
 		newPosition.y(), 
-		original_z
+		newPosition.z()  // 使用完整 3D 坐标
+		//original_z
 	);
 
 	// 2. 临时将handle点标记为fixed（作为ARAP约束）
@@ -303,7 +304,6 @@ MeshProcessor::applyArapDrag(int handleIndex, const QVector3D& newPosition) {
 	processGeometry();
 
 	// 4. 恢复handle点的fixed状态（如果原本不是fixed点）
-	//    这样下次可以继续拖动它或者让它参与变形
 	if (!wasFixed) {
 		mesh.vertices[handleIndex]->fixed = false;
 	}
