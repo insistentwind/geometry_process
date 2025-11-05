@@ -1,4 +1,4 @@
-#include "glwidget.h"
+ï»¿#include "glwidget.h"
 #include <QMouseEvent>
 #include <QOpenGLShader>
 #include <QDebug>
@@ -6,130 +6,131 @@
 #include <QFile>
 #include <cmath>
 #include <limits>
-#include <iostream> // Ìí¼ÓiostreamÓÃÓÚstd::cout
+#include <iostream> // æ·»åŠ iostreamç”¨äºstd::cout
 
 /* --------------------------------------------------------------------------
- * GLWidget ¸Ä½ø°æ: Ìí¼Ó¹ìµÀÏà»ú(ÖĞĞÄ»¯, Æ½ÒÆ, ¸üÆ½»¬Ëõ·Å) + ARAP½»»¥
+ * GLWidget æ”¹è¿›ç‰ˆ: æ·»åŠ è½¨é“ç›¸æœº(ä¸­å¿ƒåŒ–, å¹³ç§», æ›´å¹³æ»‘ç¼©æ”¾) + ARAPäº¤äº’
  * -------------------------------------------------------------------------- */
 
 GLWidget::GLWidget(QWidget* parent)
-    : QOpenGLWidget(parent),
-  distance(4.0f),
-      rotationX(0.0f),
-      rotationY(0.0f),
-      panOffset(0.0f, 0.0f),
-      modelCenter(0,0,0),
-      modelRadius(1.0f) {
-    Q_INIT_RESOURCE(resources);
-    setFocusPolicy(Qt::StrongFocus);
+	: QOpenGLWidget(parent),
+	distance(4.0f),
+	rotationX(0.0f),
+	rotationY(0.0f),
+	panOffset(0.0f, 0.0f),
+	modelCenter(0, 0, 0),
+	modelRadius(1.0f) {
+	Q_INIT_RESOURCE(resources);
+	setFocusPolicy(Qt::StrongFocus);
 }
 
 GLWidget::~GLWidget() {
-    makeCurrent();
-    vertexBuf.destroy();
-    indexBuf.destroy();
-    colorBuf.destroy();
-    mstLineBuf.destroy();
-    delete program;
-    doneCurrent();
+	makeCurrent();
+	vertexBuf.destroy();
+	indexBuf.destroy();
+	colorBuf.destroy();
+	mstLineBuf.destroy();
+	delete program;
+	doneCurrent();
 }
 
 void GLWidget::cycleColorDisplayMode() {
-    if (colorMode == ColorDisplayMode::PointsOnly)
-        colorMode = ColorDisplayMode::Faces;
-    else
-        colorMode = ColorDisplayMode::PointsOnly;
-    update();
+	if (colorMode == ColorDisplayMode::PointsOnly)
+		colorMode = ColorDisplayMode::Faces;
+	else
+		colorMode = ColorDisplayMode::PointsOnly;
+	update();
 }
 
-/* ---------------------------- Êı¾İ¸üĞÂ: Ö÷Íø¸ñ ---------------------------- */
+/* ---------------------------- æ•°æ®æ›´æ–°: ä¸»ç½‘æ ¼ ---------------------------- */
 void GLWidget::updateMesh(const std::vector<QVector3D>& v,
-                          const std::vector<unsigned int>& idx) {
-    vertices = v;
-    indices  = idx;
-    perVertexColor = false;
-    colors.assign(vertices.size(), QVector3D(1.0f, 1.0f, 1.0f));
+	const std::vector<unsigned int>& idx) {
+	vertices = v;
+	indices = idx;
+	perVertexColor = false;
+	colors.assign(vertices.size(), QVector3D(1.0f, 1.0f, 1.0f));
 
-    if (!isValid()) return;
+	if (!isValid()) return;
 
-    vertexBuf.bind();
-    vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
+	vertexBuf.bind();
+	vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
 
-    indexBuf.bind();
-    indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
+	indexBuf.bind();
+	indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
 
-    colorBuf.bind();
-    colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
+	colorBuf.bind();
+	colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
 
-    calculateModelBounds();
-    resetView();
-    update();
+	calculateModelBounds();
+	resetView();
+	update();
 }
 
-/* ---------------------------- Êı¾İ¸üĞÂ: ´øÑÕÉ« ----------------------------- */
+/* ---------------------------- æ•°æ®æ›´æ–°: å¸¦é¢œè‰² ----------------------------- */
 void GLWidget::updateMeshWithColors(const std::vector<QVector3D>& v,
-                                    const std::vector<unsigned int>& idx,
-                                    const std::vector<QVector3D>& cols) {
-    vertices = v;
-    indices  = idx;
+	const std::vector<unsigned int>& idx,
+	const std::vector<QVector3D>& cols) {
+	vertices = v;
+	indices = idx;
 
-    if (cols.size() == v.size()) {
-        colors = cols;
-        perVertexColor = true;
-    } else {
-        colors.assign(v.size(), QVector3D(1.0f, 1.0f, 1.0f));
-        perVertexColor = false;
-    }
+	if (cols.size() == v.size()) {
+		colors = cols;
+		perVertexColor = true;
+	}
+	else {
+		colors.assign(v.size(), QVector3D(1.0f, 1.0f, 1.0f));
+		perVertexColor = false;
+	}
 
-    if (!isValid()) return;
+	if (!isValid()) return;
 
-    vertexBuf.bind();
-    vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
+	vertexBuf.bind();
+	vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
 
-    indexBuf.bind();
-    indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
+	indexBuf.bind();
+	indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
 
-    colorBuf.bind();
-    colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
+	colorBuf.bind();
+	colorBuf.allocate(colors.data(), static_cast<int>(colors.size() * sizeof(QVector3D)));
 
-    calculateModelBounds();
-    resetView();
-    update();
+	calculateModelBounds();
+	resetView();
+	update();
 }
 
-/* ------------------------------ ¸üĞÂ MST Ïß¶Î ----------------------------- */
+/* ------------------------------ æ›´æ–° MST çº¿æ®µ ----------------------------- */
 void GLWidget::updateMSTEdges(const std::vector<std::pair<int, int>>& edges) {
-    mstLineVertices.clear();
-    mstLineVertices.reserve(edges.size() * 2);
+	mstLineVertices.clear();
+	mstLineVertices.reserve(edges.size() * 2);
 
-    for (const auto& e : edges) {
-        int a = e.first;
-        int b = e.second;
-        if (a >= 0 && b >= 0 && a < static_cast<int>(vertices.size()) && b < static_cast<int>(vertices.size())) {
-            mstLineVertices.push_back(vertices[a]);
-            mstLineVertices.push_back(vertices[b]);
-        }
-    }
+	for (const auto& e : edges) {
+		int a = e.first;
+		int b = e.second;
+		if (a >= 0 && b >= 0 && a < static_cast<int>(vertices.size()) && b < static_cast<int>(vertices.size())) {
+			mstLineVertices.push_back(vertices[a]);
+			mstLineVertices.push_back(vertices[b]);
+		}
+	}
 
-    if (!mstLineBuf.isCreated()) {
-        mstLineBuf.create();
-    }
-    mstLineBuf.bind();
-    mstLineBuf.allocate(mstLineVertices.data(), static_cast<int>(mstLineVertices.size() * sizeof(QVector3D)));
-    update();
+	if (!mstLineBuf.isCreated()) {
+		mstLineBuf.create();
+	}
+	mstLineBuf.bind();
+	mstLineBuf.allocate(mstLineVertices.data(), static_cast<int>(mstLineVertices.size() * sizeof(QVector3D)));
+	update();
 }
 
-/* ------------------------------ Çå³ı MST ¸ßÁÁ ------------------------------ */
+/* ------------------------------ æ¸…é™¤ MST é«˜äº® ------------------------------ */
 void GLWidget::clearMSTEdges() {
-    mstLineVertices.clear();
-    if (mstLineBuf.isCreated()) {
-        mstLineBuf.bind();
-        mstLineBuf.allocate(nullptr, 0);
-    }
-    update();
+	mstLineVertices.clear();
+	if (mstLineBuf.isCreated()) {
+		mstLineBuf.bind();
+		mstLineBuf.allocate(nullptr, 0);
+	}
+	update();
 }
 
-/* ------------------------------- ·ÃÎÊ½Ó¿Ú ------------------------------- */
+/* ------------------------------- è®¿é—®æ¥å£ ------------------------------- */
 const std::vector<QVector3D>& GLWidget::getVertices() const { return vertices; }
 const std::vector<unsigned int>& GLWidget::getIndices() const { return indices; }
 
@@ -153,557 +154,562 @@ out vec4 FragColor;
 void main(){ FragColor = vec4(vColor, 1.0); }
 )GLSL";
 
-/* ----------------------------- OpenGL ³õÊ¼»¯ ------------------------------ */
+/* ----------------------------- OpenGL åˆå§‹åŒ– ------------------------------ */
 void GLWidget::initializeGL() {
-    initializeOpenGLFunctions();
+	initializeOpenGLFunctions();
 
-    glClearColor(0.1f, 0.12f, 0.15f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_PROGRAM_POINT_SIZE);
+	glClearColor(0.1f, 0.12f, 0.15f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PROGRAM_POINT_SIZE);
 
-    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
-    vertexBuf.create();
-    indexBuf.create();
-    colorBuf.create();
-    mstLineBuf.create();
+	vertexBuf.create();
+	indexBuf.create();
+	colorBuf.create();
+	mstLineBuf.create();
 
-    vertexBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
-    indexBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
-    colorBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
-    mstLineBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	vertexBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	indexBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	colorBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
+	mstLineBuf.setUsagePattern(QOpenGLBuffer::DynamicDraw);
 
-    program = new QOpenGLShaderProgram(this);
-    bool okV = false;
-    bool okF = false;
+	program = new QOpenGLShaderProgram(this);
+	bool okV = false;
+	bool okF = false;
 
-    if (QFile(":/shaders/basic.vert").exists()) {
-        okV = program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/basic.vert");
-    }
-    if (QFile(":/shaders/basic.frag").exists()) {
-        okF = program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/basic.frag");
-    }
-    if (!okV) program->addShaderFromSourceCode(QOpenGLShader::Vertex, fallbackVert);
-    if (!okF) program->addShaderFromSourceCode(QOpenGLShader::Fragment, fallbackFrag);
+	if (QFile(":/shaders/basic.vert").exists()) {
+		okV = program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shaders/basic.vert");
+	}
+	if (QFile(":/shaders/basic.frag").exists()) {
+		okF = program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shaders/basic.frag");
+	}
+	if (!okV) program->addShaderFromSourceCode(QOpenGLShader::Vertex, fallbackVert);
+	if (!okF) program->addShaderFromSourceCode(QOpenGLShader::Fragment, fallbackFrag);
 
-    program->bindAttributeLocation("a_position", 0);
-    program->bindAttributeLocation("a_color", 1);
+	program->bindAttributeLocation("a_position", 0);
+	program->bindAttributeLocation("a_color", 1);
 
-    if (!program->link()) {
-        qWarning() << "Shader link failed" << program->log();
-    }
+	if (!program->link()) {
+		qWarning() << "Shader link failed" << program->log();
+	}
 }
 
-/* --------------------------------- »æÖÆ ---------------------------------- */
+/* --------------------------------- ç»˜åˆ¶ ---------------------------------- */
 void GLWidget::paintGL() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if (vertices.empty() || !program || !program->isLinked()) return;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (vertices.empty() || !program || !program->isLinked()) return;
 
-    // Ïß¿òÄ£Ê½Ê¼ÖÕ±£³Ö£¬ÓÃÓÚÂÖÀª£»Ìî³äÃæ¿ÉÑ¡µş¼Ó
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// çº¿æ¡†æ¨¡å¼å§‹ç»ˆä¿æŒï¼Œç”¨äºè½®å»“ï¼›å¡«å……é¢å¯é€‰å åŠ 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
-    float nearPlane = std::max(0.001f, modelRadius * 0.01f);
-    float farPlane  = std::max(1000.0f * nearPlane, distance + modelRadius * 4.0f);
-    QMatrix4x4 proj;  proj.perspective(45.0f, aspect, nearPlane, farPlane);
+	float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
+	float nearPlane = std::max(0.001f, modelRadius * 0.01f);
+	float farPlane = std::max(1000.0f * nearPlane, distance + modelRadius * 4.0f);
+	QMatrix4x4 proj;  proj.perspective(45.0f, aspect, nearPlane, farPlane);
 
-    float rx = qDegreesToRadians(rotationX);
-    float ry = qDegreesToRadians(rotationY);
-    float cosX = std::cos(rx);
+	float rx = qDegreesToRadians(rotationX);
+	float ry = qDegreesToRadians(rotationY);
+	float cosX = std::cos(rx);
 
-    QVector3D camPos(
-        distance * std::sin(ry) * cosX,
-        distance * std::sin(rx),
-        distance * std::cos(ry) * cosX
-    );
+	QVector3D camPos(
+		distance * std::sin(ry) * cosX,
+		distance * std::sin(rx),
+		distance * std::cos(ry) * cosX
+	);
 
-    QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
-    QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
+	QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+	QVector3D up = (cosX >= 0.0f) ? QVector3D(0, 1, 0) : QVector3D(0, -1, 0);
 
-    QMatrix4x4 view; view.lookAt(camPos + target, target, up);
-    QMatrix4x4 mvp = proj * view;
+	QMatrix4x4 view; view.lookAt(camPos + target, target, up);
+	QMatrix4x4 mvp = proj * view;
 
-    program->bind();
-    program->setUniformValue("u_mvp", mvp);
+	program->bind();
+	program->setUniformValue("u_mvp", mvp);
 
-    // ÏÈ¿ÉÑ¡»æÖÆÌî³äÃæ (GL_FILL)£¬ÔÙ»æÖÆÏß¿ò (GL_LINE) ¸²¸ÇÌá¸ß¿É¼ûĞÔ
-    if (showFilledFaces) {
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        vertexBuf.bind();
-        program->enableAttributeArray(0);
-        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        if (perVertexColor && colorMode == ColorDisplayMode::Faces) {
-            colorBuf.bind();
-            program->enableAttributeArray(1);
-            program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        } else {
-            program->disableAttributeArray(1);
-            glVertexAttrib3f(1, 0.85f, 0.85f, 0.85f); // Ä¬ÈÏµ­»Ò
-        }
-        indexBuf.bind();
-        glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
-    }
+	// å…ˆå¯é€‰ç»˜åˆ¶å¡«å……é¢ (GL_FILL)ï¼Œå†ç»˜åˆ¶çº¿æ¡† (GL_LINE) è¦†ç›–æé«˜å¯è§æ€§
+	if (showFilledFaces) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		vertexBuf.bind();
+		program->enableAttributeArray(0);
+		program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		if (perVertexColor && colorMode == ColorDisplayMode::Faces) {
+			colorBuf.bind();
+			program->enableAttributeArray(1);
+			program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		}
+		else {
+			program->disableAttributeArray(1);
+			glVertexAttrib3f(1, 0.85f, 0.85f, 0.85f); // é»˜è®¤æ·¡ç°
+		}
+		indexBuf.bind();
+		glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+	}
 
-    // ÔÙ»æÖÆÏß¿ò
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    vertexBuf.bind();
-    program->enableAttributeArray(0);
-    program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-    program->disableAttributeArray(1);
-    glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
-    indexBuf.bind();
-    glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+	// å†ç»˜åˆ¶çº¿æ¡†
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	vertexBuf.bind();
+	program->enableAttributeArray(0);
+	program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+	program->disableAttributeArray(1);
+	glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
+	indexBuf.bind();
+	glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
-    // MST Ïß
-    if (!mstLineVertices.empty()) {
-        glLineWidth(3.0f);
-        program->disableAttributeArray(1);
-        glVertexAttrib3f(1, 1.0f, 0.0f, 0.0f);
-        mstLineBuf.bind();
-        program->enableAttributeArray(0);
-        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        glDrawArrays(GL_LINES, 0, static_cast<int>(mstLineVertices.size()));
-        glLineWidth(1.0f);
-    }
+	// MST çº¿
+	if (!mstLineVertices.empty()) {
+		glLineWidth(3.0f);
+		program->disableAttributeArray(1);
+		glVertexAttrib3f(1, 1.0f, 0.0f, 0.0f);
+		mstLineBuf.bind();
+		program->enableAttributeArray(0);
+		program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		glDrawArrays(GL_LINES, 0, static_cast<int>(mstLineVertices.size()));
+		glLineWidth(1.0f);
+	}
 
-    // µãÔÆ
-    if (showColoredPoints) {
-        glPointSize(pointSize);
-        vertexBuf.bind();
-        program->enableAttributeArray(0);
-        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        if (perVertexColor) {
-            colorBuf.bind();
-            program->enableAttributeArray(1);
-            program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        } else {
-            program->disableAttributeArray(1);
-            glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
-        }
-        glDrawArrays(GL_POINTS, 0, static_cast<int>(vertices.size()));
-    }
+	// ç‚¹äº‘
+	if (showColoredPoints) {
+		glPointSize(pointSize);
+		vertexBuf.bind();
+		program->enableAttributeArray(0);
+		program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		if (perVertexColor) {
+			colorBuf.bind();
+			program->enableAttributeArray(1);
+			program->setAttributeBuffer(1, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		}
+		else {
+			program->disableAttributeArray(1);
+			glVertexAttrib3f(1, 1.0f, 1.0f, 1.0f);
+		}
+		glDrawArrays(GL_POINTS, 0, static_cast<int>(vertices.size()));
+	}
 
-    // ARAPÄ£Ê½£º¸ßÁÁÏÔÊ¾ËùÓĞfixed¶¥µã£¨À¶É«´óµã£©
-    if (arapActive && !fixedVertices.empty()) {
-    glPointSize(12.0f);  // ½Ï´óµÄµã
-        vertexBuf.bind();
-      program->enableAttributeArray(0);
-        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        program->disableAttributeArray(1);
-glVertexAttrib3f(1, 0.2f, 0.5f, 1.0f);  // À¶É«
+	// ARAPæ¨¡å¼ï¼šé«˜äº®æ˜¾ç¤ºæ‰€æœ‰fixedé¡¶ç‚¹ï¼ˆè“è‰²å¤§ç‚¹ï¼‰
+	if (arapActive && !fixedVertices.empty()) {
+		glPointSize(12.0f);  // è¾ƒå¤§çš„ç‚¹
+		vertexBuf.bind();
+		program->enableAttributeArray(0);
+		program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		program->disableAttributeArray(1);
+		glVertexAttrib3f(1, 0.2f, 0.5f, 1.0f);  // è“è‰²
 
-        // »æÖÆËùÓĞfixed¶¥µã
-        for (int vertexIndex : fixedVertices) {
-            if (vertexIndex >= 0 && vertexIndex < static_cast<int>(vertices.size())) {
-   glDrawArrays(GL_POINTS, vertexIndex, 1);
-     }
-        }
-    }
-    
-    // ARAPÄ£Ê½£¬»æÖÆhandle¶¥µã£¨ºìÉ«µã£©
-    if (arapActive && arapHandleVertex >= 0) {
-   glPointSize(15.0f);  // ¸ü´óµÄµã
-  vertexBuf.bind();
-        program->enableAttributeArray(0);
-        program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
-        program->disableAttributeArray(1);
-        glVertexAttrib3f(1, 1.0f, 0.2f, 0.2f);  // ºìÉ«
-        
- glDrawArrays(GL_POINTS, arapHandleVertex, 1);
-    }
+		// ç»˜åˆ¶æ‰€æœ‰fixedé¡¶ç‚¹
+		for (int vertexIndex : fixedVertices) {
+			if (vertexIndex >= 0 && vertexIndex < static_cast<int>(vertices.size())) {
+				glDrawArrays(GL_POINTS, vertexIndex, 1);
+			}
+		}
+	}
 
-    program->disableAttributeArray(0);
-    program->disableAttributeArray(1);
-    program->release();
+	// ARAPæ¨¡å¼ï¼Œç»˜åˆ¶handleé¡¶ç‚¹ï¼ˆçº¢è‰²ç‚¹ï¼‰
+	if (arapActive && arapHandleVertex >= 0) {
+		glPointSize(15.0f);  // æ›´å¤§çš„ç‚¹
+		vertexBuf.bind();
+		program->enableAttributeArray(0);
+		program->setAttributeBuffer(0, GL_FLOAT, 0, 3, sizeof(QVector3D));
+		program->disableAttributeArray(1);
+		glVertexAttrib3f(1, 1.0f, 0.2f, 0.2f);  // çº¢è‰²
+
+		glDrawArrays(GL_POINTS, arapHandleVertex, 1);
+	}
+
+	program->disableAttributeArray(0);
+	program->disableAttributeArray(1);
+	program->release();
 }
 
-/* ------------------------------- ¼ÆËã°üÎ§ºĞ ------------------------------- */
+/* ------------------------------- è®¡ç®—åŒ…å›´ç›’ ------------------------------- */
 void GLWidget::calculateModelBounds() {
-    if (vertices.empty()) return;
+	if (vertices.empty()) return;
 
-    float minX =  std::numeric_limits<float>::max();
-    float maxX = -std::numeric_limits<float>::max();
-    float minY =  std::numeric_limits<float>::max();
-    float maxY = -std::numeric_limits<float>::max();
-    float minZ =  std::numeric_limits<float>::max();
-    float maxZ = -std::numeric_limits<float>::max();
+	float minX = std::numeric_limits<float>::max();
+	float maxX = -std::numeric_limits<float>::max();
+	float minY = std::numeric_limits<float>::max();
+	float maxY = -std::numeric_limits<float>::max();
+	float minZ = std::numeric_limits<float>::max();
+	float maxZ = -std::numeric_limits<float>::max();
 
-    for (const auto& v : vertices) {
-        minX = std::min(minX, v.x()); maxX = std::max(maxX, v.x());
-        minY = std::min(minY, v.y()); maxY = std::max(maxY, v.y());
-        minZ = std::min(minZ, v.z()); maxZ = std::max(maxZ, v.z());
-    }
+	for (const auto& v : vertices) {
+		minX = std::min(minX, v.x()); maxX = std::max(maxX, v.x());
+		minY = std::min(minY, v.y()); maxY = std::max(maxY, v.y());
+		minZ = std::min(minZ, v.z()); maxZ = std::max(maxZ, v.z());
+	}
 
-    modelCenter = QVector3D((minX + maxX) * 0.5f, (minY + maxY) * 0.5f, (minZ + maxZ) * 0.5f);
-    QVector3D extents(maxX - minX, maxY - minY, maxZ - minZ);
-    modelRadius = std::max({ extents.x(), extents.y(), extents.z() }) * 0.5f;
-    if (modelRadius < 1e-6f) modelRadius = 1.0f;
+	modelCenter = QVector3D((minX + maxX) * 0.5f, (minY + maxY) * 0.5f, (minZ + maxZ) * 0.5f);
+	QVector3D extents(maxX - minX, maxY - minY, maxZ - minZ);
+	modelRadius = std::max({ extents.x(), extents.y(), extents.z() }) * 0.5f;
+	if (modelRadius < 1e-6f) modelRadius = 1.0f;
 }
 
 void GLWidget::resetView() {
-    rotationX = 0.0f;
-    rotationY = 0.0f;
-    panOffset = QVector2D(0,0);
-    distance = modelRadius * 3.5f;  // Ôö¼Óµ½3.5±¶£¬Ê¹Ä£ĞÍÏÔÊ¾¸üĞ¡
-    distance = std::clamp(distance, 0.5f * modelRadius, 10.0f * modelRadius);
+	rotationX = 0.0f;
+	rotationY = 0.0f;
+	panOffset = QVector2D(0, 0);
+	distance = modelRadius * 3.5f;  // å¢åŠ åˆ°3.5å€ï¼Œä½¿æ¨¡å‹æ˜¾ç¤ºæ›´å°
+	distance = std::clamp(distance, 0.5f * modelRadius, 10.0f * modelRadius);
 }
 
-/* ------------------------------- ÔØÈë OBJ ÎÄ¼ş ---------------------------- */
+/* ------------------------------- è½½å…¥ OBJ æ–‡ä»¶ ---------------------------- */
 bool GLWidget::loadObject(const QString& file) {
-    if (objLoader.loadOBJ(file.toStdString())) {
-        updateMesh(objLoader.vertices, objLoader.indices);
-        mstLineVertices.clear();
-        return true;
-    }
-    return false;
+	if (objLoader.loadOBJ(file.toStdString())) {
+		updateMesh(objLoader.vertices, objLoader.indices);
+		mstLineVertices.clear();
+		return true;
+	}
+	return false;
 }
 
-/* ------------------------------- ´°¿Ú³ß´ç±ä»¯ ----------------------------- */
+/* ------------------------------- çª—å£å°ºå¯¸å˜åŒ– ----------------------------- */
 void GLWidget::resizeGL(int w, int h) {
-    projection.setToIdentity();
-    if (h > 0) {
-        projection.perspective(45.0f, static_cast<float>(w) / static_cast<float>(h), 0.01f, 100.0f);
-    }
+	projection.setToIdentity();
+	if (h > 0) {
+		projection.perspective(45.0f, static_cast<float>(w) / static_cast<float>(h), 0.01f, 100.0f);
+	}
 }
 
-/* --------------------------------- ½»»¥ÊÂ¼ş -------------------------------- */
+/* --------------------------------- äº¤äº’äº‹ä»¶ -------------------------------- */
 void GLWidget::mousePressEvent(QMouseEvent* e) {
- lastPos = e->pos();
+	lastPos = e->pos();
 
- // ARAPÄ£Ê½ÏÂµÄÊó±ê²Ù×÷£º¸ù¾İÑ¡ÔñÄ£Ê½¾ö¶¨ĞĞÎª
- if (arapActive && e->button() == Qt::LeftButton) {
- int hitVertex = pickVertex(e->pos());
- if (hitVertex >=0) {
- if (arapSelectionMode == ArapSelectionMode::SelectFixed) {
- // === FixedµãÑ¡ÔñÄ£Ê½£ºÌí¼Óµ½fixed¼¯ºÏ ===
- fixedVertices.insert(hitVertex);
- // µ÷ÓÃ»Øµ÷±ê¼ÇÎªfixed
- if (arapSetFixedCallback) {
- arapSetFixedCallback(hitVertex, true);
- std::cout << "[GLWidget] Marked vertex " << hitVertex << " as FIXED (total: "
- << fixedVertices.size() << " fixed vertices)" << std::endl;
- }
- // ? Á¢¼´´¥·¢ÖØ»æ£¬ÏÔÊ¾À¶É«¸ßÁÁµã
- update();
- }
- else if (arapSelectionMode == ArapSelectionMode::SelectHandle) {
- // === HandleµãÑ¡ÔñÄ£Ê½£ºÉèÖÃÎªÍÏ¶¯µã ===
- arapHandleVertex = hitVertex;
- //¼ÆËãÏà»úÎ»ÖÃ
- float rx = qDegreesToRadians(rotationX);
- float ry = qDegreesToRadians(rotationY);
- float cosX = std::cos(rx);
- QVector3D camPos(
- distance * std::sin(ry) * cosX,
- distance * std::sin(rx),
- distance * std::cos(ry) * cosX
- );
- QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(),0.0f);
- camPos += target;
- //¼ÇÂ¼handleÉî¶È£¨¾àÀëÏà»ú£©
- handleDepth = (vertices[hitVertex] - camPos).length();
- //ÔÊĞíºóĞø mouseMoveEvent´¥·¢ÍÏ×§
- leftButtonDraggingHandle = true;
- std::cout << "[GLWidget] Selected vertex " << hitVertex << " as HANDLE (ready to drag)" << std::endl;
- // ? Á¢¼´´¥·¢ÖØ»æ£¬ÏÔÊ¾ºìÉ«¸ßÁÁµã
- update();
- }
- }
- return; // ARAPÄ£Ê½ÏÂ£¬×ó¼ü²»Ğı×ªÊÓÍ¼
- }
- //ÓÒ¼üÖØÖÃÊÓÍ¼
- if (e->button() == Qt::RightButton) {
- resetView();
- update();
- }
+	// ARAPæ¨¡å¼ä¸‹çš„é¼ æ ‡æ“ä½œï¼šæ ¹æ®é€‰æ‹©æ¨¡å¼å†³å®šè¡Œä¸º
+	if (arapActive && e->button() == Qt::LeftButton) {
+		int hitVertex = pickVertex(e->pos());
+		if (hitVertex >= 0) {
+			if (arapSelectionMode == ArapSelectionMode::SelectFixed) {
+				// === Fixedç‚¹é€‰æ‹©æ¨¡å¼ï¼šæ·»åŠ åˆ°fixedé›†åˆ ===
+				fixedVertices.insert(hitVertex);
+				// è°ƒç”¨å›è°ƒæ ‡è®°ä¸ºfixed
+				if (arapSetFixedCallback) {
+					arapSetFixedCallback(hitVertex, true);
+					std::cout << "[GLWidget] Marked vertex " << hitVertex << " as FIXED (total: "
+						<< fixedVertices.size() << " fixed vertices)" << std::endl;
+				}
+				// âœ… ç«‹å³è§¦å‘é‡ç»˜ï¼Œæ˜¾ç¤ºè“è‰²é«˜äº®ç‚¹
+				update();
+			}
+			else if (arapSelectionMode == ArapSelectionMode::SelectHandle) {
+				// === Handleç‚¹é€‰æ‹©æ¨¡å¼ï¼šè®¾ç½®ä¸ºæ‹–åŠ¨ç‚¹ ===
+				arapHandleVertex = hitVertex;
+				//è®¡ç®—ç›¸æœºä½ç½®
+				float rx = qDegreesToRadians(rotationX);
+				float ry = qDegreesToRadians(rotationY);
+				float cosX = std::cos(rx);
+				QVector3D camPos(
+					distance * std::sin(ry) * cosX,
+					distance * std::sin(rx),
+					distance * std::cos(ry) * cosX
+				);
+				QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+				camPos += target;
+				//è®°å½•handleæ·±åº¦ï¼ˆè·ç¦»ç›¸æœºï¼‰
+				handleDepth = (vertices[hitVertex] - camPos).length();
+				//å…è®¸åç»­ mouseMoveEventè§¦å‘æ‹–æ‹½
+				leftButtonDraggingHandle = true;
+				std::cout << "[GLWidget] Selected vertex " << hitVertex << " as HANDLE (ready to drag)" << std::endl;
+				// âœ… ç«‹å³è§¦å‘é‡ç»˜ï¼Œæ˜¾ç¤ºçº¢è‰²é«˜äº®ç‚¹
+				update();
+			}
+		}
+		return; // ARAPæ¨¡å¼ä¸‹ï¼Œå·¦é”®ä¸æ—‹è½¬è§†å›¾
+	}
+	//å³é”®é‡ç½®è§†å›¾
+	if (e->button() == Qt::RightButton) {
+		resetView();
+		update();
+	}
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* e) {
- int dx = e->x() - lastPos.x();
- int dy = e->y() - lastPos.y();
+	int dx = e->x() - lastPos.x();
+	int dy = e->y() - lastPos.y();
 
- if (arapActive) {
- // ÈôÒÑÑ¡¶¨ handle ÇÒ×ó¼üÈÔ°´ÏÂÔòÖ´ĞĞÍÏ×§
- if ((e->buttons() & Qt::LeftButton) && arapHandleVertex >=0 && leftButtonDraggingHandle) {
- performArapDrag(e->pos());
- }
- } else {
- if (e->buttons() & Qt::LeftButton) {
- rotationY -= dx *0.5f;
- rotationX += dy *0.5f;
- if (rotationX >179.f) rotationX -=360.f;
- if (rotationX < -179.f) rotationX +=360.f;
- update();
- } else if (e->buttons() & Qt::MiddleButton) {
- float panScale = distance *0.0015f;
- panOffset += QVector2D(-dx * panScale, dy * panScale);
- update();
- }
- }
- lastPos = e->pos();
+	if (arapActive) {
+		// è‹¥å·²é€‰å®š handle ä¸”å·¦é”®ä»æŒ‰ä¸‹åˆ™æ‰§è¡Œæ‹–æ‹½
+		if ((e->buttons() & Qt::LeftButton) && arapHandleVertex >= 0 && leftButtonDraggingHandle) {
+			performArapDrag(e->pos());
+		}
+	}
+	else {
+		if (e->buttons() & Qt::LeftButton) {
+			rotationY -= dx * 0.5f;
+			rotationX += dy * 0.5f;
+			if (rotationX > 179.f) rotationX -= 360.f;
+			if (rotationX < -179.f) rotationX += 360.f;
+			update();
+		}
+		else if (e->buttons() & Qt::MiddleButton) {
+			float panScale = distance * 0.0015f;
+			panOffset += QVector2D(-dx * panScale, dy * panScale);
+			update();
+		}
+	}
+	lastPos = e->pos();
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent* e) {
- if (e->button() == Qt::LeftButton) {
- if (arapActive && leftButtonDraggingHandle) {
- leftButtonDraggingHandle = false;
- std::cout << "[GLWidget] Stopped dragging handle" << std::endl;
- }
- }
+	if (e->button() == Qt::LeftButton) {
+		if (arapActive && leftButtonDraggingHandle) {
+			leftButtonDraggingHandle = false;
+			std::cout << "[GLWidget] Stopped dragging handle" << std::endl;
+		}
+	}
 }
 
 void GLWidget::wheelEvent(QWheelEvent* e) {
-    float steps = e->angleDelta().y() / 120.0f;
-    float factor = std::pow(0.9f, steps);
-    distance *= factor;
-  float minDist = 0.1f * modelRadius;
-    float maxDist = 20.0f * modelRadius;
-    distance = std::clamp(distance, minDist, maxDist);
-    update();
+	float steps = e->angleDelta().y() / 120.0f;
+	float factor = std::pow(0.9f, steps);
+	distance *= factor;
+	float minDist = 0.1f * modelRadius;
+	float maxDist = 20.0f * modelRadius;
+	distance = std::clamp(distance, minDist, maxDist);
+	update();
 }
 
-/* ==================== ARAP½»»¥¹¦ÄÜÊµÏÖ ==================== */
+/* ==================== ARAPäº¤äº’åŠŸèƒ½å®ç° ==================== */
 
 /**
- * @brief ÇĞ»»ARAPÄ£Ê½
- * 
- * ½øÈëARAPÄ£Ê½Ê±£º
- * - µ÷ÓÃarapBeginCallback³õÊ¼»¯£¨±£´æold_position£©
- * - ×ó¼üµã»÷Ñ¡Ôñfixed¶¥µã
- * - ×ó¼üÍÏ×§Ö´ĞĞARAP±äĞÎ
- * 
- * ÍË³öARAPÄ£Ê½Ê±£º
- * - ÖØÖÃhandle¶¥µãË÷Òı
- * - »Ö¸´Õı³£Ïà»ú½»»¥
+ * @brief åˆ‡æ¢ARAPæ¨¡å¼
+ *
+ * è¿›å…¥ARAPæ¨¡å¼æ—¶ï¼š
+ * - è°ƒç”¨arapBeginCallbackåˆå§‹åŒ–ï¼ˆä¿å­˜old_positionï¼‰
+ * - å·¦é”®ç‚¹å‡»é€‰æ‹©fixedé¡¶ç‚¹
+ * - å·¦é”®æ‹–æ‹½æ‰§è¡ŒARAPå˜å½¢
+ *
+ * é€€å‡ºARAPæ¨¡å¼æ—¶ï¼š
+ * - é‡ç½®handleé¡¶ç‚¹ç´¢å¼•
+ * - æ¢å¤æ­£å¸¸ç›¸æœºäº¤äº’
  */
 void GLWidget::toggleArapMode() {
-  arapActive = !arapActive;
-    
-    if (!arapActive) {
-        // ÍË³öARAPÄ£Ê½£¬ÇåÀí×´Ì¬
-    fixedVertices.clear();
-      arapHandleVertex = -1;
-      leftButtonDraggingHandle = false;
-        arapSelectionMode = ArapSelectionMode::None; // ÖØÖÃÑ¡ÔñÄ£Ê½
-  std::cout << "[GLWidget] Exited ARAP mode" << std::endl;
-    } else {
-      // ½øÈëARAPÄ£Ê½£¬³õÊ¼»¯£¨Ö»µ÷ÓÃÒ»´Î£©
-     if (arapBeginCallback) {
-    arapBeginCallback();
-        }
-        arapSelectionMode = ArapSelectionMode::SelectFixed; // Ä¬ÈÏ½øÈëFixedÑ¡ÔñÄ£Ê½
-    std::cout << "[GLWidget] Entered ARAP mode - Use toolbar buttons to select Fixed/Handle vertices" << std::endl;
-    }
+	arapActive = !arapActive;
 
-    update();
+	if (!arapActive) {
+		// é€€å‡ºARAPæ¨¡å¼ï¼Œæ¸…ç†çŠ¶æ€
+		fixedVertices.clear();
+		arapHandleVertex = -1;
+		leftButtonDraggingHandle = false;
+		arapSelectionMode = ArapSelectionMode::None; // é‡ç½®é€‰æ‹©æ¨¡å¼
+		std::cout << "[GLWidget] Exited ARAP mode" << std::endl;
+	}
+	else {
+		// è¿›å…¥ARAPæ¨¡å¼ï¼Œåˆå§‹åŒ–ï¼ˆåªè°ƒç”¨ä¸€æ¬¡ï¼‰
+		if (arapBeginCallback) {
+			arapBeginCallback();
+		}
+		arapSelectionMode = ArapSelectionMode::SelectFixed; // é»˜è®¤è¿›å…¥Fixedé€‰æ‹©æ¨¡å¼
+		std::cout << "[GLWidget] Entered ARAP mode - Use toolbar buttons to select Fixed/Handle vertices" << std::endl;
+	}
+
+	update();
 }
 
 /**
- * @brief Çå³ıËùÓĞÒÑÑ¡ÔñµÄ¹Ì¶¨¶¥µã
+ * @brief æ¸…é™¤æ‰€æœ‰å·²é€‰æ‹©çš„å›ºå®šé¡¶ç‚¹
  */
 void GLWidget::clearArapFixedVertices() {
-    if (arapClearFixedCallback) {
-        arapClearFixedCallback();
-    }
-    
-    // Çå¿Õfixed¶¥µã¼¯ºÏ
-    fixedVertices.clear();
-    
-// ÖØÖÃhandle×´Ì¬
-    arapHandleVertex = -1;
-    leftButtonDraggingHandle = false;
-    
-    std::cout << "[GLWidget] Cleared all fixed vertices" << std::endl;
-    update();
+	if (arapClearFixedCallback) {
+		arapClearFixedCallback();
+	}
+
+	// æ¸…ç©ºfixedé¡¶ç‚¹é›†åˆ
+	fixedVertices.clear();
+
+	// é‡ç½®handleçŠ¶æ€
+	arapHandleVertex = -1;
+	leftButtonDraggingHandle = false;
+
+	std::cout << "[GLWidget] Cleared all fixed vertices" << std::endl;
+	update();
 }
 
 /**
- * @brief ¿ªÊ¼ARAP»á»°£¨Èç¹û»Øµ÷ÒÑÉèÖÃ£©
+ * @brief å¼€å§‹ARAPä¼šè¯ï¼ˆå¦‚æœå›è°ƒå·²è®¾ç½®ï¼‰
  */
 void GLWidget::beginArapIfNeeded() {
-    if (arapBeginCallback) {
-    arapBeginCallback();
-        std::cout << "[GLWidget] ARAP session initialized" << std::endl;
-    }
+	if (arapBeginCallback) {
+		arapBeginCallback();
+		std::cout << "[GLWidget] ARAP session initialized" << std::endl;
+	}
 }
 
 /**
- * @brief ÆÁÄ»×ø±êÊ°È¡×î½üµÄ¶¥µã
- * @param pos Êó±êÆÁÄ»×ø±ê
- * @return ¶¥µãË÷Òı£¬-1±íÊ¾Î´Ê°È¡µ½
- * 
- * ÊµÏÖÔ­Àí£º
- * 1. ¹¹½¨MVP¾ØÕó£¨Ä£ĞÍ-ÊÓÍ¼-Í¶Ó°¾ØÕó£©
- * 2. ½«ËùÓĞ¶¥µã±ä»»µ½ÆÁÄ»¿Õ¼ä
- * 3. ¼ÆËãÊó±êÎ»ÖÃÓëÃ¿¸ö¶¥µãµÄÆÁÄ»¾àÀë
- * 4. ·µ»Ø¾àÀë×î½üÇÒÔÚ15ÏñËØãĞÖµÄÚµÄ¶¥µã
+ * @brief å±å¹•åæ ‡æ‹¾å–æœ€è¿‘çš„é¡¶ç‚¹
+ * @param pos é¼ æ ‡å±å¹•åæ ‡
+ * @return é¡¶ç‚¹ç´¢å¼•ï¼Œ-1è¡¨ç¤ºæœªæ‹¾å–åˆ°
+ *
+ * å®ç°åŸç†ï¼š
+ * 1. æ„å»ºMVPçŸ©é˜µï¼ˆæ¨¡å‹-è§†å›¾-æŠ•å½±çŸ©é˜µï¼‰
+ * 2. å°†æ‰€æœ‰é¡¶ç‚¹å˜æ¢åˆ°å±å¹•ç©ºé—´
+ * 3. è®¡ç®—é¼ æ ‡ä½ç½®ä¸æ¯ä¸ªé¡¶ç‚¹çš„å±å¹•è·ç¦»
+ * 4. è¿”å›è·ç¦»æœ€è¿‘ä¸”åœ¨15åƒç´ é˜ˆå€¼å†…çš„é¡¶ç‚¹
  */
 int GLWidget::pickVertex(const QPoint& pos) const {
-    if (vertices.empty()) return -1;
-    
-    // ¹¹½¨MVP¾ØÕó£¨ÓëpaintGLÖĞÏàÍ¬£©
-    float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
-QMatrix4x4 proj;
-    proj.perspective(45.0f, aspect, 0.01f, 1000.0f);
-    
-    float rx = qDegreesToRadians(rotationX);
-    float ry = qDegreesToRadians(rotationY);
-    float cosX = std::cos(rx);
-    
-    QVector3D camPos(
-        distance * std::sin(ry) * cosX,
-        distance * std::sin(rx),
-        distance * std::cos(ry) * cosX
-    );
-    
-    QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
-    QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
-    
-    QMatrix4x4 view;
-    view.lookAt(camPos + target, target, up);
-    QMatrix4x4 mvp = proj * view;
-    
-    // ±éÀúËùÓĞ¶¥µã£¬ÕÒµ½ÆÁÄ»¾àÀë×î½üµÄ
-    int bestVertex = -1;
-float bestDistance = 15.0f; // ÏñËØãĞÖµ£ºÖ»Ê°È¡15ÏñËØÄÚµÄ¶¥µã
-  
-    for (int i = 0; i < (int)vertices.size(); ++i) {
-        // ¶¥µã±ä»»µ½²Ã¼ô¿Õ¼ä
-        QVector4D clipPos = mvp * QVector4D(vertices[i], 1.0f);
-        
-        if (clipPos.w() == 0) continue; // ±ÜÃâ³ıÁã
-        
-        // Í¸ÊÓ³ı·¨£¬µÃµ½NDC×ø±ê[-1,1]
-      QVector3D ndc(clipPos.x() / clipPos.w(), 
-               clipPos.y() / clipPos.w(), 
-          clipPos.z() / clipPos.w());
-     
-        // NDC×ªÆÁÄ»×ø±ê
-        QPoint screenPos(
-  (int)((ndc.x() * 0.5f + 0.5f) * width()),
-     (int)((-ndc.y() * 0.5f + 0.5f) * height())
-        );
-        
-        // ¼ÆËãÆÁÄ»¾àÀë
-        float dist = std::hypot((float)(screenPos.x() - pos.x()), 
-      (float)(screenPos.y() - pos.y()));
-        
-     if (dist < bestDistance) {
-            bestDistance = dist;
-      bestVertex = i;
-        }
-    }
-    
-    if (bestVertex >= 0) {
-std::cout << "[GLWidget] Picked vertex " << bestVertex 
-    << " at screen distance " << bestDistance << " pixels" << std::endl;
-    }
-    
-    return bestVertex;
+	if (vertices.empty()) return -1;
+
+	// æ„å»ºMVPçŸ©é˜µï¼ˆä¸paintGLä¸­ç›¸åŒï¼‰
+	float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
+	QMatrix4x4 proj;
+	proj.perspective(45.0f, aspect, 0.01f, 1000.0f);
+
+	float rx = qDegreesToRadians(rotationX);
+	float ry = qDegreesToRadians(rotationY);
+	float cosX = std::cos(rx);
+
+	QVector3D camPos(
+		distance * std::sin(ry) * cosX,
+		distance * std::sin(rx),
+		distance * std::cos(ry) * cosX
+	);
+
+	QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+	QVector3D up = (cosX >= 0.0f) ? QVector3D(0, 1, 0) : QVector3D(0, -1, 0);
+
+	QMatrix4x4 view;
+	view.lookAt(camPos + target, target, up);
+	QMatrix4x4 mvp = proj * view;
+
+	// éå†æ‰€æœ‰é¡¶ç‚¹ï¼Œæ‰¾åˆ°å±å¹•è·ç¦»æœ€è¿‘çš„
+	int bestVertex = -1;
+	float bestDistance = 15.0f; // åƒç´ é˜ˆå€¼ï¼šåªæ‹¾å–15åƒç´ å†…çš„é¡¶ç‚¹
+
+	for (int i = 0; i < (int)vertices.size(); ++i) {
+		// é¡¶ç‚¹å˜æ¢åˆ°è£å‰ªç©ºé—´
+		QVector4D clipPos = mvp * QVector4D(vertices[i], 1.0f);
+
+		if (clipPos.w() == 0) continue; // é¿å…é™¤é›¶
+
+		// é€è§†é™¤æ³•ï¼Œå¾—åˆ°NDCåæ ‡[-1,1]
+		QVector3D ndc(clipPos.x() / clipPos.w(),
+			clipPos.y() / clipPos.w(),
+			clipPos.z() / clipPos.w());
+
+		// NDCè½¬å±å¹•åæ ‡
+		QPoint screenPos(
+			(int)((ndc.x() * 0.5f + 0.5f) * width()),
+			(int)((-ndc.y() * 0.5f + 0.5f) * height())
+		);
+
+		// è®¡ç®—å±å¹•è·ç¦»
+		float dist = std::hypot((float)(screenPos.x() - pos.x()),
+			(float)(screenPos.y() - pos.y()));
+
+		if (dist < bestDistance) {
+			bestDistance = dist;
+			bestVertex = i;
+		}
+	}
+
+	if (bestVertex >= 0) {
+		std::cout << "[GLWidget] Picked vertex " << bestVertex
+			<< " at screen distance " << bestDistance << " pixels" << std::endl;
+	}
+
+	return bestVertex;
 }
 
 /**
- * @brief ÆÁÄ»×ø±ê×ªÊÀ½ç3D×ø±ê
- * @param pos ÆÁÄ»×ø±ê£¨Êó±êÎ»ÖÃ£©
- * @param depth Éî¶ÈÖµ£¨¾àÀëÏà»úµÄ¾àÀë£¬ÓÃ¶¥µãÔ­Ê¼Éî¶È£©
- * @return 3DÊÀ½ç×ø±ê
- * 
- * ÊµÏÖÔ­Àí£º
- * 1. ½«ÆÁÄ»×ø±ê¹éÒ»»¯µ½NDC¿Õ¼ä[-1,1]
- * 2. ¹¹½¨½üÆ½ÃæºÍÔ¶Æ½ÃæÉÏµÄÁ½¸öµã
- * 3. Äæ±ä»»µ½ÊÀ½ç¿Õ¼ä
- * 4. ÑØÊÓÏß·½ÏòÒÆ¶¯µ½Ö¸¶¨Éî¶È
- * 
- * ÓÃÍ¾£º½«Êó±êÍÏ×§µÄ2D¹ì¼£×ª»»Îªhandle¶¥µãµÄ3DĞÂÎ»ÖÃ
+ * @brief å±å¹•åæ ‡è½¬ä¸–ç•Œ3Dåæ ‡
+ * @param pos å±å¹•åæ ‡ï¼ˆé¼ æ ‡ä½ç½®ï¼‰
+ * @param depth æ·±åº¦å€¼ï¼ˆè·ç¦»ç›¸æœºçš„è·ç¦»ï¼Œç”¨é¡¶ç‚¹åŸå§‹æ·±åº¦ï¼‰
+ * @return 3Dä¸–ç•Œåæ ‡
+ *
+ * å®ç°åŸç†ï¼š
+ * 1. å°†å±å¹•åæ ‡å½’ä¸€åŒ–åˆ°NDCç©ºé—´[-1,1]
+ * 2. æ„å»ºè¿‘å¹³é¢å’Œè¿œå¹³é¢ä¸Šçš„ä¸¤ä¸ªç‚¹
+ * 3. é€†å˜æ¢åˆ°ä¸–ç•Œç©ºé—´
+ * 4. æ²¿è§†çº¿æ–¹å‘ç§»åŠ¨åˆ°æŒ‡å®šæ·±åº¦
+ *
+ * ç”¨é€”ï¼šå°†é¼ æ ‡æ‹–æ‹½çš„2Dè½¨è¿¹è½¬æ¢ä¸ºhandleé¡¶ç‚¹çš„3Dæ–°ä½ç½®
  */
 QVector3D GLWidget::screenToWorld(const QPoint& pos, float depth) const {
-    // ¹¹½¨MVP¾ØÕó
-    float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
-    QMatrix4x4 proj;
-    proj.perspective(45.0f, aspect, 0.01f, 1000.0f);
-    
-    float rx = qDegreesToRadians(rotationX);
-  float ry = qDegreesToRadians(rotationY);
-  float cosX = std::cos(rx);
-    
-    QVector3D camPos(
-    distance * std::sin(ry) * cosX,
-        distance * std::sin(rx),
-        distance * std::cos(ry) * cosX
-    );
-    
- QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
-    QVector3D up = (cosX >= 0.0f) ? QVector3D(0,1,0) : QVector3D(0,-1,0);
-    
-    QMatrix4x4 view;
-    view.lookAt(camPos + target, target, up);
-    
-    // ¼ÆËãÄæMVP¾ØÕó
-    QMatrix4x4 invMVP = (proj * view).inverted();
-    
-    // ÆÁÄ»×ø±ê×ªNDC
-    float nx = (2.0f * pos.x() / (float)width()) - 1.0f;
-    float ny = 1.0f - (2.0f * pos.y() / (float)height());
-    
-    // ¹¹½¨½üÆ½ÃæºÍÔ¶Æ½ÃæÉÏµÄµã
-    QVector4D nearPoint = invMVP * QVector4D(nx, ny, -1.0f, 1.0f);
-    QVector4D farPoint = invMVP * QVector4D(nx, ny, 1.0f, 1.0f);
-    
-    // Í¸ÊÓ³ı·¨
-    nearPoint /= nearPoint.w();
-    farPoint /= farPoint.w();
-    
-    // ¼ÆËãÊÓÏß·½Ïò
-    QVector3D rayDir = (farPoint - nearPoint).toVector3D().normalized();
-    QVector3D rayOrigin = nearPoint.toVector3D();
-    
-    // ÑØÊÓÏßÒÆ¶¯µ½Ö¸¶¨Éî¶È
-    return rayOrigin + rayDir * depth;
+	// æ„å»ºMVPçŸ©é˜µ
+	float aspect = (width() > 0 && height() > 0) ? (float)width() / (float)height() : 1.0f;
+	QMatrix4x4 proj;
+	proj.perspective(45.0f, aspect, 0.01f, 1000.0f);
+
+	float rx = qDegreesToRadians(rotationX);
+	float ry = qDegreesToRadians(rotationY);
+	float cosX = std::cos(rx);
+
+	QVector3D camPos(
+		distance * std::sin(ry) * cosX,
+		distance * std::sin(rx),
+		distance * std::cos(ry) * cosX
+	);
+
+	QVector3D target = modelCenter + QVector3D(panOffset.x(), panOffset.y(), 0.0f);
+	QVector3D up = (cosX >= 0.0f) ? QVector3D(0, 1, 0) : QVector3D(0, -1, 0);
+
+	QMatrix4x4 view;
+	view.lookAt(camPos + target, target, up);
+
+	// è®¡ç®—é€†MVPçŸ©é˜µ
+	QMatrix4x4 invMVP = (proj * view).inverted();
+
+	// å±å¹•åæ ‡è½¬NDC
+	float nx = (2.0f * pos.x() / (float)width()) - 1.0f;
+	float ny = 1.0f - (2.0f * pos.y() / (float)height());
+
+	// æ„å»ºè¿‘å¹³é¢å’Œè¿œå¹³é¢ä¸Šçš„ç‚¹
+	QVector4D nearPoint = invMVP * QVector4D(nx, ny, -1.0f, 1.0f);
+	QVector4D farPoint = invMVP * QVector4D(nx, ny, 1.0f, 1.0f);
+
+	// é€è§†é™¤æ³•
+	nearPoint /= nearPoint.w();
+	farPoint /= farPoint.w();
+
+	// è®¡ç®—è§†çº¿æ–¹å‘
+	QVector3D rayDir = (farPoint - nearPoint).toVector3D().normalized();
+	QVector3D rayOrigin = nearPoint.toVector3D();
+
+	// æ²¿è§†çº¿ç§»åŠ¨åˆ°æŒ‡å®šæ·±åº¦
+	return rayOrigin + rayDir * depth;
 }
 
 /**
- * @brief Ö´ĞĞARAPÍÏ×§±äĞÎ
- * @param pos µ±Ç°Êó±êÆÁÄ»Î»ÖÃ
- * 
- * ¹¤×÷Á÷³Ì£º
- * 1. ½«Êó±êÎ»ÖÃ×ª»»Îª3D×ø±ê£¨±£³ÖhandleÔ­Ê¼Éî¶È£©
- * 2. µ÷ÓÃarapDragCallbackÖ´ĞĞARAPËã·¨
- * 3. ÓÃ·µ»ØµÄĞÂmesh¸üĞÂÏÔÊ¾£¨½ö¸üĞÂ¶¥µã»º³å£¬²»ÖØÖÃÊÓÍ¼£©
+ * @brief æ‰§è¡ŒARAPæ‹–æ‹½å˜å½¢
+ * @param pos å½“å‰é¼ æ ‡å±å¹•ä½ç½®
+ *
+ * å·¥ä½œæµç¨‹ï¼š
+ * 1. å°†é¼ æ ‡ä½ç½®è½¬æ¢ä¸º3Dåæ ‡ï¼ˆä¿æŒhandleåŸå§‹æ·±åº¦ï¼‰
+ * 2. è°ƒç”¨arapDragCallbackæ‰§è¡ŒARAPç®—æ³•
+ * 3. ç”¨è¿”å›çš„æ–°meshæ›´æ–°æ˜¾ç¤ºï¼ˆä»…æ›´æ–°é¡¶ç‚¹ç¼“å†²ï¼Œä¸é‡ç½®è§†å›¾ï¼‰
  */
 void GLWidget::performArapDrag(const QPoint& pos) {
-    if (arapHandleVertex < 0 || !arapDragCallback) {
-        return;
-    }
-    
-    // ½«ÆÁÄ»×ø±ê×ª»»Îª3DÊÀ½ç×ø±ê
-    QVector3D newWorldPos = screenToWorld(pos, handleDepth);
-    
- // µ÷ÓÃARAPËã·¨»Øµ÷
-    auto result = arapDragCallback(arapHandleVertex, newWorldPos);
-    
-    // Ö»¸üĞÂ¶¥µãÊı¾İ£¬²»ÖØÖÃÊÓÍ¼»òÖØĞÂ¼ÆËã°üÎ§ºĞ
-    vertices = result.first;
-    indices = result.second;
-    
-    if (!isValid()) return;
-    
-    // Ö»¸üĞÂ GPU »º³åÇø
-    vertexBuf.bind();
-    vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
-    
-    indexBuf.bind();
-    indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
-    
-    // ²»µ÷ÓÃ calculateModelBounds() ºÍ resetView()
-    update();  // ½ö´¥·¢ÖØ»æ
+	if (arapHandleVertex < 0 || !arapDragCallback) {
+		return;
+	}
+
+	// å°†å±å¹•åæ ‡è½¬æ¢ä¸º3Dä¸–ç•Œåæ ‡
+	QVector3D newWorldPos = screenToWorld(pos, handleDepth);
+
+	// è°ƒç”¨ARAPç®—æ³•å›è°ƒ
+	auto result = arapDragCallback(arapHandleVertex, newWorldPos);
+
+	// åªæ›´æ–°é¡¶ç‚¹æ•°æ®ï¼Œä¸é‡ç½®è§†å›¾æˆ–é‡æ–°è®¡ç®—åŒ…å›´ç›’
+	vertices = result.first;
+	indices = result.second;
+
+	if (!isValid()) return;
+
+	// åªæ›´æ–° GPU ç¼“å†²åŒº
+	vertexBuf.bind();
+	vertexBuf.allocate(vertices.data(), static_cast<int>(vertices.size() * sizeof(QVector3D)));
+
+	indexBuf.bind();
+	indexBuf.allocate(indices.data(), static_cast<int>(indices.size() * sizeof(unsigned int)));
+
+	// ä¸è°ƒç”¨ calculateModelBounds() å’Œ resetView()
+	update();  // ä»…è§¦å‘é‡ç»˜
 }
 
 /**
- * @brief ÉèÖÃARAPÑ¡ÔñÄ£Ê½
+ * @brief è®¾ç½®ARAPé€‰æ‹©æ¨¡å¼
  */
 void GLWidget::setArapSelectionMode(ArapSelectionMode mode) {
- arapSelectionMode = mode;
- const char* modeNames[] = {"None", "SelectFixed", "SelectHandle"};
- std::cout << "[GLWidget] ARAP selection mode: " << modeNames[static_cast<int>(mode)] << std::endl;
- update();
+	arapSelectionMode = mode;
+	const char* modeNames[] = { "None", "SelectFixed", "SelectHandle" };
+	std::cout << "[GLWidget] ARAP selection mode: " << modeNames[static_cast<int>(mode)] << std::endl;
+	update();
 }

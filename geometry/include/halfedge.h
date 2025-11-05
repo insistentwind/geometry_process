@@ -1,4 +1,4 @@
-#ifndef GEOMETRY_HALFEDGE_H
+ï»¿#ifndef GEOMETRY_HALFEDGE_H
 #define GEOMETRY_HALFEDGE_H
 
 #include <vector>
@@ -14,17 +14,17 @@ class HalfEdge;
 
 class Vertex {
 public:
-    bool fixed = false;// ÊÇ·ñÊÇ¹Ì¶¨µÄµã
-    bool handle = false; // ÊÇ·ñÊÇÍÏ×§¿ØÖÆµã£¨handleµã£©
+    bool fixed = false;// æ˜¯å¦æ˜¯å›ºå®šçš„ç‚¹
+    bool handle = false; // æ˜¯å¦æ˜¯æ‹–æ‹½æ§åˆ¶ç‚¹ï¼ˆhandleç‚¹ï¼‰
     Eigen::Vector3d position;
-	Eigen::Vector3d old_position; // ÓÃÓÚÄ³Ğ©Ëã·¨ÖĞ´æ´¢¾ÉÎ»ÖÃ
-	Eigen::Vector3d old_normal;   // ÓÃÓÚÄ³Ğ©Ëã·¨ÖĞ´æ´¢¾É·¨Ïß
+	Eigen::Vector3d old_position; // ç”¨äºæŸäº›ç®—æ³•ä¸­å­˜å‚¨æ—§ä½ç½®
+	Eigen::Vector3d old_normal;   // ç”¨äºæŸäº›ç®—æ³•ä¸­å­˜å‚¨æ—§æ³•çº¿
     Eigen::Vector3d normal;// 
     Eigen::Vector2d texCoords;
     Eigen::Vector3d color;
     HalfEdge* halfEdge;
-	int boundary_index = -1; // ±ß½çË÷Òı£¬-1±íÊ¾·Ç±ß½ç¶¥µã
-	int index;// ¶¥µãË÷Òı
+	int boundary_index = -1; // è¾¹ç•Œç´¢å¼•ï¼Œ-1è¡¨ç¤ºéè¾¹ç•Œé¡¶ç‚¹
+	int index;// é¡¶ç‚¹ç´¢å¼•
     Vertex(const Eigen::Vector3d& pos, int idx)
         : position(pos), normal(Eigen::Vector3d::Zero()), texCoords(Eigen::Vector2d::Zero()),
           color(Eigen::Vector3d::Ones()), halfEdge(nullptr), index(idx) {}
@@ -42,8 +42,8 @@ public:
     HalfEdge* halfEdge;
     int index;
     Eigen::Vector3d normal;
-	Eigen::Vector3d old_normal; // ÓÃÓÚÄ³Ğ©Ëã·¨ÖĞ´æ´¢¾É·¨Ïß
-	Eigen::Vector3d center_point;// ÃæĞÄ
+	Eigen::Vector3d old_normal; // ç”¨äºæŸäº›ç®—æ³•ä¸­å­˜å‚¨æ—§æ³•çº¿
+	Eigen::Vector3d center_point;// é¢å¿ƒ
     Face(int idx) : halfEdge(nullptr), index(idx), normal(Eigen::Vector3d::Zero()) {}
     void computeNormal();
     double computeArea() const;
@@ -53,12 +53,12 @@ public:
 class HalfEdge {
 public:
     int index;
-    Vertex* vertex;   ///< Æğµã
-    Face* face;       ///< ×ó²àÃæ
-    HalfEdge* next;   ///< ÏÂÒ»Ìõ
-    HalfEdge* prev;   ///< ÉÏÒ»Ìõ
-    HalfEdge* pair;   ///< ¶ÔÅ¼
-    Eigen::Vector3d edgeColor; ///< ±ßÑÕÉ«(Ä¬ÈÏ°×É«)£¬¿ÉÓÃÓÚ¸ßÁÁÌØ¶¨±ß
+    Vertex* vertex;   ///< èµ·ç‚¹
+    Face* face;       ///< å·¦ä¾§é¢
+    HalfEdge* next;   ///< ä¸‹ä¸€æ¡
+    HalfEdge* prev;   ///< ä¸Šä¸€æ¡
+    HalfEdge* pair;   ///< å¯¹å¶
+    Eigen::Vector3d edgeColor; ///< è¾¹é¢œè‰²(é»˜è®¤ç™½è‰²)ï¼Œå¯ç”¨äºé«˜äº®ç‰¹å®šè¾¹
 
     HalfEdge() : vertex(nullptr), face(nullptr), next(nullptr), prev(nullptr), pair(nullptr), edgeColor(Eigen::Vector3d::Ones()) {}
 
@@ -67,7 +67,7 @@ public:
     bool isBoundary() const { return pair == nullptr; }
     Vertex* getEndVertex() const { return next->vertex; }
 };
-// Ê²Ã´ÊÇHalfEdgeMesh£¬ Õâ¸öÀàÖ÷ÒªÊÇÓÃÀ´´æ´¢ºÍ²Ù×÷°ë±ßÊı¾İ½á¹¹µÄ
+// ä»€ä¹ˆæ˜¯HalfEdgeMeshï¼Œ è¿™ä¸ªç±»ä¸»è¦æ˜¯ç”¨æ¥å­˜å‚¨å’Œæ“ä½œåŠè¾¹æ•°æ®ç»“æ„çš„
 class HalfEdgeMesh {
 public:
     std::vector<std::unique_ptr<Vertex>> vertices;

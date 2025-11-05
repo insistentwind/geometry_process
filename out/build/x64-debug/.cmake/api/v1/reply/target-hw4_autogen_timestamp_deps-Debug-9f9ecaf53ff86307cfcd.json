@@ -1,0 +1,38 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"src/hw4/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "mesh_viewer::@4ad571843d929affe7de"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "geometry::@60d41218eef6b4657a56"
+		}
+	],
+	"id" : "hw4_autogen_timestamp_deps::@d00ede21f3c439b0ac79",
+	"isGeneratorProvided" : true,
+	"name" : "hw4_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "src/hw4",
+		"source" : "src/hw4"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
