@@ -17,9 +17,9 @@ MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
 	}
 
 	// 步骤3：执行实际的几何处理操作（这是需要自己实现的部分）
-	//processGeometry();
+	processGeometry();
     //processGeometry_ultimate();
-    LSCM();
+    //LSCM();
 
 	// 步骤4：使用geometry模块的MeshConverter将结果转回Qt格式
 	return geometry::MeshConverter::convertMeshToQtData(mesh);
@@ -43,7 +43,7 @@ void MeshProcessor::processGeometry() {
 		geometry::HalfEdge* start = hePtr.get();
 		if (start->pair) continue;// 不是边界半边
 		if (visitedBoundaryHE.count(start)) continue;// 如果遍历过了，就跳过
-
+		// 这里保证获取到了第一条未遍历的边界半边
 		geometry::HalfEdge* he = start;
 		int step = 0;
 		do {
@@ -58,13 +58,14 @@ void MeshProcessor::processGeometry() {
 			while (candidate && candidate->pair) {
 				candidate = candidate->pair->next;
 			}
-			he = candidate;
+			he = candidate;//现在是边界边
 			step++;
 			if (step > (int)mesh.halfEdges.size()) { // 安全退出：异常拓扑
 				std::cerr << "Warning: boundary walk aborted (non-manifold?)" << std::endl;
 				break;
 			}
 		} while (he && he != start);
+        // he 必定会等于 start，因为一个边界环必定是闭合的！
 
 		boundary_cycle++;
 	}

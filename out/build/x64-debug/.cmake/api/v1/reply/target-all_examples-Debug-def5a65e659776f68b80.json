@@ -1,0 +1,743 @@
+{
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"add_dependencies"
+		],
+		"files" : 
+		[
+			"thirdparty/eigen-3.4.0/doc/CMakeLists.txt",
+			"thirdparty/eigen-3.4.0/doc/examples/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 79,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 2
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "QuickStart_example2_fixed::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "DenseBase_template_int_middleRows::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 5,
+			"id" : "QuickStart_example::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 6,
+			"id" : "DenseBase_template_int_middleCols::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "Cwise_erf::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 8,
+			"id" : "Cwise_lgamma::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 9,
+			"id" : "DenseBase_middleCols_int::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 10,
+			"id" : "CustomizingEigen_Inheritance::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 11,
+			"id" : "DenseBase_middleRows_int::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 12,
+			"id" : "Cwise_erfc::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 13,
+			"id" : "QuickStart_example2_dynamic::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 14,
+			"id" : "TutorialLinAlgExComputeSolveError::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 15,
+			"id" : "TutorialLinAlgComputeTwice::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 16,
+			"id" : "TemplateKeyword_simple::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "TutorialInplaceLU::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 18,
+			"id" : "TutorialLinAlgExSolveColPivHouseholderQR::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 19,
+			"id" : "TemplateKeyword_flexible::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 20,
+			"id" : "TutorialLinAlgExSolveLDLT::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 21,
+			"id" : "Tutorial_ArrayClass_mult::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 22,
+			"id" : "TutorialLinAlgInverseDeterminant::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 23,
+			"id" : "TutorialLinAlgRankRevealing::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 24,
+			"id" : "Tutorial_BlockOperations_print_block::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 25,
+			"id" : "TutorialLinAlgSelfAdjointEigenSolver::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 26,
+			"id" : "Tutorial_ArrayClass_accessors::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 27,
+			"id" : "Tutorial_ArrayClass_interop::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 28,
+			"id" : "Tutorial_ArrayClass_interop_matrix::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 29,
+			"id" : "Tutorial_BlockOperations_vector::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 30,
+			"id" : "Tutorial_PartialLU_solve::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 31,
+			"id" : "Tutorial_ArrayClass_addition::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 32,
+			"id" : "Tutorial_ArrayClass_cwise_other::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 33,
+			"id" : "TutorialLinAlgSVDSolve::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 34,
+			"id" : "TutorialLinAlgSetThreshold::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 35,
+			"id" : "Tutorial_BlockOperations_block_assignment::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 36,
+			"id" : "Tutorial_BlockOperations_colrow::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 37,
+			"id" : "Tutorial_BlockOperations_corner::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 38,
+			"id" : "tut_arithmetic_scalar_mul_div::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 39,
+			"id" : "tut_arithmetic_redux_basic::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 40,
+			"id" : "function_taking_eigenbase::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 41,
+			"id" : "class_Reshaped::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 42,
+			"id" : "tut_arithmetic_dot_cross::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 43,
+			"id" : "class_FixedVectorBlock::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 44,
+			"id" : "tut_matrix_coefficient_accessors::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 45,
+			"id" : "matrixfree_cg::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 46,
+			"id" : "class_VectorBlock::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 47,
+			"id" : "function_taking_ref::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 48,
+			"id" : "tut_matrix_resize::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 49,
+			"id" : "class_FixedReshaped::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 50,
+			"id" : "nullary_indexing::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 51,
+			"id" : "tut_matrix_resize_fixed_size::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 52,
+			"id" : "tut_arithmetic_matrix_mul::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 53,
+			"id" : "make_circulant2::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 54,
+			"id" : "tut_arithmetic_add_sub::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 55,
+			"id" : "make_circulant::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 56,
+			"id" : "class_CwiseUnaryOp::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 57,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_reductions_bool::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 58,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_maxnorm::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 59,
+			"id" : "class_CwiseUnaryOp_ptrfun::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 60,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_rowwise::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 61,
+			"id" : "Tutorial_simple_example_fixed_size::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 62,
+			"id" : "class_FixedBlock::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 63,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_broadcast_simple::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 64,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_broadcast_simple_rowwise::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 65,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_reductions_norm::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 66,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_visitors::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 67,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_broadcast_1nn::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 68,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_colwise::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 69,
+			"id" : "Tutorial_ReductionsVisitorsBroadcasting_reductions_operatornorm::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 70,
+			"id" : "Tutorial_simple_example_dynamic_size::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 71,
+			"id" : "class_Block::@52b33f96d8676917c5be"
+		},
+		{
+			"backtrace" : 72,
+			"id" : "class_CwiseBinaryOp::@52b33f96d8676917c5be"
+		}
+	],
+	"id" : "all_examples::@3d0a73fb44d0e242c360",
+	"name" : "all_examples",
+	"paths" : 
+	{
+		"build" : "thirdparty/eigen-3.4.0/doc",
+		"source" : "thirdparty/eigen-3.4.0/doc"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
