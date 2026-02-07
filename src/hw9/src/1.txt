@@ -1,0 +1,288 @@
+#include "mesh_processor.h"
+#include <mesh_converter.h>
+
+#include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+
+#include <iostream>
+#include <unordered_set>
+#include <queue>
+#include <unordered_set>
+
+std::pair<std::vector<QVector3D>, std::vector<unsigned int>> 
+MeshProcessor::processOBJData(const std::vector<QVector3D>& vertices,
+                              const std::vector<unsigned int>& indices) {
+    
+    // 步骤1：使用geometry模块的MeshConverter构建半边网格
+    geometry::MeshConverter::buildMeshFromQtData(mesh, vertices, indices);
+
+    // 步骤2：验证半边结构的正确性
+    if (!mesh.isValid()) {
+        std::cerr << "Warning: Generated half-edge mesh is invalid!" << std::endl;
+    }
+
+    int n = 100;
+    // 步骤3：执行实际的几何处理操作（这是需要自己实现的部分）
+    processGeometry(n);
+
+    // 步骤4：使用geometry模块的MeshConverter将结果转回Qt格式
+    return geometry::MeshConverter::convertMeshToQtData(mesh);
+}
+
+// QEM网格简化
+void MeshProcessor::processGeometry(int n) {
+    // 遍历顶点拿到每个顶点附近的Q？
+	int vertexCount = static_cast<int>(mesh.getVertexCount());
+    std::vector<Eigen::Matrix4d> QV_total;
+    std::vector<Eigen::Matrix4d> QE_total;
+    for(int i = 0; i < vertexCount; ++i) {
+        auto& vertex = mesh.vertices[i];
+		if (vertex->isBoundary()) {
+            Eigen::Matrix4d Qv = Eigen::Matrix4d::Zero();
+            geometry::HalfEdge* he = vertex->halfEdge;
+            do {
+				he = he->pair->next;
+            } while (!he->isBoundary());
+            // 从左边界遍历到右边界
+            do {
+                geometry::Vertex* v1 = he->getEndVertex();
+                geometry::Vertex* v2 = he->next->getEndVertex();
+    using TriMesh = OpenMesh::TriMesh_ArrayKernelT<>;
+
+                Eigen::Vector3d p0 = vertex->position;
+                Eigen::Vector3d p1 = v1->position;
+                Eigen::Vector3d p2 = v2->position;
+    // ========== 0) 先把 geometry::HalfEdgeMesh 转成 OpenMesh（只为遍历方便，不动你原 mesh / collapse）==========
+    TriMesh om;
+    std::vector<TriMesh::VertexHandle> vhs;
+    vhs.reserve(mesh.vertices.size());
+
+                Eigen::Vector3d normal = (p1 - p0).cross(p2 - p0).normalized();
+    for (const auto& v : mesh.vertices) {
+        vhs.push_back(om.add_vertex(TriMesh::Point(static_cast<float>(v->position.x()),
+                                                  static_cast<float>(v->position.y()),
+                                                  static_cast<float>(v->position.z()))));
+    }
+
+                double d = -normal.dot(p0);
+    for (const auto& f : mesh.faces) {
+        std::vector<TriMesh::VertexHandle> face;
+        face.reserve(3);
+        geometry::HalfEdge* he = f->halfEdge;
+        if (!he) continue;
+        do {
+            face.push_back(vhs[static_cast<size_t>(he->vertex->index)]);
+            he = he->next;
+        } while (he && he != f->halfEdge);
+
+                Eigen::Vector4d plane = Eigen::Vector4d(normal(0), normal(1), normal(2), d);
+        if (face.size() == 3) {
+            om.add_face(face);
+        }
+    }
+
+                Qv += plane * plane.transpose();
+    // ========== 1) 顶点 Q：按你的写法逐面 plane*plane^T 累加并保存 ==========
+    int vertexCount = static_cast<int>(om.n_vertices());
+    std::vector<Eigen::Matrix4d> QV_total(static_cast<size_t>(vertexCount), Eigen::Matrix4d::Zero());
+    std::vector<Eigen::Matrix4d> QE_total;
+
+                he = he->prev->pair;
+			} while (he != nullptr);
+
+			QV_total.push_back(Qv);
+        }
+        else {
+            //不是边界点
+    for (auto vh : om.vertices()) {
+        Eigen::Matrix4d Qv = Eigen::Matrix4d::Zero();
+			geometry::HalfEdge* he = vertex->halfEdge;
+            do {
+				geometry::Vertex* v1 = he->getEndVertex();
+				geometry::Vertex* v2 = he->next->getEndVertex();
+
+				Eigen::Vector3d p0 = vertex->position;
+				Eigen::Vector3d p1 = v1->position;
+				Eigen::Vector3d p2 = v2->position;
+        // 对 vh 的所有邻接面
+        for (auto vf_it = om.vf_begin(vh); vf_it.is_valid(); ++vf_it) {
+            auto fh = *vf_it;
+
+				Eigen::Vector3d normal = (p1 - p0).cross(p2 - p0).normalized();
+            Eigen::Vector3d p[3];
+            int k = 0;
+            for (auto fvh : om.fv_range(fh)) {
+                const auto& pp = om.point(fvh);
+                p[k++] = Eigen::Vector3d(pp[0], pp[1], pp[2]);
+            }
+            if (k != 3) continue;
+
+				double d = -normal.dot(p0);
+            Eigen::Vector3d normal = (p[1] - p[0]).cross(p[2] - p[0]);
+            double len = normal.norm();
+            if (len < 1e-12) continue;
+            normal /= len;
+
+				Eigen::Vector4d plane = Eigen::Vector4d(normal(0), normal(1), normal(2), d);
+
+            double d = -normal.dot(p[0]);
+            Eigen::Vector4d plane(normal(0), normal(1), normal(2), d);
+            Qv += plane * plane.transpose();
+				he = he->pair->next;
+            } while (he != vertex->halfEdge);
+        }
+
+            QV_total.push_back(Qv);
+        }
+        QV_total[static_cast<size_t>(vh.idx())] = Qv;
+    }
+
+    // ========== 2) 边 Q：按你的写法 Qe = Qv1 + Qv2 并保存 ==========
+    int edgeCount = 0;
+    {
+        std::unordered_set<const geometry::HalfEdge*> visited;
+        visited.reserve(mesh.getHalfEdgeCount());
+        for (const auto& hePtr : mesh.halfEdges) {
+            const geometry::HalfEdge* he = hePtr.get();
+            if (!he || visited.contains(he)) continue;
+            visited.insert(he);
+            if (he->pair) visited.insert(he->pair);
+            
+    QE_total.reserve(om.n_edges());
+    for (auto eh : om.edges()) {
+        auto heh = om.halfedge_handle(eh, 0);
+        auto v1 = om.from_vertex_handle(heh);
+        auto v2 = om.to_vertex_handle(heh);
+
+			Eigen::Matrix4d Qe = Eigen::Matrix4d::Zero();
+			geometry::Vertex* v1 = he->vertex;
+			geometry::Vertex* v2 = he->getEndVertex();
+			Qe = QV_total[v1->index] + QV_total[v2->index];
+        Eigen::Matrix4d Qe = QV_total[static_cast<size_t>(v1.idx())] + QV_total[static_cast<size_t>(v2.idx())];
+        QE_total.push_back(Qe);
+
+        ++edgeCount;
+    }
+    }
+
+    std::cout << "Vertex count: " << vertexCount << ", Edge count: " << edgeCount << std::endl;
+
+    // 现在开始计算每条边的cost
+
+    // ========== 3) cost：按你的写法算 A/B，求 v_opt，再算 v^T Q v ==========
+    std::vector<int> cost_total(edgeCount, 0);
+
+    struct CollapseRecord {
+        int edge_id;          // 边的唯一标识
+		geometry::HalfEdge *he;        // 半边索引（用于找到对应的半边）
+        double cost;          // v^T * Q * v
+        Eigen::Vector3d v_opt; // 预存的最优点位置
+        int version;          // 版本号（用于懒加载过滤）
+        int edge_id;
+        geometry::HalfEdge* he;
+        double cost;
+        Eigen::Vector3d v_opt;
+        int version;
+
+        // 关键：重载大于号，让 priority_queue 变成小根堆
+        bool operator>(const CollapseRecord& other) const {
+            return this->cost > other.cost;
+        }
+        bool operator>(const CollapseRecord& other) const { return this->cost > other.cost; }
+    };
+
+    // 构建小根堆
+    std::priority_queue<CollapseRecord, std::vector<CollapseRecord>, std::greater<CollapseRecord>> pq;
+
+
+    // 这里为了“不改你 collapse 的结构”，仍然用 geometry::HalfEdge 的遍历方式往 pq 里塞
+    // 但 Qe/cost/v_opt 的计算来源，改成 OpenMesh（和 QE_total 对齐）
+    edgeCount = 0;
+    {
+        std::unordered_set<const geometry::HalfEdge*> visited;
+        visited.reserve(mesh.getHalfEdgeCount());
+        for (const auto& hePtr : mesh.halfEdges) {
+            geometry::HalfEdge* he = hePtr.get();
+            if (!he || visited.contains(he)) continue;
+            visited.insert(he);
+            if (he->pair) visited.insert(he->pair);
+
+			// 计算cost
+			Eigen::Matrix3d A = QE_total[edgeCount].block<3, 3>(0, 0);
+			Eigen::Vector3d B = QE_total[edgeCount].block<3, 1>(0, 3);
+            const Eigen::Matrix4d& Qe = QE_total[static_cast<size_t>(edgeCount)];
+
+            Eigen::Matrix3d A = Qe.block<3, 3>(0, 0);
+            Eigen::Vector3d B = Qe.block<3, 1>(0, 3);
+            Eigen::Vector3d v_opt;
+
+
+            // 检查是否可逆（决定了能否直接求最优点）
+            if (std::abs(A.determinant()) > 1e-6) {
+                // 1. 如果可逆，直接解方程 Av = -B
+                v_opt = A.ldlt().solve(-B);
+            }
+            else {
+
+            } else {
+                geometry::Vertex* v1 = he->vertex;
+                geometry::Vertex* v2 = he->getEndVertex();
+                // 2. 如果不可逆（退化情况），在端点和中点中找
+                Eigen::Vector3d mid = (v1->position + v2->position) * 0.5;
+
+                // 分别计算这三个点的误差，选最小的
+                // 这里的误差计算公式是 v^T * Q * v，记得把 Vector3d 转成 Vector4d [x,y,z,1]
+                v_opt = mid;
+            }
+
+            Eigen::Vector4d final_vertex(v_opt(0), v_opt(1), v_opt(2), 1.0);
+
+			double cost = final_vertex.transpose() * QE_total[edgeCount] * final_vertex;
+
+			cost_total[edgeCount] = cost;
+            edgeCount ++;
+            double cost = final_vertex.transpose() * Qe * final_vertex;
+
+			CollapseRecord record{ edgeCount, he ,cost, v_opt, 0 };
+            cost_total[edgeCount] = static_cast<int>(cost);
+
+            CollapseRecord record{edgeCount, he, cost, v_opt, 0};
+            pq.push(record);
+
+            ++edgeCount;
+        }
+    }
+
+    int target = edgeCount;
+
+    std::vector<double>version(edgeCount, 0.0);
+    std::vector<double> version(edgeCount, 0.0);
+
+    // ========== 4) collapse：完全保持你原来的，不透明部分不动 =========
+    while (target > n && !pq.empty()) {
+        while(pq.top().version != version[pq.top().edge_id]) pq.pop();
+        while (pq.top().version != version[pq.top().edge_id]) pq.pop();
+
+        CollapseRecord record = pq.top();
+        pq.pop();
+
+        geometry::HalfEdge* he = record.he;
+        he->deleted = true;
+        if (he->pair) he->pair->deleted = true;
+        geometry::Vertex* v1 = he->vertex;
+        geometry::Vertex* v2 = he->getEndVertex();
+
+        v2->deleted = true;
+        geometry::HalfEdge* v10 = he->next->next->pair;
+        geometry::HalfEdge* v11 = he->pair->next->pair;
+
+        geometry::HalfEdge* v20 = he->next->pair;
+        geometry::HalfEdge* v21 = he->pair->prev->pair;
+
+        v10->pair = v20;
+        v11->pair = v21;
+
+        // 这里等待完成collapse之后,顺带更新二次误差的数值矩阵
+
+
+    }
+}

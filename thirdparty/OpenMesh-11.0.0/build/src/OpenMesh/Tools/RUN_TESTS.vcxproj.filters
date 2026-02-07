@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\D\openmesh\OpenMesh-11.0.0\build\CMakeFiles\3d6ff27499317492e858e089340eec1f\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D83D4459-CE39-3562-8E48-99174286C420}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

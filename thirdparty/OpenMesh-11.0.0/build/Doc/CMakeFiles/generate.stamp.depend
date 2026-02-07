@@ -1,0 +1,6 @@
+# CMake generation dependency list for this directory.
+C:/D/Cmake/share/cmake-3.30/Modules/FindDoxygen.cmake
+C:/D/Cmake/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake
+C:/D/Cmake/share/cmake-3.30/Modules/FindPackageMessage.cmake
+C:/D/openmesh/OpenMesh-11.0.0/Doc/CMakeLists.txt
+C:/D/openmesh/OpenMesh-11.0.0/cmake-library/VCI/VCIDoxygen.cmake

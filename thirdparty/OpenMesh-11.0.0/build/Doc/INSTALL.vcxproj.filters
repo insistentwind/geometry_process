@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\D\openmesh\OpenMesh-11.0.0\build\CMakeFiles\d47d9d6433a227286544260d241172c5\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{D83D4459-CE39-3562-8E48-99174286C420}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

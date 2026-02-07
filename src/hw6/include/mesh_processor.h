@@ -153,5 +153,7 @@ private:
      */
     void processGeometry();
 
+    void tuttes_embedding();
+
     double wij_caculate(geometry::HalfEdge* he, int i);
 };

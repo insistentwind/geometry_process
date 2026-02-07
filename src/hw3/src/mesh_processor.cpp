@@ -196,7 +196,7 @@ void MeshProcessor::cotangentCurvature() {
 			global_min_mag = std::min(global_min_mag, curvature_magnitude);
 			
 			
-			mesh.vertices[i]->position += cotangent_curvature * 0.0001;
+			mesh.vertices[i]->position += cotangent_curvature * 0.0001;// ÒÆ¶¯µÄ¾àÀë
 
 			threshold = std::min(threshold, (mesh.vertices[i]->position - mesh.vertices[i]->old_position).norm());
 		}

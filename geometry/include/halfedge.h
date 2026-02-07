@@ -14,6 +14,7 @@ class HalfEdge;
 
 class Vertex {
 public:
+    bool deleted = false; // 标记该半边是否被删除
     bool fixed = false;// 是否是固定的点
     bool handle = false; // 是否是拖拽控制点（handle点）
     Eigen::Vector3d position;
@@ -39,6 +40,7 @@ public:
 
 class Face {
 public:
+    bool deleted = false; // 标记该半边是否被删除
     HalfEdge* halfEdge;
     int index;
     Eigen::Vector3d normal;
@@ -52,6 +54,7 @@ public:
 
 class HalfEdge {
 public:
+	bool deleted = false; // 标记该半边是否被删除
     int index;
     Vertex* vertex;   ///< 起点
     Face* face;       ///< 左侧面

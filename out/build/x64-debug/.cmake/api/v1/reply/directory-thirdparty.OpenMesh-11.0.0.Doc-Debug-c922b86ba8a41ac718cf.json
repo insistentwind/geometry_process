@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "thirdparty/OpenMesh-11.0.0/Doc",
+		"source" : "thirdparty/OpenMesh-11.0.0/Doc"
+	}
+}

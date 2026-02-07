@@ -63,5 +63,7 @@ private:
      * 这是需要自定义网格处理算法的地方
      * 例如：拉普拉斯平滑、网格简化、细分等等
      */
+    void tuttes_embedding();
+
     void processGeometry();
 };

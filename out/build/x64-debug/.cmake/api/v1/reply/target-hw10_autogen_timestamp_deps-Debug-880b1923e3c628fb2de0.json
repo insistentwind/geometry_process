@@ -1,0 +1,38 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"src/hw10/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "geometry::@60d41218eef6b4657a56"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "mesh_viewer::@4ad571843d929affe7de"
+		}
+	],
+	"id" : "hw10_autogen_timestamp_deps::@6873f194d163d004f5fc",
+	"isGeneratorProvided" : true,
+	"name" : "hw10_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "src/hw10",
+		"source" : "src/hw10"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

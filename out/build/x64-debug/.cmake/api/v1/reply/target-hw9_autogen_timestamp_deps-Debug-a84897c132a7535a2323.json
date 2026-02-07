@@ -1,0 +1,46 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"src/hw9/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "OpenMeshCore::@25ead5d43b202b2c0892"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "OpenMeshTools::@f302bf30c06e52b8f4d1"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "geometry::@60d41218eef6b4657a56"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "mesh_viewer::@4ad571843d929affe7de"
+		}
+	],
+	"id" : "hw9_autogen_timestamp_deps::@829054819dd47126e150",
+	"isGeneratorProvided" : true,
+	"name" : "hw9_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "src/hw9",
+		"source" : "src/hw9"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

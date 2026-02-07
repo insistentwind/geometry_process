@@ -1,0 +1,45 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"thirdparty/OpenMesh-11.0.0/src/OpenMesh/Tools/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 204,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"lib/OpenMeshToolsd.lib"
+			],
+			"targetId" : "OpenMeshTools::@f302bf30c06e52b8f4d1",
+			"targetIndex" : 51,
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "thirdparty/OpenMesh-11.0.0/src/OpenMesh/Tools",
+		"source" : "thirdparty/OpenMesh-11.0.0/src/OpenMesh/Tools"
+	}
+}

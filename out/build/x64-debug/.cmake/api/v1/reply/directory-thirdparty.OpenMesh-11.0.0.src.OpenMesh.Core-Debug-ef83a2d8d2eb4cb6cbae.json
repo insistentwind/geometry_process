@@ -1,0 +1,45 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"thirdparty/OpenMesh-11.0.0/src/OpenMesh/Core/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 242,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "lib",
+			"paths" : 
+			[
+				"lib/OpenMeshCored.lib"
+			],
+			"targetId" : "OpenMeshCore::@25ead5d43b202b2c0892",
+			"targetIndex" : 50,
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "thirdparty/OpenMesh-11.0.0/src/OpenMesh/Core",
+		"source" : "thirdparty/OpenMesh-11.0.0/src/OpenMesh/Core"
+	}
+}

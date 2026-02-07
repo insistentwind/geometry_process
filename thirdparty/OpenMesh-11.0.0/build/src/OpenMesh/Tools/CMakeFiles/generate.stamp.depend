@@ -1,0 +1,7 @@
+# CMake generation dependency list for this directory.
+C:/D/Cmake/share/cmake-3.30/Modules/AddFileDependencies.cmake
+C:/D/openmesh/OpenMesh-11.0.0/cmake-library/VCI/MSVCMacros.cmake
+C:/D/openmesh/OpenMesh-11.0.0/cmake-library/VCI/VCICommon.cmake
+C:/D/openmesh/OpenMesh-11.0.0/cmake-library/VCI/VCICompiler.cmake
+C:/D/openmesh/OpenMesh-11.0.0/cmake-library/VCI/VCIPaths.cmake
+C:/D/openmesh/OpenMesh-11.0.0/src/OpenMesh/Tools/CMakeLists.txt

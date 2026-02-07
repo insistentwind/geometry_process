@@ -40,6 +40,10 @@ endif()
 # 在添加geometry之前
 add_subdirectory(thirdparty/eigen-3.4.0)
 
+# Build OpenMesh from source (ensures Debug/Release libs match MSVC runtime)
+set(BUILD_APPS OFF CACHE BOOL "Disable OpenMesh apps" FORCE)
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "Disable OpenMesh unit tests" FORCE)
+add_subdirectory(thirdparty/OpenMesh-11.0.0)
 
 # 添加几何库（必须在其他项目之前）
 add_subdirectory (geometry)
@@ -55,6 +59,9 @@ add_subdirectory (src/hw4)
 add_subdirectory (src/hw5) 
 add_subdirectory (src/hw6) 
 add_subdirectory (src/hw7) 
+add_subdirectory (src/hw8) 
+add_subdirectory (src/hw9) 
+add_subdirectory (src/hw10) 
 # Qt部署设置（移动到每个work的CMakeLists.txt中）
 if(WIN32)
     get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
